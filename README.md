@@ -4,6 +4,12 @@ Georgia Messinger, Chloe Nelson-Arzuaga, Mariah Crawford
 
 How Americans, especially young adults, have reallocated their days since 2003, built on the BLS American Time Use Survey (ATUS).
 
+**Live site:** https://cs171finalproject.pages.dev
+
+## Deploys
+
+Cloudflare Pages builds from this repo automatically. A push to `main` updates the live site; any other branch or PR gets its own preview URL (`https://<branch>.cs171finalproject.pages.dev`), linked in a comment on the PR. No build step: Pages serves the repo root as-is.
+
 ## What's here
 
 | Path | What it is |
