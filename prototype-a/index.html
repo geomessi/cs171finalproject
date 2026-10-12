@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where the Hours Went</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one wide "control" chart on top (who + when), two linked answer panels below (what moved, the whole day) */
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#18202E; --muted:#5B6576; --faint:#9AA3B2; --line:#DDE2EA;
+  --accent:#3B4BB0; --less:#C0446A; --more:#1D877F; --brush:rgba(59,75,176,.10);
+  --c-personal:#9FB3D9; --c-work:#E2C46B; --c-edu:#EBD9A0; --c-home:#C9B8A6; --c-care:#D8C9BB; --c-shop:#BDB0A3;
+  --c-eat:#A9CFA4; --c-social:#D9577E; --c-tv:#A99BE0; --c-leis:#C7BEEB; --c-civic:#B7C4CC; --c-phone:#CBD4DA; --c-other:#DDE2E6;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10131A; --surface:#171B24; --ink:#E6E9EF; --muted:#9BA4B5; --faint:#5F6878; --line:#2A303C;
+  --accent:#8F9CFF; --less:#E87A9A; --more:#4EC3B8; --brush:rgba(143,156,255,.14);
+  --c-personal:#4F6A9E; --c-work:#A68A33; --c-edu:#7D6E43; --c-home:#7A6A5A; --c-care:#665B50; --c-shop:#5E554C;
+  --c-eat:#4D7A49; --c-social:#E0668C; --c-tv:#6E5FB0; --c-leis:#544A84; --c-civic:#4C5B64; --c-phone:#3E4A52; --c-other:#353C44;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10131A; --surface:#171B24; --ink:#E6E9EF; --muted:#9BA4B5; --faint:#5F6878; --line:#2A303C;
+  --accent:#8F9CFF; --less:#E87A9A; --more:#4EC3B8; --brush:rgba(143,156,255,.14);
+  --c-personal:#4F6A9E; --c-work:#A68A33; --c-edu:#7D6E43; --c-home:#7A6A5A; --c-care:#665B50; --c-shop:#5E554C;
+  --c-eat:#4D7A49; --c-social:#E0668C; --c-tv:#6E5FB0; --c-leis:#544A84; --c-civic:#4C5B64; --c-phone:#3E4A52; --c-other:#353C44;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 48px;display:grid;gap:20px}
+header{display:grid;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.05;margin:0;text-wrap:balance}
+.dek{color:var(--muted);max-width:68ch;margin:0}
+.steps{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.steps b{font-family:var(--mono);color:var(--accent);font-weight:500;margin-right:4px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 14px;min-width:0}
+.panel h2{font-family:var(--display);font-weight:500;font-size:19px;margin:0 0 2px;text-wrap:balance}
+.panel .sub{font-size:13px;color:var(--muted);margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
+.chip{font:500 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:4px 11px;cursor:pointer}
+.chip:hover{border-color:var(--faint);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1.05fr 1fr;gap:20px}
+@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--muted);font-family:var(--mono);font-size:11px}
+.axis path,.axis line{stroke:var(--line)}
+.gridline{stroke:var(--line);stroke-dasharray:2 3}
+.ageline{fill:none;stroke:var(--faint);stroke-width:1.4;opacity:.55;cursor:pointer;transition:opacity .15s}
+.ageline.all{stroke-dasharray:4 3}
+.ageline.sel{stroke:var(--accent);stroke-width:3;opacity:1}
+.hit{fill:none;stroke:transparent;stroke-width:12;cursor:pointer}
+.endlab{font-family:var(--body);font-size:12px}
+.endlab.sel{fill:var(--accent);font-weight:600}
+.track rect.bg{fill:var(--bg);stroke:var(--line)}
+.brush .selection{fill:var(--brush);stroke:var(--accent);stroke-width:1.2}
+.brush .handle{fill:var(--accent);rx:2}
+.band{fill:var(--brush)}
+.readout{font-size:15px;margin:2px 0 0;max-width:80ch}
+.readout strong{font-family:var(--mono);font-weight:500}
+.readout .neg{color:var(--less)} .readout .pos{color:var(--more)}
+.bar{cursor:default;transition:opacity .12s}
+.dim{opacity:.25}
+.lab{font-family:var(--body);font-size:12.5px;fill:var(--ink)}
+.lab.social{font-weight:600}
+.val{font-size:11px}
+.seg{stroke:var(--surface);stroke-width:1;transition:opacity .12s}
+.seg.hl{stroke:var(--ink);stroke-width:1.5}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 9px;border-radius:6px;max-width:260px;opacity:0;transition:opacity .1s;z-index:5}
+.legendrow{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--muted);margin-top:8px}
+.legendrow span{display:inline-flex;align-items:center;gap:5px;cursor:default}
+.legendrow i{width:10px;height:10px;border-radius:2px;display:inline-block}
+footer{font-size:12.5px;color:var(--muted);max-width:90ch}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">CS171 · Prototype A · Brushing &amp; linking</div>
+  <h1>Where the hours went</h1>
+  <p class="dek">Americans socialize less than they did in 2003. Pick an age group and a span of years to see who changed and what grew in the time socializing gave up.</p>
+  <div class="steps"><span><b>1</b>Click a line or chip to pick an age group</span><span><b>2</b>Drag the strip under the chart to set the years</span><span><b>3</b>Hover any activity to find it in both lower charts</span></div>
+</header>
+
+<section class="panel" aria-labelledby="h-trend">
+  <h2 id="h-trend">Minutes a day spent socializing and communicating</h2>
+  <p class="sub">Average across all days, 2003–2025. No estimates were published for 2020.</p>
+  <div class="chips" id="agechips" role="group" aria-label="Age group"></div>
+  <div id="trend"></div>
+  <p class="readout" id="readout"></p>
+</section>
+
+<div class="grid2">
+  <section class="panel" aria-labelledby="h-div">
+    <h2 id="h-div">What moved</h2>
+    <p class="sub" id="divsub"></p>
+    <div id="diverge"></div>
+  </section>
+  <section class="panel" aria-labelledby="h-day">
+    <h2 id="h-day">The whole day</h2>
+    <p class="sub" id="daysub"></p>
+    <div id="days"></div>
+    <div class="legendrow" id="legend"></div>
+  </section>
+</div>
+
+<footer>Source: <a href="https://download.bls.gov/pub/time.series/tu/" target="_blank" rel="noopener">BLS American Time Use Survey time series</a> (average hours per day, converted to minutes; civilian noninstitutional population). Each endpoint averages two survey years to smooth sampling noise. Activity groups are mutually exclusive and include related travel, so each day sums to 24 hours. "Other leisure" is BLS leisure &amp; sports minus socializing and TV. Changes show what moved together, not what caused what.</footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+(async () => {
+const DATA = await (await fetch('../data/atus.json')).json();
+const YEARS = DATA.years;
+const AGES = [["000","All ages"],["103","15–24"],["031","25–34"],["038","35–44"],["042","45–54"],["049","55–64"],["065","65+"]];
+const CATS = [
+ {id:"600001",name:"Sleep & personal care",c:"--c-personal"},
+ {id:"600013",name:"Working",c:"--c-work"},
+ {id:"600016",name:"Education",c:"--c-edu"},
+ {id:"600003",name:"Household chores",c:"--c-home"},
+ {id:"600007",name:"Caring for household",c:"--c-care"},
+ {id:"600010",name:"Caring for others",c:"--c-care"},
+ {id:"600018",name:"Shopping & services",c:"--c-shop"},
+ {id:"600022",name:"Eating & drinking",c:"--c-eat"},
+ {id:"600024",name:"Socializing",c:"--c-social"},
+ {id:"600025",name:"Watching TV",c:"--c-tv"},
+ {id:"leis",name:"Other leisure & sports",c:"--c-leis"},
+ {id:"600030",name:"Civic & religious",c:"--c-civic"},
+ {id:"600033",name:"Calls, mail & email",c:"--c-phone"},
+ {id:"600034",name:"Other",c:"--c-other"}
+];
+const state = {age:"103", y0:2003, y1:2025, hover:null};
+const tip = document.getElementById('tip');
+const fmt = d => (d>0?"+":d<0?"−":"±") + Math.abs(Math.round(d));
+
+function series(age, id){
+  const s = DATA.act[age]["00"];
+  if(id==="leis") return s["600023"].map((v,i)=> v==null?null: v - s["600024"][i] - s["600025"][i]);
+  return s[id];
+}
+function avgAt(arr, years){ const v = years.map(y=>arr[YEARS.indexOf(y)]).filter(x=>x!=null); return v.length? d3.mean(v):null; }
+function startYears(){ const ys=[state.y0, state.y0+1].filter(y=>y<=state.y1 && y!==2020); return ys; }
+function endYears(){ const ys=[state.y1-1, state.y1].filter(y=>y>=state.y0 && y!==2020); return ys; }
+function label(ys){ return ys.length>1? `${ys[0]}–${String(ys[1]).slice(2)}` : `${ys[0]}`; }
+function ageName(a){ return AGES.find(x=>x[0]===a)[1]; }
+function showTip(html, ev){ tip.innerHTML=html; tip.style.opacity=1; tip.style.left=Math.min(ev.clientX+12, innerWidth-270)+"px"; tip.style.top=(ev.clientY+12)+"px"; }
+function hideTip(){ tip.style.opacity=0; }
+
+/* ---------- Age chips ---------- */
+const chipWrap = d3.select('#agechips');
+chipWrap.selectAll('button').data(AGES).join('button').attr('class','chip').attr('id',d=>'age-'+d[0])
+  .text(d=>d[1]).on('click',(e,d)=>{state.age=d[0]; render();});
+
+/* ---------- Trend chart with brush strip ---------- */
+const T = {w:1120, h:300, m:{t:14,r:70,b:74,l:40}};
+const tsvg = d3.select('#trend').append('svg').attr('viewBox',`0 0 ${T.w} ${T.h}`).attr('role','img').attr('aria-label','Line chart of socializing minutes per day by age group, 2003 to 2025');
+const x = d3.scaleLinear().domain([2003,2025]).range([T.m.l, T.w-T.m.r]);
+const allSoc = AGES.flatMap(a=>DATA.act[a[0]]["00"]["600024"]).filter(v=>v!=null);
+const y = d3.scaleLinear().domain([0, d3.max(allSoc)*1.08]).nice().range([T.h-T.m.b, T.m.t]);
+tsvg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('class','gridline').attr('x1',T.m.l).attr('x2',T.w-T.m.r).attr('y1',y).attr('y2',y);
+tsvg.append('g').attr('class','axis').attr('transform',`translate(${T.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(0).tickPadding(8)).call(g=>g.select('.domain').remove());
+tsvg.append('g').attr('class','axis').attr('transform',`translate(0,${T.h-T.m.b})`).call(d3.axisBottom(x).ticks(12).tickFormat(d3.format('d')).tickSizeOuter(0));
+const band = tsvg.append('rect').attr('class','band').attr('y',T.m.t).attr('height',T.h-T.m.b-T.m.t);
+const line = d3.line().defined(d=>d[1]!=null).x(d=>x(d[0])).y(d=>y(d[1]));
+const lineG = tsvg.append('g');
+const ages = lineG.selectAll('g').data(AGES).join('g');
+ages.append('path').attr('class',d=>'ageline'+(d[0]==='000'?' all':'')).attr('d',d=>line(YEARS.map((yr,i)=>[yr,DATA.act[d[0]]["00"]["600024"][i]])));
+ages.append('path').attr('class','hit').attr('d',d=>line(YEARS.map((yr,i)=>[yr,DATA.act[d[0]]["00"]["600024"][i]])))
+  .on('click',(e,d)=>{state.age=d[0]; render();})
+  .on('mousemove',(e,d)=>showTip(`<b>${d[1]}</b> · click to select`,e)).on('mouseleave',hideTip);
+ages.append('text').attr('class','endlab').attr('x',T.w-T.m.r+6)
+  .attr('y',d=>y(DATA.act[d[0]]["00"]["600024"].at(-1))+4).text(d=>d[1]);
+// de-overlap end labels
+(function(){ const labs = ages.select('text').nodes().map(n=>({n, y:+n.getAttribute('y')})).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<labs.length;i++){ if(labs[i].y-labs[i-1].y<13){ labs[i].y=labs[i-1].y+13; } }
+  labs.forEach(l=>l.n.setAttribute('y',l.y)); })();
+tsvg.append('text').attr('x',T.m.l).attr('y',T.m.t-2).attr('dy','-0.2em').text('min/day');
+// brush strip
+const trackY = T.h-T.m.b+30, trackH = 30;
+const track = tsvg.append('g').attr('class','track');
+track.append('rect').attr('class','bg').attr('x',T.m.l).attr('y',trackY).attr('width',T.w-T.m.r-T.m.l).attr('height',trackH).attr('rx',5);
+track.append('text').attr('x',T.m.l+8).attr('y',trackY+trackH/2+4).text('drag to choose years');
+const brush = d3.brushX().extent([[T.m.l,trackY],[T.w-T.m.r,trackY+trackH]])
+  .on('brush end', function(ev){
+    if(!ev.selection) return;
+    let [a,b] = ev.selection.map(v=>Math.round(x.invert(v)));
+    if(b-a<2){ if(a+2<=2025) b=a+2; else a=b-2; }
+    if(ev.type==='end' && ev.sourceEvent){ d3.select(this).call(brush.move,[x(a),x(b)]); }
+    if(a!==state.y0||b!==state.y1){ state.y0=a; state.y1=b; render(); }
+  });
+const bG = tsvg.append('g').attr('class','brush').call(brush);
+bG.call(brush.move,[x(state.y0),x(state.y1)]);
+const marks = tsvg.append('g');
+
+/* ---------- Diverging chart ---------- */
+const V = {w:560, rowH:26, m:{t:8,r:44,b:28,l:164}};
+const dsvg = d3.select('#diverge').append('svg');
+/* ---------- Day bars ---------- */
+const DY = {w:560, h:150, m:{t:6,r:12,b:28,l:62}};
+const ysvg = d3.select('#days').append('svg').attr('viewBox',`0 0 ${DY.w} ${DY.h}`);
+const hx = d3.scaleLinear().domain([0,1440]).range([DY.m.l, DY.w-DY.m.r]);
+ysvg.append('g').attr('class','axis').attr('transform',`translate(0,${DY.h-DY.m.b})`)
+  .call(d3.axisBottom(hx).tickValues(d3.range(0,1441,180)).tickFormat(d=>d/60+'h').tickSizeOuter(0));
+d3.select('#legend').selectAll('span').data(CATS).join('span')
+  .html(d=>`<i style="background:var(${d.c})"></i>${d.name}`)
+  .on('mouseenter',(e,d)=>{state.hover=d.id; highlight();}).on('mouseleave',()=>{state.hover=null; highlight();});
+
+function highlight(){
+  const h = state.hover;
+  dsvg.selectAll('.row').classed('dim', d=> h && d.id!==h);
+  ysvg.selectAll('.seg').classed('dim', d=> h && d.id!==h).classed('hl', d=> h && d.id===h);
+}
+
+function render(){
+  // chips + lines
+  chipWrap.selectAll('button').attr('aria-pressed',d=>String(d[0]===state.age));
+  ages.select('.ageline').classed('sel',d=>d[0]===state.age);
+  ages.select('.endlab').classed('sel',d=>d[0]===state.age);
+  ages.filter(d=>d[0]===state.age).raise();
+  band.attr('x',x(state.y0)).attr('width',x(state.y1)-x(state.y0));
+  const s0=startYears(), s1=endYears();
+  const soc = DATA.act[state.age]["00"]["600024"];
+  const pts = [[d3.mean(s0),avgAt(soc,s0)],[d3.mean(s1),avgAt(soc,s1)]];
+  marks.selectAll('circle').data(pts).join('circle').attr('r',5).attr('cx',d=>x(d[0])).attr('cy',d=>y(d[1]))
+    .style('fill','var(--accent)').style('stroke','var(--surface)').style('stroke-width',2);
+
+  // compute deltas
+  const rows = CATS.map(c=>{ const s=series(state.age,c.id); const a=avgAt(s,s0), b=avgAt(s,s1); return {...c,a,b,d:b-a}; });
+  const sorted = [...rows].sort((p,q)=>q.d-p.d);
+  const socRow = rows.find(r=>r.id==="600024");
+  const top = sorted[0], bottom = sorted.at(-1);
+  document.getElementById('readout').innerHTML =
+    `<b>${ageName(state.age)}</b> socialized <strong>${Math.round(socRow.a)}</strong> min/day in ${label(s0)} and <strong>${Math.round(socRow.b)}</strong> in ${label(s1)} `+
+    `(<strong class="${socRow.d<0?'neg':'pos'}">${fmt(socRow.d)} min</strong>). Biggest gain: ${top.name.toLowerCase()} (<strong class="pos">${fmt(top.d)}</strong>). Biggest drop: ${bottom.name.toLowerCase()} (<strong class="neg">${fmt(bottom.d)}</strong>).`;
+  document.getElementById('divsub').textContent = `Change in minutes per day, ${label(s0)} → ${label(s1)}, ${ageName(state.age)}`;
+  document.getElementById('daysub').textContent = `24 hours, ${label(s0)} vs ${label(s1)}, ${ageName(state.age)}`;
+
+  // diverging
+  const H = V.m.t + V.m.b + sorted.length*V.rowH;
+  dsvg.attr('viewBox',`0 0 ${V.w} ${H}`);
+  const lim = Math.max(20, d3.max(rows,r=>Math.abs(r.d)));
+  const dx = d3.scaleLinear().domain([-lim,lim]).nice().range([V.m.l, V.w-V.m.r]);
+  const dy = d3.scaleBand().domain(sorted.map(r=>r.id)).range([V.m.t, H-V.m.b]).padding(.28);
+  dsvg.selectAll('.xaxis').data([0]).join('g').attr('class','axis xaxis').attr('transform',`translate(0,${H-V.m.b})`)
+    .call(d3.axisBottom(dx).ticks(6).tickFormat(d=>d>0?'+'+d:d).tickSizeOuter(0));
+  dsvg.selectAll('.zero').data([0]).join('line').attr('class','zero').attr('x1',dx(0)).attr('x2',dx(0)).attr('y1',V.m.t).attr('y2',H-V.m.b).style('stroke','var(--muted)');
+  const row = dsvg.selectAll('.row').data(sorted,d=>d.id).join(enter=>{
+      const g=enter.append('g').attr('class','row bar');
+      g.append('rect').attr('class','hitrow').attr('x',0).attr('width',V.w).style('fill','transparent');
+      g.append('rect').attr('class','b').attr('rx',2);
+      g.append('text').attr('class',d=>'lab'+(d.id==='600024'?' social':'')).attr('x',V.m.l-10).attr('text-anchor','end');
+      g.append('text').attr('class','val');
+      return g;})
+    .on('mouseenter',(e,d)=>{state.hover=d.id; highlight();})
+    .on('mousemove',(e,d)=>showTip(`<b>${d.name}</b><br>${Math.round(d.a)} → ${Math.round(d.b)} min/day (${fmt(d.d)})`,e))
+    .on('mouseleave',()=>{state.hover=null; highlight(); hideTip();});
+  row.transition().duration(350).attr('transform',d=>`translate(0,${dy(d.id)})`);
+  row.select('.hitrow').attr('y',-dy.step()*dy.paddingOuter()/2).attr('height',dy.step());
+  row.select('.b').transition().duration(350).attr('x',d=>dx(Math.min(0,d.d))).attr('width',d=>Math.abs(dx(d.d)-dx(0))).attr('height',dy.bandwidth())
+    .style('fill',d=>d.d<0?'var(--less)':'var(--more)');
+  row.select('.lab').attr('y',dy.bandwidth()/2+4).text(d=>d.name);
+  row.select('.val').attr('y',dy.bandwidth()/2+4).attr('x',d=>d.d<0?dx(d.d)-5:dx(d.d)+5).attr('text-anchor',d=>d.d<0?'end':'start').text(d=>fmt(d.d));
+
+  // day bars
+  const dayRows = [{key:label(s0),f:'a'},{key:label(s1),f:'b'}];
+  const by = d3.scaleBand().domain(dayRows.map(d=>d.key)).range([DY.m.t, DY.h-DY.m.b]).padding(.22);
+  const g = ysvg.selectAll('.day').data(dayRows,(d,i)=>i).join(e=>{const g=e.append('g').attr('class','day'); g.append('text').attr('class','lab').attr('x',DY.m.l-8).attr('text-anchor','end'); return g;});
+  g.attr('transform',d=>`translate(0,${by(d.key)})`);
+  g.select('.lab').attr('y',by.bandwidth()/2+4).text(d=>d.key);
+  g.each(function(dr){
+    let acc=0; const segs = CATS.map(c=>{const r=rows.find(r=>r.id===c.id); const v=r[dr.f]||0; const s={...r,x0:acc,v}; acc+=v; return s;});
+    d3.select(this).selectAll('.seg').data(segs,d=>d.id).join('rect').attr('class','seg')
+      .attr('y',0).attr('height',by.bandwidth()).style('fill',d=>`var(${d.c})`)
+      .on('mouseenter',(e,d)=>{state.hover=d.id; highlight();})
+      .on('mousemove',(e,d)=>showTip(`<b>${d.name}</b><br>${Math.round(d.v)} min/day in ${dr.key}`,e))
+      .on('mouseleave',()=>{state.hover=null; highlight(); hideTip();})
+      .transition().duration(350).attr('x',d=>hx(d.x0)).attr('width',d=>Math.max(0,hx(d.x0+d.v)-hx(d.x0)));
+  });
+  highlight();
+}
+render();
+})();
+</script>
+
+</body>
+</html>

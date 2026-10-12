@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alone or Together</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one sticky filter bar drives three views; the balance scale is the hero, companion views sit beside it */
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#18202E; --muted:#5B6576; --faint:#9AA3B2; --line:#DDE2EA;
+  --accent:#3B4BB0; --work:#C9A43A; --leisure:#6E5FC7; --social:#D9577E; --alone:#3B4BB0; --others:#1D877F;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10131A; --surface:#171B24; --ink:#E6E9EF; --muted:#9BA4B5; --faint:#5F6878; --line:#2A303C;
+  --accent:#8F9CFF; --work:#D9B651; --leisure:#9C8EF0; --social:#E8789A; --alone:#8F9CFF; --others:#4EC3B8; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10131A; --surface:#171B24; --ink:#E6E9EF; --muted:#9BA4B5; --faint:#5F6878; --line:#2A303C;
+  --accent:#8F9CFF; --work:#D9B651; --leisure:#9C8EF0; --social:#E8789A; --alone:#8F9CFF; --others:#4EC3B8; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 48px;display:grid;gap:18px}
+header{display:grid;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.05;margin:0;text-wrap:balance}
+.dek{color:var(--muted);max-width:70ch;margin:0}
+.filters{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:10px}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.flabel{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);min-width:64px}
+.seg{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font:500 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:4px 11px;cursor:pointer}
+.chip:hover{border-color:var(--faint);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sep{width:1px;height:20px;background:var(--line);margin-inline:4px}
+input[type=range]{flex:1;min-width:160px;accent-color:var(--accent)}
+.yearout{font-family:var(--mono);font-size:20px;font-weight:500;min-width:4ch}
+.play{font:500 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:6px;padding:3px 10px;cursor:pointer}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 14px;min-width:0}
+.panel.wide{grid-column:1/-1}
+.panel h2{font-family:var(--display);font-weight:500;font-size:19px;margin:0 0 2px;text-wrap:balance}
+.panel .sub{font-size:13px;color:var(--muted);margin:0 0 8px}
+.note{font-size:12.5px;color:var(--muted);border-left:2px solid var(--faint);padding-left:8px;margin:6px 0 0}
+.note:empty{display:none}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--muted);font-family:var(--mono);font-size:11px}
+.axis path,.axis line{stroke:var(--line)}
+.gridline{stroke:var(--line);stroke-dasharray:2 3}
+.big{font-family:var(--display);font-size:15px;fill:var(--ink)}
+.hint{font-family:var(--body);font-size:12px}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 9px;border-radius:6px;max-width:260px;opacity:0;z-index:5}
+.whobar{transition:opacity .15s}
+footer{font-size:12.5px;color:var(--muted);max-width:90ch}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">CS171 · Prototype B · Shared filters</div>
+  <h1>Alone or together</h1>
+  <p class="dek">One set of controls drives every view. Choose a group, a kind of day and a year, then watch the balance between work and leisure shift alongside how much of the day people spend alone.</p>
+</header>
+
+<div class="filters" role="group" aria-label="Filters">
+  <div class="frow"><span class="flabel">Who</span><div class="seg" id="f-group"></div></div>
+  <div class="frow"><span class="flabel">Day</span><div class="seg" id="f-day"></div>
+    <span class="sep" aria-hidden="true"></span>
+    <span class="flabel">Year</span><span class="yearout" id="yearout">2025</span>
+    <input type="range" id="f-year" min="2003" max="2025" step="1" value="2025" aria-label="Year">
+    <button class="play" id="play" type="button">Play</button>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel" aria-labelledby="h-scale">
+    <h2 id="h-scale">Work vs. leisure</h2>
+    <p class="sub" id="scalesub"></p>
+    <div id="scale"></div>
+    <p class="note" id="scalenote"></p>
+  </section>
+  <section class="panel" aria-labelledby="h-alone">
+    <h2 id="h-alone">Waking hours alone vs. with others</h2>
+    <p class="sub" id="alonesub"></p>
+    <div id="alone"></div>
+    <p class="note" id="alonenote"></p>
+  </section>
+  <section class="panel wide" aria-labelledby="h-with">
+    <h2 id="h-with">Who people spend their waking hours with</h2>
+    <p class="sub" id="withsub"></p>
+    <div id="with"></div>
+    <p class="note" id="withnote"></p>
+  </section>
+</div>
+
+<footer>Source: <a href="https://download.bls.gov/pub/time.series/tu/" target="_blank" rel="noopener">BLS American Time Use Survey time series</a>, average hours per day. Work includes work-related travel; leisure is BLS "leisure &amp; sports," which contains socializing. Companion data ("who with") starts in 2010 and counts waking time; categories overlap, since an hour with a spouse and a friend counts for both. No estimates were published for 2020. "Parents" means an own child under 18 lives in the household.</footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+(async () => {
+const DATA = await (await fetch('../data/atus.json')).json();
+const YEARS = DATA.years;
+const GROUPS = [
+  {id:"all", name:"Everyone", act:["act","000"], who:"000"},
+  {id:"103", name:"15–24", act:["act","103"], who:"020", whoName:"20–24"},
+  {id:"031", name:"25–34", act:["act","031"], who:"031"},
+  {id:"038", name:"35–44", act:["act","038"], who:"038"},
+  {id:"042", name:"45–54", act:["act","042"], who:"042"},
+  {id:"049", name:"55–64", act:["act","049"], who:"049"},
+  {id:"065", name:"65+",   act:["act","065"], who:"113", whoName:"65–74"},
+  {id:"p13", name:"Parents", act:["par","13"], who:null},
+  {id:"p01", name:"No kids at home", act:["par","01"], who:null},
+];
+const DAYS = [["00","All days"],["19","Weekdays"],["16","Weekends"]];
+const WITH = [["43","Friends"],["42","Family (other homes)"],["03","Spouse only"],["24","Family at home"],["36","Own kids"],["35","Co-workers"]];
+const state = {g:"103", day:"00", year:2025};
+const tip = document.getElementById('tip');
+const showTip=(h,e)=>{tip.innerHTML=h;tip.style.opacity=1;tip.style.left=Math.min(e.clientX+12,innerWidth-270)+"px";tip.style.top=(e.clientY+12)+"px";};
+const hideTip=()=>tip.style.opacity=0;
+const hm = m => m==null? "—" : `${Math.floor(m/60)}h ${String(Math.round(m%60)).padStart(2,'0')}m`;
+const group = () => GROUPS.find(g=>g.id===state.g);
+function val(arr, yr){ if(!arr) return null; let i=YEARS.indexOf(yr); return arr[i]; }
+function nearest(arr, yr){ // 2020 gap: fall back to previous year
+  let v = val(arr,yr); if(v!=null) return [v,yr]; for(let d=1; d<4; d++){ if(val(arr,yr-d)!=null) return [val(arr,yr-d),yr-d]; } return [null,yr]; }
+function act(code, day){ const g=group(); return DATA[g.act[0]][g.act[1]][day||state.day][code]; }
+
+/* ---------- Filters ---------- */
+d3.select('#f-group').selectAll('button').data(GROUPS).join('button').attr('class','chip').attr('id',d=>'g-'+d.id).text(d=>d.name).on('click',(e,d)=>{state.g=d.id;render();});
+d3.select('#f-day').selectAll('button').data(DAYS).join('button').attr('class','chip').attr('id',d=>'d-'+d[0]).text(d=>d[1]).on('click',(e,d)=>{state.day=d[0];render();});
+const yr = document.getElementById('f-year');
+yr.addEventListener('input',()=>{state.year=+yr.value; render();});
+let timer=null; const playBtn=document.getElementById('play');
+playBtn.addEventListener('click',()=>{
+  if(timer){clearInterval(timer);timer=null;playBtn.textContent='Play';return;}
+  if(state.year>=2025){state.year=2003;}
+  playBtn.textContent='Pause';
+  timer=setInterval(()=>{ state.year++; if(state.year>2025){state.year=2025;clearInterval(timer);timer=null;playBtn.textContent='Play';} yr.value=state.year; render(); },550);
+});
+
+/* ---------- Balance scale ---------- */
+const S={w:560,h:380};
+const ssvg=d3.select('#scale').append('svg').attr('viewBox',`0 0 ${S.w} ${S.h}`).attr('role','img').attr('aria-label','Balance scale comparing work and leisure hours');
+const cx=S.w/2, pivotY=60, arm=180;
+const maxMin = 420; // 7 hours sets the largest ball
+const rScale=d3.scaleSqrt().domain([0,maxMin]).range([0,74]);
+ssvg.append('path').attr('d',`M${cx},${pivotY} L${cx-34},${S.h-26} L${cx+34},${S.h-26} Z`).style('fill','var(--line)');
+ssvg.append('rect').attr('x',cx-90).attr('y',S.h-26).attr('width',180).attr('height',6).attr('rx',3).style('fill','var(--faint)');
+const beamG=ssvg.append('g');
+beamG.append('rect').attr('x',cx-arm).attr('y',pivotY-3).attr('width',arm*2).attr('height',6).attr('rx',3).style('fill','var(--muted)');
+ssvg.append('circle').attr('cx',cx).attr('cy',pivotY).attr('r',7).style('fill','var(--ink)');
+function pan(side){ // side -1 left (work), +1 right (leisure)
+  const g=ssvg.append('g').attr('class','pan');
+  g.append('line').attr('class','string').style('stroke','var(--faint)');
+  g.append('circle').attr('class','ghost').style('fill','none').style('stroke','var(--faint)').style('stroke-dasharray','3 3');
+  g.append('circle').attr('class','ball');
+  g.append('circle').attr('class','inner').style('fill','var(--social)');
+  g.append('text').attr('class','big').attr('text-anchor','middle');
+  g.append('text').attr('class','hint').attr('text-anchor','middle');
+  return g;
+}
+const workPan=pan(-1), leisPan=pan(1);
+workPan.select('.ball').style('fill','var(--work)');
+leisPan.select('.ball').style('fill','var(--leisure)');
+workPan.select('.inner').remove();
+const scaleLegend=ssvg.append('g').attr('transform',`translate(14,${S.h-12})`);
+scaleLegend.append('circle').attr('r',5).attr('cx',5).attr('cy',-4).style('fill','var(--social)');
+scaleLegend.append('text').attr('x',14).attr('class','hint').text('socializing, inside leisure');
+scaleLegend.append('circle').attr('r',5).attr('cx',196).attr('cy',-4).style('fill','none').style('stroke','var(--faint)').style('stroke-dasharray','3 3');
+scaleLegend.append('text').attr('x',206).attr('class','hint').text('2003 for comparison');
+
+function drawScale(){
+  const g=group();
+  const [w,wy]=nearest(act("600013"),state.year), [l]=nearest(act("600023"),state.year), [s]=nearest(act("600024"),state.year);
+  const w0=val(act("600013"),2003), l0=val(act("600023"),2003);
+  const tilt = Math.max(-14, Math.min(14, (w - l)/12)); // heavier side drops
+  beamG.transition().duration(450).attr('transform',`rotate(${-tilt},${cx},${pivotY})`);
+  [[workPan,-1,w,w0,null,'Work'],[leisPan,1,l,l0,s,'Leisure']].forEach(([p,side,v,v0,inner,name])=>{
+    const th=-tilt*Math.PI/180, px=cx+side*(arm-6)*Math.cos(th), ey=pivotY+side*(arm-6)*Math.sin(th);
+    const r=rScale(v), r0=rScale(v0), cy=ey+108; // ball hangs from the beam end
+    const T=p.transition().duration(450);
+    T.select('.string').attr('x1',px).attr('x2',px).attr('y1',ey).attr('y2',cy-Math.max(r,r0));
+    T.select('.ghost').attr('cx',px).attr('cy',cy).attr('r',r0);
+    T.select('.ball').attr('cx',px).attr('cy',cy).attr('r',r);
+    if(inner!=null) T.select('.inner').attr('cx',px).attr('cy',cy+r-rScale(inner)).attr('r',rScale(inner));
+    T.select('.big').attr('x',px).attr('y',cy+Math.max(r,r0)+20).text(`${name} ${hm(v)}`);
+    T.select('.hint').attr('x',px).attr('y',cy+Math.max(r,r0)+36).text(inner!=null? `incl. ${Math.round(inner)} min socializing` : `2003: ${hm(v0)}`);
+    p.selectAll('circle').on('mousemove',e=>showTip(`<b>${name}</b>, ${g.name}<br>${wy}: ${hm(v)}<br>2003: ${hm(v0)}${inner!=null?`<br>Socializing: ${Math.round(inner)} min`:''}`,e)).on('mouseleave',hideTip);
+  });
+  document.getElementById('scalesub').textContent=`${g.name} · ${DAYS.find(d=>d[0]===state.day)[1].toLowerCase()} · ${wy}. Bigger ball = more hours; the heavier side drops.`;
+  document.getElementById('scalenote').textContent = state.year===2020? 'No estimates for 2020; showing 2019.' : '';
+}
+
+/* ---------- Alone vs others line ---------- */
+const A={w:560,h:300,m:{t:16,r:94,b:28,l:44}};
+const asvg=d3.select('#alone').append('svg').attr('viewBox',`0 0 ${A.w} ${A.h}`);
+const ax=d3.scaleLinear().domain([2010,2025]).range([A.m.l,A.w-A.m.r]);
+const ay=d3.scaleLinear().domain([0,600]).range([A.h-A.m.b,A.m.t]);
+asvg.append('g').selectAll('line').data(ay.ticks(5)).join('line').attr('class','gridline').attr('x1',A.m.l).attr('x2',A.w-A.m.r).attr('y1',ay).attr('y2',ay);
+asvg.append('g').attr('class','axis').attr('transform',`translate(${A.m.l},0)`).call(d3.axisLeft(ay).tickValues([0,120,240,360,480,600]).tickFormat(d=>d/60+'h').tickSize(0).tickPadding(8)).call(g=>g.select('.domain').remove());
+asvg.append('g').attr('class','axis').attr('transform',`translate(0,${A.h-A.m.b})`).call(d3.axisBottom(ax).ticks(8).tickFormat(d3.format('d')).tickSizeOuter(0));
+const aline=d3.line().defined(d=>d[1]!=null).x(d=>ax(d[0])).y(d=>ay(d[1]));
+const marker=asvg.append('line').attr('y1',A.m.t).attr('y2',A.h-A.m.b).style('stroke','var(--faint)').style('stroke-dasharray','3 3');
+const lines=asvg.append('g');
+function whoSeries(code){
+  const g=group(); let age=g.who, note='';
+  if(!age){ age='000'; note=`Companion data isn't published for ${g.name.toLowerCase()}; showing everyone.`; }
+  let day=state.day;
+  if(day!=='00' && age!=='000'){ day='00'; note += (note?' ':'')+`Weekday/weekend splits aren't published by age; showing all days.`; }
+  if(g.whoName && !note.includes('showing everyone')) note=(note?note+' ':'')+`Closest published age band: ${g.whoName}.`;
+  const key=`${code}|${age}|${day}`;
+  return {arr: DATA.who[key], note};
+}
+function drawAlone(){
+  const al=whoSeries('01'), ot=whoSeries('02');
+  const sets=[{k:'alone',name:'Alone',c:'var(--alone)',arr:al.arr},{k:'others',name:'With others',c:'var(--others)',arr:ot.arr}];
+  const pts=s=>YEARS.map((y,i)=>[y,s.arr[i]]).filter(d=>d[0]>=2010);
+  const g=lines.selectAll('g').data(sets,d=>d.k).join(e=>{const g=e.append('g');g.append('path').style('fill','none').style('stroke-width',2.6);g.append('text').attr('class','big');g.append('circle').attr('r',5).style('stroke','var(--surface)').style('stroke-width',2);return g;});
+  g.select('path').style('stroke',d=>d.c).transition().duration(400).attr('d',d=>aline(pts(d)));
+  g.select('text').style('fill',d=>d.c).attr('x',A.w-A.m.r+8).transition().duration(400).attr('y',d=>ay(d.arr.at(-1))+5).text(d=>d.name);
+  const yy=Math.max(2010,state.year);
+  marker.transition().duration(200).attr('x1',ax(yy)).attr('x2',ax(yy));
+  g.select('circle').style('fill',d=>d.c).transition().duration(200).attr('cx',ax(yy)).attr('cy',d=>{const [v]=nearest(d.arr,yy);return ay(v);});
+  const [va,ya]=nearest(al.arr,yy), [vo]=nearest(ot.arr,yy);
+  document.getElementById('alonesub').textContent=`${ya}: ${hm(va)} alone, ${hm(vo)} with others. ${state.year<2010?'Companion data starts in 2010.':''}`;
+  document.getElementById('alonenote').textContent=al.note;
+}
+
+/* ---------- With whom bars ---------- */
+const W={w:1120,h:230,m:{t:8,r:70,b:24,l:170}};
+const wsvg=d3.select('#with').append('svg').attr('viewBox',`0 0 ${W.w} ${W.h}`);
+const wx=d3.scaleLinear().domain([0,360]).range([W.m.l,W.w-W.m.r]);
+const wy=d3.scaleBand().domain(WITH.map(d=>d[0])).range([W.m.t,W.h-W.m.b]).padding(.3);
+wsvg.append('g').attr('class','axis').attr('transform',`translate(0,${W.h-W.m.b})`).call(d3.axisBottom(wx).tickValues([0,60,120,180,240,300,360]).tickFormat(d=>d/60+'h').tickSizeOuter(0));
+function drawWith(){
+  const yy=Math.max(2010,state.year);
+  const rows=WITH.map(([c,n])=>{const arr=DATA.who[`${c}|000|00`]; const [v,y]=nearest(arr,yy); return {c,n,v,v0:val(arr,2010),y};});
+  const g=wsvg.selectAll('.whorow').data(rows,d=>d.c).join(e=>{const g=e.append('g').attr('class','whorow');
+    g.append('rect').attr('class','ghostbar').style('fill','none').style('stroke','var(--faint)').style('stroke-dasharray','3 3');
+    g.append('rect').attr('class','whobar').attr('rx',2);
+    g.append('text').attr('class','lab').attr('x',W.m.l-10).attr('text-anchor','end').style('font-family','var(--body)').style('font-size','13px').style('fill','var(--ink)');
+    g.append('text').attr('class','v');return g;});
+  g.attr('transform',d=>`translate(0,${wy(d.c)})`)
+   .on('mousemove',(e,d)=>showTip(`<b>${d.n}</b><br>${d.y}: ${hm(d.v)}<br>2010: ${hm(d.v0)}`,e)).on('mouseleave',hideTip);
+  g.select('.ghostbar').attr('x',W.m.l).attr('height',wy.bandwidth()).attr('width',d=>wx(d.v0)-W.m.l);
+  g.select('.whobar').attr('x',W.m.l).attr('height',wy.bandwidth()).style('fill',d=>d.c==='43'?'var(--social)':'var(--others)').transition().duration(400).attr('width',d=>wx(d.v)-W.m.l);
+  g.select('.lab').attr('y',wy.bandwidth()/2+5).text(d=>d.n);
+  g.select('.v').attr('y',wy.bandwidth()/2+4).transition().duration(400).attr('x',d=>Math.max(wx(d.v),wx(d.v0))+6).text(d=>{const ch=d.v-d.v0;return `${hm(d.v)}  (${ch>=0?'+':'−'}${Math.abs(Math.round(ch))} min vs 2010)`;});
+  document.getElementById('withsub').textContent=`Everyone, all days, ${rows[0].y}. Dashed outline = 2010.`;
+  const g0=group();
+  document.getElementById('withnote').textContent = (g0.id!=='all'||state.day!=='00') ? `This breakdown is only published for everyone on all days, so it ignores the ${g0.id!=='all'?'group':''}${g0.id!=='all'&&state.day!=='00'?' and ':''}${state.day!=='00'?'day':''} filter.` : '';
+}
+
+function render(){
+  d3.select('#f-group').selectAll('button').attr('aria-pressed',d=>String(d.id===state.g));
+  d3.select('#f-day').selectAll('button').attr('aria-pressed',d=>String(d[0]===state.day));
+  document.getElementById('yearout').textContent=state.year;
+  drawScale(); drawAlone(); drawWith();
+}
+render();
+})();
+</script>
+
+</body>
+</html>
