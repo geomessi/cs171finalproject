@@ -3,34 +3,124 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Where Our Time Goes</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono&display=swap">
-<style>
-:root{--bg:#F3F5F8;--surface:#FFFFFF;--ink:#18202E;--muted:#5B6576;--line:#DDE2EA;--accent:#3B4BB0;
-  --display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;--body:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
-@media (prefers-color-scheme:dark){:root{--bg:#10131A;--surface:#171B24;--ink:#E6E9EF;--muted:#9BA4B5;--line:#2A303C;--accent:#8F9CFF;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
-main{max-width:760px;margin:0 auto;padding:56px 20px;display:grid;gap:22px}
-.eyebrow{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-h1{font:700 clamp(32px,6vw,52px)/1.02 var(--display);margin:0;text-wrap:balance}
-p{margin:0;color:var(--muted);max-width:62ch}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-a.card{display:grid;gap:4px;padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none}
-a.card:hover,a.card:focus-visible{border-color:var(--accent);outline:none}
-.card b{font:700 20px var(--display)} .card span{font-size:14px;color:var(--muted)}
-.card i{font:normal 12px var(--mono);color:var(--accent)}
-</style>
+<title>Where the Hours Went</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<!-- Shared styles (team-owned: change by pull request) -->
+<link rel="stylesheet" href="css/base.css">
+<!-- One stylesheet per owner -->
+<link rel="stylesheet" href="css/opening.css">   <!-- Package 1 -->
+<link rel="stylesheet" href="css/moved.css">     <!-- Package 2 -->
+<link rel="stylesheet" href="css/record.css">    <!-- Package 3 -->
 </head>
 <body>
-<main>
-  <div class="eyebrow">CS171 · Fall 2026 · Georgia Messinger, Chloe Nelson-Arzuaga, Mariah Crawford</div>
-  <h1>Where our time goes</h1>
-  <p>How Americans, and young adults especially, reallocated their days since 2003, using the American Time Use Survey.</p>
-  <div class="cards">
-    <a class="card" href="prototype-a/"><i>Prototype A · brushing &amp; linking</i><b>Where the hours went</b><span>Pick an age group and a span of years; see what moved as socializing shrank.</span></a>
-    <a class="card" href="prototype-b/"><i>Prototype B · shared filters</i><b>Alone or together</b><span>One filter bar drives a work-vs-leisure scale, time alone, and who people spend time with.</span></a>
-  </div>
+
+<header class="topbar">
+  <a class="brand" href="#top">Where the Hours Went</a>
+  <nav aria-label="Chapters">
+    <a href="#guess">Guess</a><a href="#drop">The drop</a><a href="#weekdays">Weekdays</a>
+    <a href="#moved">Where it went</a><a href="#alone">Alone</a><a href="#record">The record</a>
+  </nav>
+  <label class="you">I'm
+    <select id="you-age" aria-label="Your age group">
+      <option value="103" selected>15–24</option>
+      <option value="031">25–34</option>
+      <option value="038">35–44</option>
+      <option value="042">45–54</option>
+      <option value="049">55–64</option>
+      <option value="065">65+</option>
+    </select>
+  </label>
+</header>
+
+<main id="top">
+
+  <!-- ===== HERO · Package 3 (record.js draws the disc here too) ===== -->
+  <section class="hero" id="hero" data-chapter="hero">
+    <div class="hero-text">
+      <p class="eyebrow">American Time Use Survey · 2003–2025</p>
+      <h1>Same 24 hours.<br>A different story.</h1>
+      <p class="dek">Young adults aren't just socializing less. They're spending their time differently. Since 2003–04, daily socializing among 15–24-year-olds has fallen by 23 minutes, about 39%.</p>
+      <p class="scroll-cue">Scroll to play the record ↓</p>
+    </div>
+    <div class="viz" id="hero-viz" data-owner="Package 3 · record.js" data-placeholder="The record: one groove per year, 2003 on the outside"></div>
+  </section>
+
+  <!-- ===== CH 1 · Guess, then reveal · Package 1 ===== -->
+  <section class="chapter" id="guess" data-chapter="guess">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Chapter 1</p><h2>First, a guess</h2><p>How many minutes a day do you think <span data-you-label>15–24-year-olds</span> spend socializing with other people?</p></div>
+      <div class="step" data-step="1"><p>Drag the slider, then reveal the real number.</p></div>
+    </div>
+    <div class="viz" id="guess-viz" data-owner="Package 1 · ch-guess.js" data-placeholder="Slider guess → reveal the real minutes (functional)"></div>
+  </section>
+
+  <!-- ===== CH 2 · The drop · Package 1 · FUNCTIONAL D3 #1 ===== -->
+  <section class="chapter" id="drop" data-chapter="drop">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Chapter 2</p><h2>The drop</h2><p>In 2003–04, 15–24-year-olds spent 59 minutes a day socializing.</p></div>
+      <div class="step" data-step="1"><p>By 2024–25, it was 36 minutes. That's 23 fewer minutes, about 39%.</p></div>
+      <div class="step" data-step="2"><p>Every age group declined, but young people fell furthest.</p></div>
+      <div class="step" data-step="3"><p>Find your own line.</p></div>
+    </div>
+    <div class="viz" id="drop-viz" data-owner="Package 1 · ch-drop.js" data-placeholder="Socializing by age, 2003–2025, stepped with scroll (functional D3)"></div>
+  </section>
+
+  <!-- ===== CH 3 · It's the weekdays · Package 1 · DRAFT ===== -->
+  <section class="chapter" id="weekdays" data-chapter="weekdays">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Chapter 3</p><h2>The weekdays emptied out</h2><p>For 15–24-year-olds, weekday socializing roughly halved, from 52 to 27 minutes. Weekends fell less, from 80 to 53.</p></div>
+    </div>
+    <div class="viz" id="weekdays-viz" data-owner="Package 1 · ch-weekdays.js" data-placeholder="Weekday vs. weekend, then and now (draft)"></div>
+  </section>
+
+  <!-- ===== CH 4 · Where the time went · Package 2 · FUNCTIONAL D3 #2 ===== -->
+  <section class="chapter" id="moved" data-chapter="moved">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Chapter 4</p><h2>Where the time went</h2><p>A day always adds up to 24 hours. When one activity shrinks, others grow.</p></div>
+      <div class="step" data-step="1"><p>It wasn't more work: working fell 18 minutes a day.</p></div>
+      <div class="step" data-step="2"><p>It wasn't more TV either: watching TV fell 34 minutes.</p></div>
+      <div class="step" data-step="3"><p>Sleep and personal care grew 39 minutes, and other leisure grew 29. These changes happened together; the data can't say one caused another.</p></div>
+    </div>
+    <div class="viz" id="moved-viz" data-owner="Package 2 · ch-moved.js" data-placeholder="Diverging change chart, animated 2003→2025 (functional D3)"></div>
+  </section>
+
+  <!-- ===== CH 5 · Alone or together · Package 2 · DRAFT ===== -->
+  <section class="chapter" id="alone" data-chapter="alone">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Chapter 5</p><h2>Alone or together</h2><p>Since 2010, 20–24-year-olds went from about 4h15m a day alone to about 5h30m.</p></div>
+      <div class="step" data-step="1"><p>Time with other people fell by roughly 2h20m.</p></div>
+    </div>
+    <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025 (draft)"></div>
+  </section>
+
+  <!-- ===== CH 6 · The record (novel view) · Package 3 ===== -->
+  <section class="chapter wide" id="record" data-chapter="record">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Chapter 6</p><h2>Play it back</h2><p>Each groove is one year of an average day. The bright arc is socializing.</p></div>
+      <div class="step" data-step="1"><p>As the needle moves toward 2025, the arc narrows.</p></div>
+      <div class="step" data-step="2"><p>When technology reshapes the day, connection is what gets squeezed. If AI changes how much time we spend working, what will fill it?</p></div>
+    </div>
+    <div class="viz" id="record-viz" data-owner="Package 3 · record.js" data-placeholder="The record: novel view (functional or draft)"></div>
+  </section>
+
 </main>
+
+<footer class="site-foot">
+  <p>Data: <a href="https://www.bls.gov/tus/" target="_blank" rel="noopener">BLS American Time Use Survey</a>, published time series, civilian population ages 15+. No estimates were published for 2020. Changes show what moved together, not what caused what.</p>
+  <p>Georgia Messinger · Chloe Nelson-Arzuaga · Mariah Crawford · CS171 Fall 2026 · <a href="prototypes/">Earlier prototypes</a></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<!-- Shared runtime: loads data, tracks scroll steps and the "I'm…" age -->
+<script src="js/main.js"></script>
+<!-- One script per chapter. Each registers itself with story.chapter(...) -->
+<script src="js/ch-guess.js"></script>     <!-- Package 1 -->
+<script src="js/ch-drop.js"></script>      <!-- Package 1 -->
+<script src="js/ch-weekdays.js"></script>  <!-- Package 1 -->
+<script src="js/ch-moved.js"></script>     <!-- Package 2 -->
+<script src="js/ch-alone.js"></script>     <!-- Package 2 -->
+<script src="js/record.js"></script>       <!-- Package 3 -->
+<script>story.start();</script>
 </body>
 </html>
