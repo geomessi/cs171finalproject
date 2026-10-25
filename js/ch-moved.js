@@ -1,6 +1,6 @@
 /*
  * Chapter 4 · Where the time went (FUNCTIONAL D3 #2)
- * Owner: Package 2. Only this package edits this file.
+ * Owner: Chloe (Package 2). Only this package edits this file.
  *
  * Diverging bar chart: change in minutes/day per activity vs. 2003–04. Reuse prototype-a/index.html (the "What moved" chart).
  * Steps:

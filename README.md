@@ -17,6 +17,7 @@ Cloudflare Pages builds from this repo automatically. A push to `main` updates t
 | `index.html` | The story page (Prototype V1 in progress). See `WORKPLAN.md` for who builds what |
 | `js/`, `css/` | Shared runtime (`main.js`, `base.css`) plus one script and stylesheet per chapter |
 | `prototypes/` | Landing page for the Milestone 5 dashboards |
+| `STYLEGUIDE.md`, `styleguide/` | Colors, type, chart and motion rules; `/styleguide/` shows them live |
 | `prototype-a/` | Where the hours went: brush years on the socializing-by-age chart; a change chart and 24-hour day bars update together |
 | `prototype-b/` | Alone or together: one filter bar (group, day type, year) drives a balance scale, a time-alone trend and a who-with breakdown |
 | `data/atus.json` | Shared data, minutes per day, 2003–2025 |

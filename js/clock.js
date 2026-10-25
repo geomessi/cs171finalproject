@@ -1,6 +1,6 @@
 /*
  * Hero + Chapter 6 · The melting clock (NOVEL VIEW)
- * Owner: Package 3. Only this package edits this file.
+ * Owner: Georgia (Package 3). Only this package edits this file.
  *
  * One average day as a 24-hour clock face that melts as the years pass.
  * Register BOTH 'hero' (the 2003 clock, still) and 'clock' (the scroll-driven version).

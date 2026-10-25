@@ -1,6 +1,6 @@
 /*
  * Chapter 2 · The drop (FUNCTIONAL D3 #1)
- * Owner: Package 1. Only this package edits this file.
+ * Owner: Mariah (Package 1). Only this package edits this file.
  *
  * Socializing minutes per day, 2003–2025, one line per age group. Reuse prototype-a/index.html (the trend chart).
  * Steps (see the text in index.html):

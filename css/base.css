@@ -1,37 +1,50 @@
 /*
  * Shared styles. Team-owned: change by pull request only.
- * Look: dark stage for the story, inspired by the mood board.
- * To try the light editorial look instead, swap the :root values below; nothing else should need to change.
+ * Every color and font here is defined in STYLEGUIDE.md. Change both together.
  */
 :root {
-  --bg: #0E0F14;          /* the stage */
-  --surface: #171922;     /* cards, chart backgrounds */
-  --ink: #ECEAF2;         /* main text */
-  --muted: #9A98A8;       /* secondary text, axis labels */
-  --faint: #4A4958;       /* gridlines, inactive lines */
-  --line: #2A2B36;
-  --accent: #F2B8D2;      /* highlight: "you", selected group */
-  --pearl-a: #B9E6E0;     /* iridescent sheen, use sparingly */
-  --pearl-b: #C9B8F2;
+  /* Stage */
+  --bg: #0B0C12;          /* Night: the page */
+  --surface: #15161F;     /* Dusk: cards, tooltips, chart wells */
+  --line: #272836;        /* hairlines, dividers */
+  --faint: #474657;       /* gridlines, inactive marks */
+  --muted: #A19DB0;       /* secondary text, axis labels */
+  --ink: #EEEBF5;         /* Pearl: main text */
 
-  /* Activity colors. Socializing is the one bright color on purpose. */
-  --c-social: #FF7AA8;
-  --c-personal: #3D5378;
-  --c-work: #8C7A45;
-  --c-edu: #6E6440;
-  --c-home: #5C5249;
-  --c-care: #54493F;
-  --c-shop: #4E4842;
-  --c-eat: #47684A;
-  --c-tv: #5B4E95;
-  --c-leis: #7A6CC4;
-  --c-other: #3A3D45;
-  --c-less: #FF7AA8;      /* diverging: lost time */
-  --c-more: #7FD1C4;      /* diverging: gained time */
+  /* Accents */
+  --sand: #D8C2A0;        /* the reader: "you", your guess, your age line */
+  --accent: var(--sand);
+  --pearl-a: #BFE8E2;     /* iridescent sheen, three stops, used only on socializing and the clock rim */
+  --pearl-b: #CDBEF5;
+  --pearl-c: #F6C8DC;
+  --sheen: linear-gradient(115deg, var(--pearl-a), var(--pearl-b) 50%, var(--pearl-c));
 
+  /* Activities. Socializing is the only luminous color; everything else stays at dusk. */
+  --c-social: #FF8DB8;
+  --c-personal: #34466A;  /* sleep & personal care: the night wedge */
+  --c-work: #7C6B45;
+  --c-edu: #66603F;
+  --c-home: #594F47;
+  --c-care: #4F463F;
+  --c-shop: #4A453F;
+  --c-eat: #40604A;
+  --c-tv: #4F4588;
+  --c-leis: #6F63B8;
+  --c-other: #343741;
+  --c-less: var(--c-social);  /* diverging: time lost */
+  --c-more: #8FD8CB;          /* diverging: time gained */
+
+  /* Type */
   --display: "Fraunces", Georgia, "Times New Roman", serif;
   --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Motion */
+  --slow: 1100ms;         /* the melt, chart builds */
+  --med: 450ms;           /* step changes, highlights */
+  --fast: 150ms;          /* hover */
+  --ease-melt: cubic-bezier(.55, 0, .25, 1);
+
   color-scheme: dark;
 }
 
@@ -39,7 +52,7 @@
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
 a { color: var(--accent); }
-h1, h2 { font-family: var(--display); font-weight: 600; line-height: 1.05; text-wrap: balance; margin: 0; }
+h1, h2 { font-family: var(--display); font-weight: 600; font-variation-settings: "SOFT" 100; line-height: 1.05; text-wrap: balance; margin: 0; }
 h2 { font-size: clamp(26px, 3.4vw, 38px); }
 
 /* Top bar */
@@ -62,7 +75,7 @@ h2 { font-size: clamp(26px, 3.4vw, 38px); }
 /* Scrollytelling chapters: text steps scroll on the left, the chart sticks on the right */
 .chapter { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 .chapter .steps { padding: 30vh 0; display: grid; gap: 60vh; }
-.step { opacity: .35; transition: opacity .3s; max-width: 42ch; }
+.step { opacity: .35; transition: opacity var(--med) var(--ease-melt); max-width: 42ch; }
 .step.is-active { opacity: 1; }
 .step p { font-size: 18px; margin: 10px 0 0; }
 .chapter .viz { position: sticky; top: 15vh; height: 70vh; align-self: start; }

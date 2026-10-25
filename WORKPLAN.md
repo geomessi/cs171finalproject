@@ -8,11 +8,11 @@ The page skeleton is already in place: `index.html` has every chapter with its t
 
 | Package | Owner | Chapters | Files you own | Covers requirement |
 | --- | --- | --- | --- | --- |
-| 1. The opening | _____ | 1 Guess · 2 The drop · 3 Weekdays | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
-| 2. Where the time went | _____ | 4 Where it went · 5 Alone or together | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
-| 3. The melting clock | _____ | Hero · 6 The clock | `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
+| 1. The opening | Mariah | 1 Guess · 2 The drop · 3 Weekdays | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
+| 2. Where the time went | Chloe | 4 Where it went · 5 Alone or together | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
+| 3. The melting clock | Georgia | Hero · 6 The clock | `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
 
-## Package 1 · The opening
+## Package 1 · The opening (Mariah)
 
 1. **Guess, then reveal** (`ch-guess.js`): a slider where readers guess daily socializing minutes for their age group, then a reveal of the real 2024–25 number.
 2. **The drop, FUNCTIONAL D3 #1** (`ch-drop.js`): socializing by age, 2003–2025, stepped with scroll. 15–24 draws first (59 → 36 min), other ages fade in, then the reader's own group is highlighted. Start from the trend chart in `prototype-a/index.html`.
@@ -20,7 +20,7 @@ The page skeleton is already in place: `index.html` has every chapter with its t
 
 Done when the guess works, the trend chart animates through all four steps, and the weekday design is in the process book.
 
-## Package 2 · Where the time went
+## Package 2 · Where the time went (Chloe)
 
 1. **Data pipeline (do this first, it's short):** run `scripts/fetch_atus.py` and confirm it reproduces `data/atus.json`. Then add ages 20–24 (`020`) to the activity series and the games/computer series (`600058`) where BLS publishes them, so the chapter 4 and 5 numbers have a source. Commit the script change and the new JSON together.
 2. **Where the time went, FUNCTIONAL D3 #2** (`ch-moved.js`): diverging bars of change since 2003–04, stepped with scroll (work −18, TV −34, sleep +39, other leisure +29), plus a Play control that animates the end year from 2005 to 2025. Start from the "What moved" chart in `prototype-a/index.html`.
@@ -28,7 +28,7 @@ Done when the guess works, the trend chart animates through all four steps, and 
 
 Done when the pipeline reruns cleanly, the diverging chart steps and plays, and the alone design is in the process book.
 
-## Package 3 · The melting clock (novel view)
+## Package 3 · The melting clock, novel view (Georgia)
 
 1. **The melting clock** (`clock.js`): one average day as a 24-hour clock face, with exact wedges per activity and socializing as the one bright wedge. As scroll moves the year from 2003 to 2025, the socializing wedge shrinks (59 → 36 min for 15–24), its lost minutes drip off the rim into the wedges that grew (sleep +39, other leisure +29), and the rim sags under it. A still 2003 clock sits in the hero; the scroll-driven version is chapter 6. Hover a wedge for its minutes. For V1 this can be functional or a strong draft; functional is better.
 2. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → melting clock, and how the melt encodes data).

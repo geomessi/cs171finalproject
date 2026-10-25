@@ -1,6 +1,6 @@
 /*
  * Chapter 3 · It's the weekdays (DRAFT)
- * Owner: Package 1. Only this package edits this file.
+ * Owner: Mariah (Package 1). Only this package edits this file.
  *
  * Draft only for V1: design it in the process book. Implement if time allows.
  * Idea: a dumbbell chart, weekdays vs. weekends, 2003–04 vs. 2024–25, per age group.

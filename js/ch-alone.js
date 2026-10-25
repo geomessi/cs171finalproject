@@ -1,6 +1,6 @@
 /*
  * Chapter 5 · Alone or together (DRAFT)
- * Owner: Package 2. Only this package edits this file.
+ * Owner: Chloe (Package 2). Only this package edits this file.
  *
  * Draft for V1 (design in the process book); implement if time allows. Prototype B has a working version to adapt.
  * Data: story.data.who['01|020|00'] = alone, ages 20–24, all days; '02|020|00' = with others.
