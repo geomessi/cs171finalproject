@@ -11,7 +11,7 @@
 <!-- One stylesheet per owner -->
 <link rel="stylesheet" href="css/opening.css">   <!-- Package 1 -->
 <link rel="stylesheet" href="css/moved.css">     <!-- Package 2 -->
-<link rel="stylesheet" href="css/record.css">    <!-- Package 3 -->
+<link rel="stylesheet" href="css/clock.css">     <!-- Package 3 -->
 </head>
 <body>
 
@@ -19,7 +19,7 @@
   <a class="brand" href="#top">Where the Hours Went</a>
   <nav aria-label="Chapters">
     <a href="#guess">Guess</a><a href="#drop">The drop</a><a href="#weekdays">Weekdays</a>
-    <a href="#moved">Where it went</a><a href="#alone">Alone</a><a href="#record">The record</a>
+    <a href="#moved">Where it went</a><a href="#alone">Alone</a><a href="#clock">The clock</a>
   </nav>
   <label class="you">I'm
     <select id="you-age" aria-label="Your age group">
@@ -35,15 +35,15 @@
 
 <main id="top">
 
-  <!-- ===== HERO · Package 3 (record.js draws the disc here too) ===== -->
+  <!-- ===== HERO · Package 3 (clock.js draws the clock here too) ===== -->
   <section class="hero" id="hero" data-chapter="hero">
     <div class="hero-text">
       <p class="eyebrow">American Time Use Survey · 2003–2025</p>
       <h1>Same 24 hours.<br>A different story.</h1>
       <p class="dek">Young adults aren't just socializing less. They're spending their time differently. Since 2003–04, daily socializing among 15–24-year-olds has fallen by 23 minutes, about 39%.</p>
-      <p class="scroll-cue">Scroll to play the record ↓</p>
+      <p class="scroll-cue">Scroll to watch the day melt ↓</p>
     </div>
-    <div class="viz" id="hero-viz" data-owner="Package 3 · record.js" data-placeholder="The record: one groove per year, 2003 on the outside"></div>
+    <div class="viz" id="hero-viz" data-owner="Package 3 · clock.js" data-placeholder="The melting clock: one average day, 2003"></div>
   </section>
 
   <!-- ===== CH 1 · Guess, then reveal · Package 1 ===== -->
@@ -94,14 +94,14 @@
     <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025 (draft)"></div>
   </section>
 
-  <!-- ===== CH 6 · The record (novel view) · Package 3 ===== -->
-  <section class="chapter wide" id="record" data-chapter="record">
+  <!-- ===== CH 6 · The melting clock (novel view) · Package 3 ===== -->
+  <section class="chapter wide" id="clock" data-chapter="clock">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">Chapter 6</p><h2>Play it back</h2><p>Each groove is one year of an average day. The bright arc is socializing.</p></div>
-      <div class="step" data-step="1"><p>As the needle moves toward 2025, the arc narrows.</p></div>
+      <div class="step" data-step="0"><p class="kicker">Chapter 6</p><h2>The day, melting</h2><p>This clock is one average day for <span data-you-label>15–24-year-olds</span> in 2003. Each wedge is an activity; the bright one is socializing.</p></div>
+      <div class="step" data-step="1"><p>Watch it run to 2025. The socializing wedge shrinks, and its lost minutes drip into the hours that grew.</p></div>
       <div class="step" data-step="2"><p>When technology reshapes the day, connection is what gets squeezed. If AI changes how much time we spend working, what will fill it?</p></div>
     </div>
-    <div class="viz" id="record-viz" data-owner="Package 3 · record.js" data-placeholder="The record: novel view (functional or draft)"></div>
+    <div class="viz" id="clock-viz" data-owner="Package 3 · clock.js" data-placeholder="The melting clock: novel view (functional or draft)"></div>
   </section>
 
 </main>
@@ -120,7 +120,7 @@
 <script src="js/ch-weekdays.js"></script>  <!-- Package 1 -->
 <script src="js/ch-moved.js"></script>     <!-- Package 2 -->
 <script src="js/ch-alone.js"></script>     <!-- Package 2 -->
-<script src="js/record.js"></script>       <!-- Package 3 -->
+<script src="js/clock.js"></script>        <!-- Package 3 -->
 <script>story.start();</script>
 </body>
 </html>

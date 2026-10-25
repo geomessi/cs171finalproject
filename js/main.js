@@ -81,7 +81,7 @@
         const el = section.querySelector('.viz');
         if (hooks?.init) { el.classList.add('live'); hooks.init(el, story.data); }
       });
-      // The hero shares the record script.
+      // The hero shares the clock script.
       if (chapters.hero?.init) { const el = document.getElementById('hero-viz'); el.classList.add('live'); chapters.hero.init(el, story.data); }
       watchSteps();
       setAge(story.you);

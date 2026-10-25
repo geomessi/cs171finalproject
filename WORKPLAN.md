@@ -10,7 +10,7 @@ The page skeleton is already in place: `index.html` has every chapter with its t
 | --- | --- | --- | --- | --- |
 | 1. The opening | _____ | 1 Guess · 2 The drop · 3 Weekdays | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
 | 2. Where the time went | _____ | 4 Where it went · 5 Alone or together | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
-| 3. The record | _____ | Hero · 6 The record | `js/record.js`, `css/record.css` | Novel view, process book assembly |
+| 3. The melting clock | _____ | Hero · 6 The clock | `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
 
 ## Package 1 · The opening
 
@@ -28,13 +28,13 @@ Done when the guess works, the trend chart animates through all four steps, and 
 
 Done when the pipeline reruns cleanly, the diverging chart steps and plays, and the alone design is in the process book.
 
-## Package 3 · The record (novel view)
+## Package 3 · The melting clock (novel view)
 
-1. **The record** (`record.js`): the day as a vinyl record. One groove per year (2003 outside, 2025 inside), angle = minutes of the day, socializing as the one bright arc. A static version in the hero, and a scroll-driven version in chapter 6 where the needle moves inward and the arc narrows. Hover a groove for that year's numbers. For V1 this can be functional or a strong draft; functional is better.
-2. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view design rationale (mood board → record).
+1. **The melting clock** (`clock.js`): one average day as a 24-hour clock face, with exact wedges per activity and socializing as the one bright wedge. As scroll moves the year from 2003 to 2025, the socializing wedge shrinks (59 → 36 min for 15–24), its lost minutes drip off the rim into the wedges that grew (sleep +39, other leisure +29), and the rim sags under it. A still 2003 clock sits in the hero; the scroll-driven version is chapter 6. Hover a wedge for its minutes. For V1 this can be functional or a strong draft; functional is better.
+2. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → melting clock, and how the melt encodes data).
 3. **Final pass:** check the whole page at phone width and fix anything broken in shared files with the team's OK.
 
-Done when the record renders from real data in the hero, chapter 6 tells the story on scroll, and the process book is complete.
+Done when the clock renders from real data in the hero, chapter 6 melts on scroll, and the process book is complete.
 
 ## Rules that keep us out of each other's way
 
