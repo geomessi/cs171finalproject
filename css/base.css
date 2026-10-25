@@ -1,0 +1,104 @@
+/*
+ * Shared styles. Team-owned: change by pull request only.
+ * Every color and font here is defined in STYLEGUIDE.md. Change both together.
+ */
+:root {
+  /* Stage */
+  --bg: #0B0C12;          /* Night: the page */
+  --surface: #15161F;     /* Dusk: cards, tooltips, chart wells */
+  --line: #272836;        /* hairlines, dividers */
+  --faint: #474657;       /* gridlines, inactive marks */
+  --muted: #A19DB0;       /* secondary text, axis labels */
+  --ink: #EEEBF5;         /* Pearl: main text */
+
+  /* Accents */
+  --sand: #D8C2A0;        /* the reader: "you", your guess, your age line */
+  --accent: var(--sand);
+  --pearl-a: #BFE8E2;     /* iridescent sheen, three stops, used only on socializing and the clock rim */
+  --pearl-b: #CDBEF5;
+  --pearl-c: #F6C8DC;
+  --sheen: linear-gradient(115deg, var(--pearl-a), var(--pearl-b) 50%, var(--pearl-c));
+
+  /* Activities. Socializing is the only luminous color; everything else stays at dusk. */
+  --c-social: #FF8DB8;
+  --c-personal: #34466A;  /* sleep & personal care: the night wedge */
+  --c-work: #7C6B45;
+  --c-edu: #66603F;
+  --c-home: #594F47;
+  --c-care: #4F463F;
+  --c-shop: #4A453F;
+  --c-eat: #40604A;
+  --c-tv: #4F4588;
+  --c-leis: #6F63B8;
+  --c-other: #343741;
+  --c-less: var(--c-social);  /* diverging: time lost */
+  --c-more: #8FD8CB;          /* diverging: time gained */
+
+  /* Type */
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Motion */
+  --slow: 1100ms;         /* the melt, chart builds */
+  --med: 450ms;           /* step changes, highlights */
+  --fast: 150ms;          /* hover */
+  --ease-melt: cubic-bezier(.55, 0, .25, 1);
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
+a { color: var(--accent); }
+h1, h2 { font-family: var(--display); font-weight: 600; font-variation-settings: "SOFT" 100; line-height: 1.05; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(26px, 3.4vw, 38px); }
+
+/* Top bar */
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px;
+  padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.brand { font-family: var(--display); font-size: 18px; color: var(--ink); text-decoration: none; }
+.topbar nav { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; }
+.topbar nav a { color: var(--muted); text-decoration: none; }
+.topbar nav a:hover { color: var(--ink); }
+.you { margin-left: auto; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.you select { font: 500 13px var(--body); background: var(--surface); color: var(--ink); border: 1px solid var(--accent); border-radius: 999px; padding: 3px 10px; }
+
+/* Hero */
+.hero { min-height: 88vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 24px; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+.hero h1 { font-size: clamp(40px, 6vw, 76px); }
+.eyebrow, .kicker { font: 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.dek { color: var(--muted); max-width: 46ch; font-size: 18px; }
+.scroll-cue { font: 13px var(--mono); color: var(--accent); }
+
+/* Scrollytelling chapters: text steps scroll on the left, the chart sticks on the right */
+.chapter { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.chapter .steps { padding: 30vh 0; display: grid; gap: 60vh; }
+.step { opacity: .35; transition: opacity var(--med) var(--ease-melt); max-width: 42ch; }
+.step.is-active { opacity: 1; }
+.step p { font-size: 18px; margin: 10px 0 0; }
+.chapter .viz { position: sticky; top: 15vh; height: 70vh; align-self: start; }
+
+/* Placeholder box, shown until a chapter registers with story.chapter() */
+.viz:not(.live) { display: grid; place-items: center; text-align: center; border: 1.5px dashed var(--faint); border-radius: 12px; color: var(--muted); padding: 20px; }
+.viz:not(.live)::before { content: attr(data-placeholder); font-size: 15px; max-width: 32ch; }
+.viz:not(.live)::after { content: attr(data-owner); display: block; font: 11px var(--mono); color: var(--faint); margin-top: 8px; position: absolute; bottom: 14px; }
+.hero .viz { position: relative; aspect-ratio: 1; height: auto; }
+
+/* Shared chart text */
+.viz svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.viz svg text { fill: var(--muted); font: 11px var(--mono); }
+.axis path, .axis line { stroke: var(--faint); }
+
+.site-foot { max-width: 1200px; margin: 0 auto; padding: 60px 20px 40px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+
+@media (max-width: 820px) {
+  .hero, .chapter { grid-template-columns: 1fr; }
+  .chapter .viz { top: 56px; height: 55vh; grid-row: 1; z-index: 1; background: var(--bg); }
+  .chapter .steps { padding: 10vh 0 40vh; gap: 50vh; position: relative; z-index: 2; }
+  .step { background: color-mix(in srgb, var(--surface) 92%, transparent); padding: 14px 16px; border-radius: 10px; }
+  .topbar nav { display: none; }   /* keep the bar one row so it doesn't cover the charts */
+  .chapter .viz { top: 52px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }

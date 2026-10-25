@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style Guide · Where the Hours Went</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/base.css">
+<style>
+/* Live companion to STYLEGUIDE.md. Every swatch reads the real variable from css/base.css. */
+.sg { max-width: 1100px; margin: 0 auto; padding: 48px 20px 80px; display: grid; gap: 56px; }
+.sg h2 { margin-bottom: 14px; }
+.sg p { color: var(--muted); max-width: 64ch; margin: 0; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.sw { display: grid; gap: 6px; font: 12px var(--mono); color: var(--muted); }
+.sw i { display: block; height: 64px; border-radius: 8px; border: 1px solid var(--line); }
+.sw b { font: 500 13px var(--body); color: var(--ink); }
+.type { display: grid; gap: 18px; }
+.type .lbl { font: 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.demo-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.panel { background: var(--surface); border-radius: 10px; padding: 18px; min-width: 0; }
+.panel svg { width: 100%; height: auto; display: block; overflow: visible; }
+.panel svg text { fill: var(--muted); font: 11px var(--mono); }
+.panel svg .lab { fill: var(--ink); font: 13px var(--body); }
+.panel svg .social { fill: var(--c-social); font-weight: 600; }
+.motion button { font: 500 13px var(--body); background: transparent; color: var(--ink); border: 1px solid var(--sand); border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+.track { position: relative; height: 170px; margin-top: 12px; }
+.drop { position: absolute; top: 96px; opacity: 0; width: 12px; height: 12px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--c-social); }
+.drop.fall { animation: fall var(--slow) cubic-bezier(.55, 0, 1, .45) forwards; }   /* ease-in: gravity */
+@keyframes fall { 0% { opacity: 1; top: 104px; } 100% { opacity: 1; top: 150px; } }
+.melt { width: 70px; height: 70px; border-radius: 50%; background: var(--sheen); position: absolute; left: 160px; top: 20px; transition: border-radius var(--slow) var(--ease-melt), height var(--slow) var(--ease-melt); }
+.melt.go { border-radius: 50% 50% 46% 46% / 40% 40% 60% 60%; height: 96px; }
+@media (prefers-reduced-motion: reduce) { .drop.fall { animation: none; opacity: 1; top: 150px; } .melt { transition: none; } }
+</style>
+</head>
+<body>
+<main class="sg">
+  <header>
+    <p class="eyebrow">Style guide · live tokens from css/base.css</p>
+    <h1 style="font-size:clamp(40px,6vw,72px)">Time going soft</h1>
+    <p style="margin-top:14px">A night stage where almost everything is dim and one thing glows: time spent with other people. Full rules in <code>STYLEGUIDE.md</code>.</p>
+  </header>
+
+  <section><h2>Stage</h2><div class="swatches" id="stage"></div></section>
+  <section><h2>Accents</h2><p>Pink means socializing and nothing else. Sand means you. The pearl sheen is only for socializing in the clock and the clock's rim.</p><div class="swatches" id="accents" style="margin-top:14px"></div></section>
+  <section><h2>Activities</h2><p>Dusk tones, for shapes only. Never use them for text.</p><div class="swatches" id="acts" style="margin-top:14px"></div></section>
+
+  <section class="type">
+    <h2>Type</h2>
+    <div><div class="lbl">Hero · Fraunces 600, SOFT 100</div><div style="font:600 clamp(40px,6vw,76px)/1.05 var(--display);font-variation-settings:'SOFT' 100">Same 24 hours.</div></div>
+    <div><div class="lbl">Chapter title · Fraunces 600, SOFT 100</div><h2 style="margin:0">The weekdays emptied out</h2></div>
+    <div><div class="lbl">Story text · IBM Plex Sans 18px</div><p style="font-size:18px;color:var(--ink)">For 15–24-year-olds, weekday socializing roughly halved, from 52 to 27 minutes.</p></div>
+    <div><div class="lbl">Kicker and numbers · IBM Plex Mono</div><p class="kicker" style="margin:0">Chapter 3</p><p style="font:500 13px var(--mono);color:var(--ink)">59 → 36 min/day · 2003–04 → 2024–25</p></div>
+  </section>
+
+  <section>
+    <h2>Charts</h2>
+    <div class="demo-row">
+      <div class="panel"><svg id="lines" viewBox="0 0 420 220" role="img" aria-label="Example line chart"></svg></div>
+      <div class="panel"><svg id="bars" viewBox="0 0 420 220" role="img" aria-label="Example diverging bars"></svg></div>
+    </div>
+    <p style="margin-top:12px">Direct labels, faint dashed hairlines, mono numbers, a gap at 2020, socializing in pink and "you" in sand. The values shown are real (15–24-year-olds).</p>
+  </section>
+
+  <section class="motion">
+    <h2>Motion</h2>
+    <p>Slow and viscous: <code>--slow</code> 1100ms with <code>--ease-melt</code> for the melt; drops fall with ease-in, like gravity.</p>
+    <div class="track"><span class="melt" id="melt"></span><span class="drop" style="left:192px" id="d1"></span><span class="drop" style="left:206px" id="d2"></span></div>
+    <button id="play" type="button">Play the melt</button>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const css = getComputedStyle(document.documentElement);
+const v = n => css.getPropertyValue(n).trim();
+function swatches(id, list) {
+  document.getElementById(id).innerHTML = list.map(([name, token, use]) =>
+    `<div class="sw"><i style="background:var(${token})"></i><b>${name}</b><span>${token} · ${v(token).startsWith('linear') ? 'gradient' : v(token)}</span><span>${use}</span></div>`).join('');
+}
+swatches('stage', [['Night','--bg','page'],['Dusk','--surface','cards, tooltips'],['Line','--line','hairlines'],['Faint','--faint','gridlines, never text'],['Muted','--muted','secondary text'],['Pearl','--ink','main text']]);
+swatches('accents', [['Socializing','--c-social','the one bright color'],['Pearl sheen','--sheen','socializing in the clock'],['Sand','--sand','you'],['Gained','--c-more','diverging +'],['Lost','--c-less','diverging −']]);
+swatches('acts', [['Sleep & personal care','--c-personal',''],['Working','--c-work',''],['Education','--c-edu',''],['Household','--c-home',''],['Caring','--c-care',''],['Shopping','--c-shop',''],['Eating & drinking','--c-eat',''],['Watching TV','--c-tv',''],['Other leisure','--c-leis',''],['Civic, calls, other','--c-other','']]);
+
+/* Example line chart: socializing, 15–24 vs all ages (min/day), from data/atus.json */
+fetch('../data/atus.json').then(r => r.json()).then(d => {
+  const yrs = d.years, s = d.act['103']['00']['600024'], all = d.act['000']['00']['600024'];
+  const svg = d3.select('#lines'), m = {l: 30, r: 70, t: 14, b: 24}, W = 420, H = 220;
+  const x = d3.scaleLinear([2003, 2025], [m.l, W - m.r]), y = d3.scaleLinear([0, 70], [H - m.b, m.t]);
+  svg.append('g').selectAll('line').data([20, 40, 60]).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y).attr('stroke', 'var(--faint)').attr('stroke-dasharray', '2 3');
+  svg.append('g').selectAll('text').data([20, 40, 60]).join('text').attr('x', m.l - 6).attr('y', d => y(d) + 4).attr('text-anchor', 'end').text(d => d);
+  svg.append('g').selectAll('text').data([2005, 2015, 2025]).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text(d => d);
+  const line = d3.line().defined(p => p[1] != null).x(p => x(p[0])).y(p => y(p[1])).curve(d3.curveMonotoneX);
+  const pts = a => yrs.map((yr, i) => [yr, a[i]]);
+  svg.append('path').attr('d', line(pts(all))).attr('fill', 'none').attr('stroke', 'var(--sand)').attr('stroke-width', 2);
+  svg.append('path').attr('d', line(pts(s))).attr('fill', 'none').attr('stroke', 'var(--c-social)').attr('stroke-width', 2.5);
+  svg.append('text').attr('class', 'lab social').attr('x', W - m.r + 6).attr('y', y(s.at(-1)) + 4).text('15–24');
+  svg.append('text').attr('class', 'lab').style('fill', 'var(--sand)').attr('x', W - m.r + 6).attr('y', y(all.at(-1)) + 18).text('you · all ages');
+  svg.append('text').attr('x', x(2020)).attr('y', m.t + 4).attr('text-anchor', 'middle').text('no 2020 data');
+
+  /* Example diverging bars: change since 2003–04, 15–24 */
+  const a = (arr, ys) => d3.mean(ys.map(yy => arr[yrs.indexOf(yy)]).filter(v => v != null));
+  const S = d.act['103']['00'];
+  const leis = S['600023'].map((v, i) => v == null ? null : v - S['600024'][i] - S['600025'][i]);
+  const rows = [['Sleep & personal care', S['600001']], ['Other leisure', leis], ['Working', S['600013']], ['Socializing', S['600024']], ['Watching TV', S['600025']]]
+    .map(([n, arr]) => ({ n, v: a(arr, [2024, 2025]) - a(arr, [2003, 2004]) }));
+  const b = d3.select('#bars'), bx = d3.scaleLinear([-45, 45], [150, 400]), by = d3.scaleBand(rows.map(r => r.n), [10, 200]).padding(.3);
+  b.append('line').attr('x1', bx(0)).attr('x2', bx(0)).attr('y1', 6).attr('y2', 204).attr('stroke', 'var(--muted)');
+  const g = b.selectAll('g').data(rows).join('g').attr('transform', r => `translate(0,${by(r.n)})`);
+  g.append('rect').attr('x', r => bx(Math.min(0, r.v))).attr('width', r => Math.abs(bx(r.v) - bx(0))).attr('height', by.bandwidth()).attr('fill', r => r.v < 0 ? 'var(--c-less)' : 'var(--c-more)');
+  g.append('text').attr('class', r => 'lab' + (r.n === 'Socializing' ? ' social' : '')).attr('x', 140).attr('y', by.bandwidth() / 2 + 4).attr('text-anchor', 'end').text(r => r.n);
+  g.append('text').attr('x', r => r.v < 0 ? bx(r.v) - 5 : bx(r.v) + 5).attr('y', by.bandwidth() / 2 + 4).attr('text-anchor', r => r.v < 0 ? 'end' : 'start').text(r => (r.v > 0 ? '+' : '−') + Math.abs(Math.round(r.v)));
+});
+
+document.getElementById('play').addEventListener('click', () => {
+  const m = document.getElementById('melt'), drops = [document.getElementById('d1'), document.getElementById('d2')];
+  m.classList.remove('go'); drops.forEach(dr => dr.classList.remove('fall'));
+  void m.offsetWidth;
+  m.classList.add('go');
+  drops.forEach((dr, i) => setTimeout(() => dr.classList.add('fall'), 500 + i * 350));
+});
+</script>
+</body>
+</html>
