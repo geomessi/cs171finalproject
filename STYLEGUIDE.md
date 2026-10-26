@@ -110,7 +110,8 @@ The page is a place, sunlit and painterly rather than digital. A 3D scene (`js/w
 - **Light is warm and low,** from the left, so the tiny walkers cast long shadows across the face.
 - **Charts are evidence cards.** In the evidence chapters a veil dims the world, and every chart and story step sits on frosted glass (`--surface` at 80%, 14px blur, `--line` border, 14px radius). Don't put charts directly on the world.
 - **The camera tells the story.** Low and wide in the hero, so the clock floats over its reflection. Pulled back and dimmed for the evidence. High above the face for the verdict.
-- **The balance scale (Clue 2)** stands on the dunes near the clock: a pearl column and beam, two shallow pans, tiny dark figures on each. "With others" holds people huddled in threes; "alone" holds people standing apart. The tilt and the number of figures on each pan are proportional to the minutes. Labels float above each pan on small dark tags (mono title, Fraunces value).
+- **The background is only clocks.** The main clock is the reader's age group. Smaller clocks floating over the far dunes are the other age groups' days, each tagged with its socializing minutes.
+- **The balance scale has its own chapter** ("Weigh it"), drawn as a painted panel in the world palette: ultramarine sky, pink clouds, dunes, a pearl column and beam, shallow pans, tiny dark figures with long shadows. "With others" figures huddle in threes; "alone" figures stand apart. Tilt and figure counts are proportional to the minutes. Labels sit on small dark tags (mono title, Fraunces value, sand share).
 - **The sky is mood, the rest is data.** Golden hour drifting toward dusk across 2003–2025 is atmosphere. The face regions, hands, melt, drips and walkers all encode real numbers.
 - We take the feeling of surrealist soft clocks, not any painting itself: no copied compositions or objects.
 - Without WebGL, the page falls back to the flat 2D clock and a plain background.

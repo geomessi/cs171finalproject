@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="css/opening.css">   <!-- Package 1 -->
 <link rel="stylesheet" href="css/moved.css">     <!-- Package 2 -->
 <link rel="stylesheet" href="css/clock.css">     <!-- Package 3 -->
+<link rel="stylesheet" href="css/balance.css">   <!-- Package 3 -->
 </head>
 <body>
 
@@ -23,7 +24,7 @@
   <a class="brand" href="#top">The Case of the Shrinking Hour</a>
   <nav aria-label="Chapters">
     <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#moved">Suspects</a>
-    <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#clock">Verdict</a>
+    <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#balance">The scale</a><a href="#clock">Verdict</a>
   </nav>
   <label class="you">I'm
     <select id="you-age" aria-label="Your age group">
@@ -92,10 +93,20 @@
   <!-- ===== Clue 2 · Alone or together · Package 2 · DRAFT ===== -->
   <section class="chapter" id="alone" data-chapter="alone">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>The balance is tipping</h2><p>In 2010–11, 20–24-year-olds spent 4h13m of their waking day alone and 9h53m with other people.</p></div>
-      <div class="step" data-step="1"><p>By 2024–25: 5h37m alone, 7h56m with others. The scale is tipping toward alone. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
+      <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>More of the day, alone</h2><p>Since 2010–11, 20–24-year-olds went from 4h13m a day alone to 5h37m.</p></div>
+      <div class="step" data-step="1"><p>Time with other people fell by nearly two hours. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
     </div>
     <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025 (draft)"></div>
+  </section>
+
+  <!-- ===== Weigh it · The balance scale · Package 3 ===== -->
+  <section class="chapter" id="balance" data-chapter="balance">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Weigh it</p><h2>Put a day on the scale</h2><p>Take every waking hour of an average day for <span data-balance-band>20–24-year-olds</span> in 2010–11. Put the hours spent with other people on one side, and the hours alone on the other.</p></div>
+      <div class="step" data-step="1"><p>Now 2024–25. <span data-balance-moved>Three people</span> step off the "with others" side and stand alone. The scale is tipping toward alone.</p></div>
+      <div class="step" data-step="2"><p>Drag through the years yourself, or change "I'm…" at the top to weigh your own age group.</p></div>
+    </div>
+    <div class="viz" id="balance-viz" data-owner="Package 3 · balance.js" data-placeholder="The balance scale"></div>
   </section>
 
   <!-- ===== The verdict · The melting clock (novel view) · Package 3 ===== -->
@@ -127,6 +138,7 @@
 <script src="js/ch-alone.js"></script>     <!-- Package 2 -->
 <script src="js/world.js"></script>        <!-- Package 3 -->
 <script src="js/clock.js"></script>        <!-- Package 3 -->
+<script src="js/balance.js"></script>      <!-- Package 3 -->
 <script>story.start();</script>
 </body>
 </html>
