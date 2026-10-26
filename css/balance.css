@@ -1,0 +1,23 @@
+/* Georgia (Package 3) · Weigh it: the balance scale. Uses variables from base.css; the painting uses the world palette. */
+
+.balance-viz { display: flex; flex-direction: column; gap: 10px; }
+.balance-viz svg { flex: 1 1 auto; min-height: 0; }
+
+.balance-viz .bp-string { fill: none; stroke: #2A2320; stroke-width: 1.2; opacity: 0.65; }
+.balance-viz .bp-body { fill: #2A2320; }
+.balance-viz .bp-shadow { fill: #2A2320; opacity: 0.28; }
+
+.balance-viz .bp-tag rect { fill: rgba(21, 22, 31, 0.78); }
+.balance-viz .bp-tag text { text-anchor: middle; }
+.balance-viz svg text.bt-title { font: 500 9.5px var(--mono); letter-spacing: .08em; fill: var(--muted); }
+.balance-viz svg text.bt-value { font: 600 20px var(--display); font-variation-settings: "SOFT" 100; fill: var(--ink); }
+.balance-viz svg text.bt-share { font: 9.5px var(--mono); fill: var(--sand); }
+.balance-viz svg text.bp-year { font: 600 34px var(--display); font-variation-settings: "SOFT" 100; fill: #FBF8F2; text-anchor: middle; }
+.balance-viz svg text.bp-band { font: 500 10.5px var(--mono); letter-spacing: .08em; fill: rgba(251, 248, 242, .85); text-anchor: middle; }
+
+.balance-controls { display: flex; align-items: center; gap: 12px; }
+.balance-controls input[type=range] { flex: 1; accent-color: var(--muted); }
+.balance-controls input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.balance-out { font: 600 18px var(--display); font-variation-settings: "SOFT" 100; min-width: 5ch; text-align: right; }
+.balance-note { font-size: 12px; color: var(--muted); margin: 0; }
+@media (max-width: 820px) { .balance-note { display: none; } }

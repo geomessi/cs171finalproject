@@ -11,9 +11,9 @@ What we took from the mood board:
 | From the mood board | What it becomes on the page |
 | --- | --- |
 | Surreal melting clocks | The novel view: a 24-hour clock that softens and drips as socializing drains away. Soft, rounded display type. Slow, viscous motion. |
-| Tiny people walking on a disc | Human scale. Small figure silhouettes can stand in for "people" next to the clock. Never cartoon characters. |
-| Pearl, opal and iridescent surfaces | The sheen marks what's precious. Only socializing and the clock's rim get it. |
-| Glowing data art, grid tunnels, scan lines | Fine grids and hairlines in the charts. Monospace for every number and label. |
+| Tiny people walking on a disc | Tiny luminous figures walking the grid beneath the clock. Walking alone or together is data. Never cartoon characters. |
+| Pearl, opal and iridescent surfaces | The sheen marks what's precious: a thin edge on socializing in the clock, and nowhere else. |
+| Glowing data art, grid tunnels, scan lines | The world's glowing grid floor running to the horizon. Fine grids and hairlines in the charts. Monospace for every number and label. |
 | Sand, smoke, ceramic | A warm sand accent for the reader: "you", your guess, your age line. |
 
 The mood board images are reference only. Don't put them on the site, and don't redraw any of them, including the painting. The clock is our own image, driven by our data.
@@ -36,7 +36,7 @@ The mood board images are reference only. Don't put them on the site, and don't 
 | Variable | Hex | Use |
 | --- | --- | --- |
 | `--c-social` | `#FF8DB8` | Socializing, everywhere. The one luminous color. |
-| `--sheen` | pearl gradient | Socializing in the clock, and the clock's rim. Nowhere else. |
+| `--sheen` | pearl gradient | A thin highlight edge on the socializing wedge. Nowhere else. |
 | `--sand` (`--accent`) | `#D8C2A0` | The reader: the "I'm…" menu, your guess, your age group's line. |
 | `--c-more` | `#8FD8CB` | Time gained, in the diverging chart. |
 | `--c-less` | same as socializing | Time lost, in the diverging chart. |
@@ -101,13 +101,32 @@ Fraunces is set with `font-variation-settings: "SOFT" 100` (already in `base.css
 
 In D3, use `d3.easeCubicInOut` for builds and `d3.easeQuadIn` for falling drops (gravity). Motion follows scroll; nothing loops or plays on its own except a Play button the reader presses. Everything must work with `prefers-reduced-motion`: jump to the end state instead of animating.
 
+## The world
+
+The page is a place, and it should feel like a surrealist painting: hyperreal precision applied to something impossible. A 3D scene (`js/world.js`) sits behind everything.
+
+- **Sparse and exact.** A clean sky, deep ultramarine fading to a luminous pale gold at a perfectly flat horizon. No clouds. An empty ochre plain. A still lake that mirrors the sky. Few objects, and every one of them crisp. The emptiness is the point.
+- **Hard, low, raking light.** One sun near the horizon from the left, low fill, sharp shadows that stretch far across the plain.
+- **Painted, not rendered.** A warm varnish on the scene (slight sepia, contrast and saturation), a fine oil-paint grain, and a soft vignette (`#canvas-grain`).
+- **The background is only clocks.** The main clock is the reader's age group. Smaller clocks on their own plinths across the plain are the other age groups' days, each tagged with its socializing minutes and each gone soft by its own loss.
+- **The world palette** (in `world.js`): zenith `#16246E`, sky `#2C46A8`, horizon `#F7EAC0`, plain `#C99E68`, stone `#CDB89A`, water `#24388C`, clock face `#EFE6D5`, ink `#2A2320`. Socializing stays the site pink `#FF8DB8`.
+- **The clock must read as a clock:** a cream face with record-like grooves, a pearl bezel, hour numerals every 3 hours (counting hours of the day, not clock times), and two hands.
+- **Charts are evidence cards** on frosted glass while a veil dims the world.
+- **The balance scale has its own chapter** ("Weigh it"), a painted panel in the world palette with tiny figures on two pans; tilt and figure counts follow the minutes.
+- **The sky is mood, the rest is data.** The light drifting from day toward dusk across 2003–2025 is atmosphere; the clocks, folds, drips and walkers all encode real numbers.
+- We take Dalí's visual language (precision, raking light, empty space, hard objects gone soft), not any of his paintings. No copied compositions or objects.
+- Without WebGL, the page falls back to the flat 2D clock and a plain background.
+
 ## The melting clock
 
-- Midnight at the top, time running clockwise, 1,440 minutes around the dial.
-- Wedge angles are exact. The melt (sag and drips) happens outside the wedges, so it never changes what people read.
-- The socializing wedge uses `--sheen`, and every other wedge uses its dusk activity color.
-- Drops are `--c-social`, falling with `easeQuadIn`. If they're drawn larger than the minutes they stand for, the caption says so.
-- The year sits in the center in Fraunces, large.
+- One average day for the reader's age group, 1,440 minutes around the dial. Each region's angle is exact, painted on the face.
+- **The clock rests on a stone plinth.** In 2003 it's rigid and perfect.
+- **Socializing is the pink region at the front, nearest the water.** The two hands bracket it, so they close in as it shrinks.
+- **As socializing minutes are lost** (since 2003–04, smoothed over three years), the front of the clock goes soft and folds over the plinth's edge like warm wax, hanging toward the water. The fold angle is the data: up to about 100° at the full loss. The fold bends the face; it doesn't change the shares painted on it.
+- **Pink drips** hang from the lowest edge and fall into the lake, with ripples and a pink pool.
+- **Walkers are data:** the share of figures walking alone equals the share of waking time spent alone (from 2010).
+- The verdict card carries the exact numbers. Controls stay neutral.
+- Without WebGL, the 2D clock follows the same rules.
 
 ## Voice
 

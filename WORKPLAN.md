@@ -1,16 +1,18 @@
 # Prototype V1 work plan
 
-**Story:** Young adults aren't just socializing less; they're spending their time differently.
+**Story: The Case of the Shrinking Hour.** In 2003, young Americans spent about an hour a day just being with other people. Something has been eating into it. Readers guess how much is left (36 minutes, down 39%). The usual suspects are cleared: work and TV both fell, so young people got time *back* and still spent less of it together. The clues point somewhere quieter: the weekdays emptied out, and more of the day is spent alone. Then the reader puts a day on the scale and watches it tip. The verdict: nobody stole the hour; bit by bit, more of the day was spent alone.
 
-**Branch:** everything goes on `Prototype1`. Preview: https://prototype1.cs171finalproject.pages.dev (Cloudflare builds every push).
+**Chapter order:** Hero → Make a guess → The case (the drop) → The suspects (where the time went) → Clue 1 (weekdays) → Clue 2 (alone) → Weigh it (the scale) → The verdict (the clock). Chapter IDs didn't change, so your scripts still attach the same way.
+
+**Branch:** we collect everything on `main` (the live site). Work on your own branch and open a pull request; Cloudflare comments a preview link on it.
 
 The page skeleton is already in place: `index.html` has every chapter with its text, the "I'm…" age menu, and a dashed placeholder box where each chart goes. Each package owns its own files, so three people can push to the same branch without merge conflicts.
 
 | Package | Owner | Chapters | Files you own | Covers requirement |
 | --- | --- | --- | --- | --- |
-| 1. The opening | Mariah | 1 Guess · 2 The drop · 3 Weekdays | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
-| 2. Where the time went | Chloe | 4 Where it went · 5 Alone or together | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
-| 3. The melting clock | Georgia | Hero · 6 The clock | `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
+| 1. The opening | Mariah | Make a guess · The case · Clue 1 (weekdays) | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
+| 2. Where the time went | Chloe | The suspects · Clue 2 (alone) | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
+| 3. The world, the scale, the melting clock | Georgia | Hero · Weigh it · The verdict | `js/world.js`, `js/clock.js`, `js/balance.js`, `css/clock.css`, `css/balance.css` | Novel view, process book assembly |
 
 ## Package 1 · The opening (Mariah)
 
@@ -28,13 +30,17 @@ Done when the guess works, the trend chart animates through all four steps, and 
 
 Done when the pipeline reruns cleanly, the diverging chart steps and plays, and the alone design is in the process book.
 
-## Package 3 · The melting clock, novel view (Georgia)
+**Chloe, heads-up:**
+- The suspects chapter's steps are now: step 1 work cleared (−18), step 2 TV cleared (−34, "so young people got time back"), step 3 the trail (sleep +39, other leisure +29, chores +18). Chores is new, so show it in the chart.
+- Clue 2 is your line chart again in a normal evidence card: alone vs. with others, ages 20–24, 2010–2025. The balance scale now has its own chapter right after yours ("Weigh it"), so your chart sets up the trend and the scale makes it felt.
 
-1. **The melting clock** (`clock.js`): one average day as a 24-hour clock face, with exact wedges per activity and socializing as the one bright wedge. As scroll moves the year from 2003 to 2025, the socializing wedge shrinks (59 → 36 min for 15–24), its lost minutes drip off the rim into the wedges that grew (sleep +39, other leisure +29), and the rim sags under it. A still 2003 clock sits in the hero; the scroll-driven version is chapter 6. Hover a wedge for its minutes. For V1 this can be functional or a strong draft; functional is better.
-2. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → melting clock, and how the melt encodes data).
-3. **Final pass:** check the whole page at phone width and fix anything broken in shared files with the team's OK.
+## Package 3 · The world and the melting clock, novel view (Georgia)
 
-Done when the clock renders from real data in the hero, chapter 6 melts on scroll, and the process book is complete.
+1. **The world** (`world.js`, done): a sunlit, painterly three.js scene behind the whole page. An ultramarine sky with pink clouds, soft dunes, a mirror lake, and a giant clock floating over a dune at the water's edge. The camera moves with the story: low and wide in the hero, pulled back and dimmed behind the evidence chapters, high over the clock for the verdict.
+2. **The melting clock** (`world.js` + `clock.js`, done): a real clock face (cream, grooves, bezel, hour numerals, hands) showing one average day with exact regions. Socializing is the pink region at the front; the hands bracket it; the front slumps toward the water and drips pink into the lake as minutes are lost; tiny dark walkers with long shadows encode time alone. The verdict chapter has Play, a year slider and live numbers. Without WebGL, `clock.js` draws the 2D clock instead.
+3. **The balance scale** (`balance.js`, done): its own chapter, "Weigh it," between Clue 2 and the verdict. A painted panel in the world's style: one pan holds waking hours with other people, the other hours alone; tilt and the 24 tiny figures follow the minutes. Steps go 2010–11 → 2024–25, a slider covers single years, and the "I'm…" menu switches age band.
+4. **Distant clocks** (`world.js`, done): the background is only clocks. Smaller clocks floating over the far dunes show every other age group's day for the same year.
+5. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → a world you scroll through).
 
 ## Rules that keep us out of each other's way
 
