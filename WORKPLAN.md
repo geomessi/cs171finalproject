@@ -34,8 +34,8 @@ Done when the pipeline reruns cleanly, the diverging chart steps and plays, and 
 
 ## Package 3 · The world and the melting clock, novel view (Georgia)
 
-1. **The world** (`world.js`, done): a three.js scene behind the whole page. A glowing grid floor runs to a pearl horizon, a giant clock floats above it, and tiny figures walk past. The camera moves with the story: wide in the hero, pulled back and dimmed behind the evidence chapters, close on the clock for the verdict.
-2. **The melting clock** (`world.js` + `clock.js`, done): the clock face is one average day with exact wedges; socializing glows pink at the bottom; drips and a pool grow with minutes lost since 2003–04; the share of figures walking alone matches the share of waking time spent alone; the sky slides from dusk to night as the years run. The verdict chapter has Play, a year slider and live numbers. Without WebGL, `clock.js` draws the 2D clock instead.
+1. **The world** (`world.js`, done): a sunlit, painterly three.js scene behind the whole page. An ultramarine sky with pink clouds, soft dunes, a mirror lake, and a giant clock floating over a dune at the water's edge. The camera moves with the story: low and wide in the hero, pulled back and dimmed behind the evidence chapters, high over the clock for the verdict.
+2. **The melting clock** (`world.js` + `clock.js`, done): a real clock face (cream, grooves, bezel, hour numerals, hands) showing one average day with exact regions. Socializing is the pink region at the front; the hands bracket it; the front slumps toward the water and drips pink into the lake as minutes are lost; tiny dark walkers with long shadows encode time alone. The verdict chapter has Play, a year slider and live numbers. Without WebGL, `clock.js` draws the 2D clock instead.
 3. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → a world you scroll through).
 
 ## Rules that keep us out of each other's way

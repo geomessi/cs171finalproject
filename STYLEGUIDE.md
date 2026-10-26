@@ -103,23 +103,26 @@ In D3, use `d3.easeCubicInOut` for builds and `d3.easeQuadIn` for falling drops 
 
 ## The world
 
-The page is a place. A 3D scene (`js/world.js`) sits behind everything: a night sky with a pearl glow at the horizon, a grid floor in `--pearl-a` hairlines that fades into that glow, a giant clock floating above the floor, and tiny figures walking past.
+The page is a place, sunlit and painterly rather than digital. A 3D scene (`js/world.js`) sits behind everything: a deep ultramarine sky with a warm golden band at the horizon and drifting pink clouds, soft sand dunes, a mirror-still lake that reflects the sky, the clouds and the clock, and a giant clock floating over a dune at the water's edge.
 
-- **Charts are evidence cards.** In the evidence chapters a veil dims the world and every chart and story step sits on frosted glass (`--surface` at 80%, 14px blur, `--line` border, 14px radius). Don't put charts directly on the world.
-- **The camera tells the story.** Wide and low in the hero, pulled back and dimmed for the evidence, close on the clock for the verdict. Moves are slow and follow scroll; nothing loops on its own except the walkers.
-- **The sky is mood, the rest is data.** Dusk drifting to night across 2003–2025 is atmosphere. The clock wedges, drips, pool and walkers all encode real numbers.
-- **Walkers are data.** The share of figures walking alone equals the share of waking time spent alone for the reader's age band (from 2010; earlier years hold 2010).
-- Without WebGL, the page falls back to the flat 2D clock and a plain night background.
+- **The world has its own palette** (in `world.js`): zenith `#22348F`, sky `#3A52B6`, horizon `#F3D3A2`, sand `#D8B489`, water `#24388C`, clouds `#F4A9C8`, clock face `#EFE6D5`, ink `#2A2320`. Activity regions on the face are painted in warm, earthy versions of the activity colors. Socializing stays the site pink `#FF8DB8` everywhere, so it ties the world to the charts.
+- **The clock must read as a clock.** A cream face with record-like grooves, a pearl bezel, hour marks with numerals every 3 hours, and two hands. The numerals count hours of the day (3h, 6h…), because the dial shows how long each activity takes, not when.
+- **Light is warm and low,** from the left, so the tiny walkers cast long shadows across the face.
+- **Charts are evidence cards.** In the evidence chapters a veil dims the world, and every chart and story step sits on frosted glass (`--surface` at 80%, 14px blur, `--line` border, 14px radius). Don't put charts directly on the world.
+- **The camera tells the story.** Low and wide in the hero, so the clock floats over its reflection. Pulled back and dimmed for the evidence. High above the face for the verdict.
+- **The sky is mood, the rest is data.** Golden hour drifting toward dusk across 2003–2025 is atmosphere. The face regions, hands, melt, drips and walkers all encode real numbers.
+- We take the feeling of surrealist soft clocks, not any painting itself: no copied compositions or objects.
+- Without WebGL, the page falls back to the flat 2D clock and a plain background.
 
 ## The melting clock
 
-- Midnight at the top, 1,440 minutes around the dial, one tick per hour. Wedges show each activity's share of the day, not when it happens.
-- Wedge angles are exact. The melt (a soft sag in the rim, hanging drips, falling drops) happens outside the wedges, so it never changes what people read.
-- **Only socializing glows.** It's solid `--c-social` with a soft glow and a thin pearl-sheen edge, rotated to the bottom so it melts with gravity. Every other wedge is its activity color mixed about halfway into `--bg`, so the face stays at dusk.
-- The rim is a thin `--muted` hairline, not a thick ring.
-- Drips and drops are `--c-social`. Drops fall with `easeQuadIn`. Each drop is about 2 minutes lost, and the caption says so.
-- Controls around the clock stay neutral (`--ink` text, `--faint` borders). Pink is never a UI color, and sand is never a button.
-- The year sits in the center in Fraunces, large.
+- One average day for the reader's age group, 1,440 minutes around the dial. Each region's angle is exact, painted on the face.
+- **Socializing is the pink region at the front, nearest the water.** The two hands bracket it, so they close in as it shrinks.
+- **The front of the clock slumps toward the water** in proportion to socializing minutes lost since 2003–04 (smoothed over three years). The melt bends the face; it doesn't change the shares painted on it.
+- **Pink drips** hang from the slumped edge and fall into the lake, sending out ripples into a pink pool.
+- **Walkers are data:** the share of figures walking alone equals the share of waking time spent alone for the reader's age band (from 2010; earlier years hold 2010).
+- The verdict card carries the exact numbers: year, socializing minutes, minutes lost, time alone. Controls stay neutral (`--ink` text, `--faint` borders).
+- Without WebGL, the 2D clock follows the same rules: dimmed regions, glowing pink socializing, hanging drips.
 
 ## Voice
 
