@@ -1,16 +1,18 @@
 # Prototype V1 work plan
 
-**Story:** Young adults aren't just socializing less; they're spending their time differently.
+**Story: The Case of the Missing Hour.** In 2003, 15–24-year-olds spent about an hour a day with other people; today it's 36 minutes. The page is a mystery: the usual suspects (work, TV) are cleared, the clues (emptier weekdays, more time alone) point somewhere quieter, and the verdict is that nobody stole the hour. The day went soft, and connection melted first.
 
-**Branch:** everything goes on `Prototype1`. Preview: https://prototype1.cs171finalproject.pages.dev (Cloudflare builds every push).
+**Chapter order:** Hero → Make a guess → The case (the drop) → The suspects (where the time went) → Clue 1 (weekdays) → Clue 2 (alone) → The verdict (the clock). Chapter IDs didn't change, so your scripts still attach the same way.
+
+**Branch:** we collect everything on `main` (the live site). Work on your own branch and open a pull request; Cloudflare comments a preview link on it.
 
 The page skeleton is already in place: `index.html` has every chapter with its text, the "I'm…" age menu, and a dashed placeholder box where each chart goes. Each package owns its own files, so three people can push to the same branch without merge conflicts.
 
 | Package | Owner | Chapters | Files you own | Covers requirement |
 | --- | --- | --- | --- | --- |
-| 1. The opening | Mariah | 1 Guess · 2 The drop · 3 Weekdays | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
-| 2. Where the time went | Chloe | 4 Where it went · 5 Alone or together | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
-| 3. The melting clock | Georgia | Hero · 6 The clock | `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
+| 1. The opening | Mariah | Make a guess · The case · Clue 1 (weekdays) | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
+| 2. Where the time went | Chloe | The suspects · Clue 2 (alone) | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
+| 3. The world + melting clock | Georgia | Hero · The verdict | `js/world.js`, `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
 
 ## Package 1 · The opening (Mariah)
 
@@ -28,13 +30,13 @@ Done when the guess works, the trend chart animates through all four steps, and 
 
 Done when the pipeline reruns cleanly, the diverging chart steps and plays, and the alone design is in the process book.
 
-## Package 3 · The melting clock, novel view (Georgia)
+**Chloe, heads-up:** the suspects chapter's steps are now step 1 work cleared (−18), step 2 TV cleared (−34), step 3 the trail (sleep +39, other leisure +29, chores +18). Same four steps, new framing; chores is new, so show it in the chart.
 
-1. **The melting clock** (`clock.js`): one average day as a 24-hour clock face, with exact wedges per activity and socializing as the one bright wedge. As scroll moves the year from 2003 to 2025, the socializing wedge shrinks (59 → 36 min for 15–24), its lost minutes drip off the rim into the wedges that grew (sleep +39, other leisure +29), and the rim sags under it. A still 2003 clock sits in the hero; the scroll-driven version is chapter 6. Hover a wedge for its minutes. For V1 this can be functional or a strong draft; functional is better.
-2. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → melting clock, and how the melt encodes data).
-3. **Final pass:** check the whole page at phone width and fix anything broken in shared files with the team's OK.
+## Package 3 · The world and the melting clock, novel view (Georgia)
 
-Done when the clock renders from real data in the hero, chapter 6 melts on scroll, and the process book is complete.
+1. **The world** (`world.js`, done): a three.js scene behind the whole page. A glowing grid floor runs to a pearl horizon, a giant clock floats above it, and tiny figures walk past. The camera moves with the story: wide in the hero, pulled back and dimmed behind the evidence chapters, close on the clock for the verdict.
+2. **The melting clock** (`world.js` + `clock.js`, done): the clock face is one average day with exact wedges; socializing glows pink at the bottom; drips and a pool grow with minutes lost since 2003–04; the share of figures walking alone matches the share of waking time spent alone; the sky slides from dusk to night as the years run. The verdict chapter has Play, a year slider and live numbers. Without WebGL, `clock.js` draws the 2D clock instead.
+3. **Process book:** team member list, the V1 screenshots, drafts from all three packages, and the novel-view rationale (mood board → a world you scroll through).
 
 ## Rules that keep us out of each other's way
 

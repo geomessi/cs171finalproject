@@ -11,9 +11,9 @@ What we took from the mood board:
 | From the mood board | What it becomes on the page |
 | --- | --- |
 | Surreal melting clocks | The novel view: a 24-hour clock that softens and drips as socializing drains away. Soft, rounded display type. Slow, viscous motion. |
-| Tiny people walking on a disc | Human scale. Small figure silhouettes can stand in for "people" next to the clock. Never cartoon characters. |
+| Tiny people walking on a disc | Tiny luminous figures walking the grid beneath the clock. Walking alone or together is data. Never cartoon characters. |
 | Pearl, opal and iridescent surfaces | The sheen marks what's precious: a thin edge on socializing in the clock, and nowhere else. |
-| Glowing data art, grid tunnels, scan lines | Fine grids and hairlines in the charts. Monospace for every number and label. |
+| Glowing data art, grid tunnels, scan lines | The world's glowing grid floor running to the horizon. Fine grids and hairlines in the charts. Monospace for every number and label. |
 | Sand, smoke, ceramic | A warm sand accent for the reader: "you", your guess, your age line. |
 
 The mood board images are reference only. Don't put them on the site, and don't redraw any of them, including the painting. The clock is our own image, driven by our data.
@@ -100,6 +100,16 @@ Fraunces is set with `font-variation-settings: "SOFT" 100` (already in `base.css
 | `--ease-melt` | `cubic-bezier(.55, 0, .25, 1)` | Slow start, slow settle, like something viscous |
 
 In D3, use `d3.easeCubicInOut` for builds and `d3.easeQuadIn` for falling drops (gravity). Motion follows scroll; nothing loops or plays on its own except a Play button the reader presses. Everything must work with `prefers-reduced-motion`: jump to the end state instead of animating.
+
+## The world
+
+The page is a place. A 3D scene (`js/world.js`) sits behind everything: a night sky with a pearl glow at the horizon, a grid floor in `--pearl-a` hairlines that fades into that glow, a giant clock floating above the floor, and tiny figures walking past.
+
+- **Charts are evidence cards.** In the evidence chapters a veil dims the world and every chart and story step sits on frosted glass (`--surface` at 80%, 14px blur, `--line` border, 14px radius). Don't put charts directly on the world.
+- **The camera tells the story.** Wide and low in the hero, pulled back and dimmed for the evidence, close on the clock for the verdict. Moves are slow and follow scroll; nothing loops on its own except the walkers.
+- **The sky is mood, the rest is data.** Dusk drifting to night across 2003–2025 is atmosphere. The clock wedges, drips, pool and walkers all encode real numbers.
+- **Walkers are data.** The share of figures walking alone equals the share of waking time spent alone for the reader's age band (from 2010; earlier years hold 2010).
+- Without WebGL, the page falls back to the flat 2D clock and a plain night background.
 
 ## The melting clock
 

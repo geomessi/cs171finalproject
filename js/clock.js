@@ -16,7 +16,8 @@
  * - The wedges show how much of the day each activity takes, not when it happens.
  *   Socializing is rotated to the bottom so it melts with gravity.
  *
- * Registers 'hero' (still 2003 clock) and 'clock' (scroll-driven, with Play and a year slider).
+ * With WebGL, the 3D world (world.js) is the clock: the hero shows it in 2003 and chapter 6 gets a
+ * control card (Play, year slider, readouts). Without WebGL, this file draws the 2D clock instead.
  */
 (function () {
   const SOCIAL = '600024';
@@ -225,21 +226,82 @@
     };
   }
 
+  // ----- With WebGL: the 3D world is the clock; chapter 6 gets a control card -----
+  function worldCard(el) {
+    el.classList.add('world-card');
+    el.innerHTML = `
+      <div class="wc-panel">
+        <div class="wc-top"><span class="wc-year" id="wc-year">2003</span><span class="wc-age" data-you-label>15–24-year-olds</span></div>
+        <dl class="wc-stats">
+          <div><dt>Socializing</dt><dd class="soc" id="wc-soc">–</dd></div>
+          <div><dt>Lost since 2003–04</dt><dd class="soc" id="wc-lost">–</dd></div>
+          <div><dt id="wc-alone-label">Waking time alone</dt><dd id="wc-alone">–</dd></div>
+        </dl>
+        <div class="clock-controls">
+          <button type="button" id="clock-play">Play 2003 → 2025</button>
+          <input type="range" id="clock-year" min="2003" max="2025" step="1" value="2003" aria-label="Year">
+        </div>
+        <p class="clock-note">The clock is one average day: each wedge's angle is exact, and the glowing one is socializing. Drips grow with the minutes lost. Figures walking alone match the share of waking time spent alone (BLS "who with" data, from 2010). No 2020 estimates.</p>
+      </div>`;
+    const q = s => el.querySelector(s);
+    let timer = null;
+    const fmt = m => (m >= 60 ? `${Math.floor(m / 60)}h ${String(Math.round(m % 60)).padStart(2, '0')}m` : `${Math.round(m)} min`);
+    function show(y) {
+      world.setYear(y);
+      const r = world.readout();
+      q('#wc-year').textContent = y;
+      q('#clock-year').value = y;
+      q('#wc-soc').textContent = r.soc != null ? `${Math.round(r.soc)} min/day` : '–';
+      q('#wc-lost').textContent = y <= 2004 ? '–' : r.lost > 0.5 ? `−${Math.round(r.lost)} min/day` : 'about the same';
+      q('#wc-alone-label').textContent = `Waking time alone, ages ${r.aloneBand}`;
+      q('#wc-alone').textContent = r.aloneMin != null ? `${fmt(r.aloneMin)} · ${Math.round(r.aloneShare * 100)}%${r.aloneYear !== y ? ` (${r.aloneYear})` : ''}` : '–';
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } q('#clock-play').textContent = 'Play 2003 → 2025'; }
+    function play() {
+      stop();
+      const ys = story.data.years.filter(y => y !== 2020);
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { show(2025); return; }
+      let i = 0; show(ys[0]);
+      q('#clock-play').textContent = 'Pause';
+      timer = setInterval(() => { i += 1; if (i >= ys.length) { stop(); return; } show(ys[i]); }, 420);
+    }
+    q('#clock-play').addEventListener('click', () => (timer ? stop() : play()));
+    q('#clock-year').addEventListener('input', e => { stop(); let y = +e.target.value; if (y === 2020) y = world.year < 2020 ? 2021 : 2019; show(y); });
+    show(2003);
+    return { show, play, stop };
+  }
+
   let hero, main;
+  const useWorld = () => !!window.world;
 
   story.chapter('hero', {
-    init(el) { hero = makeClock(el, { interactive: false }); hero.render(2003, { t: 0 }); },
-    age(code) { hero?.setAge(code); hero?.render(2003, { t: 300 }); },
+    init(el) {
+      if (useWorld()) { world.init(); world.setAge(story.you); return; }
+      hero = makeClock(el, { interactive: false }); hero.render(2003, { t: 0 });
+    },
+    age(code) {
+      if (useWorld()) { world.setAge(code); main?.show?.(world.year); return; }
+      hero?.setAge(code); hero?.render(2003, { t: 300 });
+    },
   });
 
   story.chapter('clock', {
-    init(el) { main = makeClock(el, { interactive: true }); main.render(2003, { t: 0 }); },
+    init(el) {
+      if (useWorld()) { world.init(); world.setAge(story.you); main = worldCard(el); return; }
+      main = makeClock(el, { interactive: true }); main.render(2003, { t: 0 });
+    },
     step(n, dir) {
       if (!main) return;
+      if (useWorld()) {
+        if (n === 0) { main.stop(); main.show(2003); }
+        if (n === 1 && dir === 'down') main.play();
+        if (n === 2 && world.year < 2025) { main.stop(); main.show(2025); }
+        return;
+      }
       if (n === 0) { main.stop(); main.render(2003, { t: 400 }); }
       if (n === 1 && dir === 'down') main.play();
       if (n === 2 && main.year < 2025) { main.stop(); main.render(2025, { t: 600, drip: true }); }
     },
-    age(code) { main?.setAge(code); },
+    age(code) { if (!useWorld()) main?.setAge(code); },
   });
 })();

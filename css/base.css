@@ -93,12 +93,32 @@ h2 { font-size: clamp(26px, 3.4vw, 38px); }
 
 .site-foot { max-width: 1200px; margin: 0 auto; padding: 60px 20px 40px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
 
+/* ---------- The world (3D scene behind the story) ---------- */
+#world { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; display: block; }
+#veil { position: fixed; inset: 0; z-index: 0; background: var(--bg); opacity: 0; pointer-events: none; }
+.topbar { z-index: 10; }
+main, .site-foot { position: relative; z-index: 1; }
+html.no-world #world, html.no-world #veil { display: none; }
+
+/* With the world, the hero is a full-bleed scene and the text sits on the sky */
+html.has-world .hero { grid-template-columns: minmax(0, 1fr); min-height: calc(100vh - 50px); max-width: 1200px; }
+html.has-world .hero .viz { display: none; }
+html.has-world .hero-text { max-width: 560px; text-shadow: 0 2px 24px var(--bg); }
+
+/* Evidence cards: charts and story steps float over the world on frosted glass */
+html.has-world .chapter .viz.live { background: color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+html.has-world .step { background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.step strong { color: var(--ink); font-weight: 600; }
+
 @media (max-width: 820px) {
   .hero, .chapter { grid-template-columns: 1fr; }
   .chapter .viz { top: 56px; height: 55vh; grid-row: 1; z-index: 1; background: var(--bg); }
   .chapter .steps { padding: 10vh 0 40vh; gap: 50vh; position: relative; z-index: 2; }
   .step { background: color-mix(in srgb, var(--surface) 92%, transparent); padding: 14px 16px; border-radius: 10px; }
   .topbar nav { display: none; }   /* keep the bar one row so it doesn't cover the charts */
+  html.has-world .hero { align-items: end; padding-bottom: 8vh; }   /* text below the clock */
   .chapter .viz { top: 52px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
