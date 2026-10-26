@@ -1,6 +1,6 @@
 # Prototype V1 work plan
 
-**Story: The Case of the Missing Hour.** In 2003, 15–24-year-olds spent about an hour a day with other people; today it's 36 minutes. The page is a mystery: the usual suspects (work, TV) are cleared, the clues (emptier weekdays, more time alone) point somewhere quieter, and the verdict is that nobody stole the hour. The day went soft, and connection melted first.
+**Story: The Case of the Shrinking Hour.** In 2003, young Americans spent about an hour a day just being with other people. Something has been eating into it. Readers guess how much is left (36 minutes, down 39%). The usual suspects are cleared: work and TV both fell, so young people got time *back* and still spent less of it together. The clues point somewhere quieter: the weekdays emptied out, and the balance is tipping toward time alone. The verdict: nobody stole the hour; bit by bit, more of the day was spent alone.
 
 **Chapter order:** Hero → Make a guess → The case (the drop) → The suspects (where the time went) → Clue 1 (weekdays) → Clue 2 (alone) → The verdict (the clock). Chapter IDs didn't change, so your scripts still attach the same way.
 
@@ -11,7 +11,7 @@ The page skeleton is already in place: `index.html` has every chapter with its t
 | Package | Owner | Chapters | Files you own | Covers requirement |
 | --- | --- | --- | --- | --- |
 | 1. The opening | Mariah | Make a guess · The case · Clue 1 (weekdays) | `js/ch-guess.js`, `js/ch-drop.js`, `js/ch-weekdays.js`, `css/opening.css` | Functional D3 #1, one draft |
-| 2. Where the time went | Chloe | The suspects · Clue 2 (alone) | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
+| 2. Where the time went | Chloe | The suspects · Clue 2 (the balance) | `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` | Functional D3 #2, data pipeline, one draft |
 | 3. The world + melting clock | Georgia | Hero · The verdict | `js/world.js`, `js/clock.js`, `css/clock.css` | Novel view, process book assembly |
 
 ## Package 1 · The opening (Mariah)
@@ -30,7 +30,9 @@ Done when the guess works, the trend chart animates through all four steps, and 
 
 Done when the pipeline reruns cleanly, the diverging chart steps and plays, and the alone design is in the process book.
 
-**Chloe, heads-up:** the suspects chapter's steps are now step 1 work cleared (−18), step 2 TV cleared (−34), step 3 the trail (sleep +39, other leisure +29, chores +18). Same four steps, new framing; chores is new, so show it in the chart.
+**Chloe, heads-up:**
+- The suspects chapter's steps are now: step 1 work cleared (−18), step 2 TV cleared (−34, "so young people got time back"), step 3 the trail (sleep +39, other leisure +29, chores +18). Chores is new, so show it in the chart.
+- In Clue 2, the 3D world now shows a giant balance scale (alone vs. with others, ages 20–24, 2010–11 → 2024–25). Your alone chart becomes a smaller evidence card near the bottom of the screen (the `#alone .viz` box is already sized for it, about 30% of the screen height). Keep it simple: two lines, alone and with others, 2010–2025.
 
 ## Package 3 · The world and the melting clock, novel view (Georgia)
 

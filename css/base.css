@@ -106,6 +106,9 @@ html.has-world .hero .viz { display: none; }
 html.has-world .hero-text { max-width: 560px; text-shadow: 0 1px 2px rgba(10,14,40,.5), 0 2px 28px rgba(10,14,40,.55); }
 html.has-world .hero .dek { color: var(--ink); }
 
+/* Clue 2: the world's balance scale is the visual; the alone chart is a smaller card near the bottom */
+html.has-world #alone .viz { height: 30vh; top: 62vh; }
+
 /* Evidence cards: charts and story steps float over the world on frosted glass */
 html.has-world .chapter .viz.live { background: color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
@@ -119,7 +122,11 @@ html.has-world .step { background: color-mix(in srgb, var(--surface) 72%, transp
   .chapter .steps { padding: 10vh 0 40vh; gap: 50vh; position: relative; z-index: 2; }
   .step { background: color-mix(in srgb, var(--surface) 92%, transparent); padding: 14px 16px; border-radius: 10px; }
   .topbar nav { display: none; }   /* keep the bar one row so it doesn't cover the charts */
+  .brand { font-size: 15px; white-space: nowrap; }
+  .topbar { flex-wrap: nowrap; gap: 8px; }
+  .you { margin-left: auto; }
   html.has-world .hero { align-items: end; padding-bottom: 8vh; }   /* text below the clock */
+  html.has-world #alone .viz { height: 28vh; top: calc(100vh - 30vh); }
   .chapter .viz { top: 52px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }

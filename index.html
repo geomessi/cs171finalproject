@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Case of the Missing Hour</title>
+<title>The Case of the Shrinking Hour</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <!-- Shared styles (team-owned: change by pull request) -->
@@ -20,7 +20,7 @@
 <div id="veil" aria-hidden="true"></div>
 
 <header class="topbar">
-  <a class="brand" href="#top">The Case of the Missing Hour</a>
+  <a class="brand" href="#top">The Case of the Shrinking Hour</a>
   <nav aria-label="Chapters">
     <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#moved">Suspects</a>
     <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#clock">Verdict</a>
@@ -43,8 +43,8 @@
   <section class="hero" id="hero" data-chapter="hero">
     <div class="hero-text">
       <p class="eyebrow">American Time Use Survey · 2003–2025</p>
-      <h1>The case of the missing hour</h1>
-      <p class="dek">In 2003, Americans aged 15–24 spent about an hour a day with other people. Today it's 36 minutes. Same 24 hours. So where did the time go?</p>
+      <h1>The case of the shrinking hour</h1>
+      <p class="dek">In 2003, young Americans spent about an hour a day just being with other people. Something has been eating into it.</p>
       <p class="scroll-cue">Scroll to investigate ↓</p>
     </div>
     <div class="viz" id="hero-viz" data-owner="Package 3 · clock.js" data-placeholder="The melting clock: one average day, 2003"></div>
@@ -53,7 +53,7 @@
   <!-- ===== Before we start · Guess, then reveal · Package 1 ===== -->
   <section class="chapter" id="guess" data-chapter="guess">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">Before we start</p><h2>Make a guess</h2><p>How many minutes a day do you think <span data-you-label>15–24-year-olds</span> spend socializing with other people?</p></div>
+      <div class="step" data-step="0"><p class="kicker">Before we start</p><h2>Make a guess</h2><p>How much of that hour do you think is left? Guess how many minutes a day <span data-you-label>15–24-year-olds</span> spend socializing now.</p></div>
       <div class="step" data-step="1"><p>Drag the slider, then reveal the real number.</p></div>
     </div>
     <div class="viz" id="guess-viz" data-owner="Package 1 · ch-guess.js" data-placeholder="Slider guess → reveal the real minutes (functional)"></div>
@@ -62,8 +62,8 @@
   <!-- ===== The case · The drop · Package 1 · FUNCTIONAL D3 #1 ===== -->
   <section class="chapter" id="drop" data-chapter="drop">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">The case</p><h2>An hour goes missing</h2><p>In 2003–04, 15–24-year-olds spent 59 minutes a day socializing.</p></div>
-      <div class="step" data-step="1"><p>By 2024–25, it was 36 minutes. Nearly 40% of it, gone.</p></div>
+      <div class="step" data-step="0"><p class="kicker">The case</p><h2>Nearly 40% gone</h2><p>In 2003–04, 15–24-year-olds spent 59 minutes a day socializing.</p></div>
+      <div class="step" data-step="1"><p>By 2024–25, it was 36. That's 23 minutes a day, gone.</p></div>
       <div class="step" data-step="2"><p>Every age group lost some. Young people lost the most.</p></div>
       <div class="step" data-step="3"><p>Find your own line.</p></div>
     </div>
@@ -73,10 +73,10 @@
   <!-- ===== The suspects · Where the time went · Package 2 · FUNCTIONAL D3 #2 ===== -->
   <section class="chapter" id="moved" data-chapter="moved">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Who took it?</h2><p>A day always adds up to 24 hours. If socializing shrank, something else grew. Start with the usual suspects.</p></div>
+      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Who took it?</h2><p>A day always adds up to 24 hours, so if socializing shrank, something else grew. Start with the usual suspects: work and TV.</p></div>
       <div class="step" data-step="1"><p><strong>Work: cleared.</strong> 15–24-year-olds work 18 fewer minutes a day than in 2003–04.</p></div>
-      <div class="step" data-step="2"><p><strong>TV: cleared.</strong> TV time fell 34 minutes.</p></div>
-      <div class="step" data-step="3"><p>The trail leads somewhere quieter. Sleep and personal care grew 39 minutes. Other leisure, like games, computers, reading and sports, grew 29. Chores grew 18. These moved together; the data can't prove one caused another.</p></div>
+      <div class="step" data-step="2"><p><strong>TV: cleared.</strong> TV time fell 34 minutes. So young people got time back, and still spent less of it together.</p></div>
+      <div class="step" data-step="3"><p>The time went somewhere quieter: sleep and personal care (+39 minutes), other leisure like games, computers and reading (+29), and chores (+18). These moved together; the data can't prove one caused another.</p></div>
     </div>
     <div class="viz" id="moved-viz" data-owner="Package 2 · ch-moved.js" data-placeholder="Diverging change chart, animated 2003→2025 (functional D3)"></div>
   </section>
@@ -92,8 +92,8 @@
   <!-- ===== Clue 2 · Alone or together · Package 2 · DRAFT ===== -->
   <section class="chapter" id="alone" data-chapter="alone">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>More of the day, alone</h2><p>Since 2010–11, 20–24-year-olds went from 4h13m a day alone to 5h37m.</p></div>
-      <div class="step" data-step="1"><p>Time with other people fell by nearly two hours. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
+      <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>The balance is tipping</h2><p>In 2010–11, 20–24-year-olds spent 4h13m of their waking day alone and 9h53m with other people.</p></div>
+      <div class="step" data-step="1"><p>By 2024–25: 5h37m alone, 7h56m with others. The scale is tipping toward alone. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
     </div>
     <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025 (draft)"></div>
   </section>
@@ -101,8 +101,8 @@
   <!-- ===== The verdict · The melting clock (novel view) · Package 3 ===== -->
   <section class="chapter wide" id="clock" data-chapter="clock">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">The verdict</p><h2>Nobody stole it</h2><p>This is one average day for <span data-you-label>15–24-year-olds</span> in 2003, as a clock. Each wedge is an activity's share of the day. The glowing one is socializing.</p></div>
-      <div class="step" data-step="1"><p>Run it to 2025. The day didn't get busier. It went soft, and time with other people was the part that melted.</p></div>
+      <div class="step" data-step="0"><p class="kicker">The verdict</p><h2>Nobody stole it</h2><p>Here's one average day for <span data-you-label>15–24-year-olds</span> in 2003, as a clock. The pink wedge, by the water, is time spent socializing. The hands hold it in place.</p></div>
+      <div class="step" data-step="1"><p>Run it to 2025. The hands close in, and the front of the clock melts into the lake. The hour wasn't stolen. Bit by bit, more of the day was spent alone.</p></div>
       <div class="step" data-step="2"><p>If AI gives us back more of our hours, will we spend them on each other? Or will they melt the same way?</p></div>
     </div>
     <div class="viz" id="clock-viz" data-owner="Package 3 · clock.js" data-placeholder="The melting clock: novel view"></div>

@@ -15,6 +15,9 @@
  *   since 2003–04 (3-year smoothed). Pink drips fall into the lake and ripple out.
  * - Walkers: the share of figures walking alone equals the share of waking time spent alone for
  *   the reader's age band (BLS "who with" data, from 2010; earlier years hold the 2010 value).
+ * - The balance scale (Clue 2): one pan holds time alone, the other time with other people, for
+ *   the reader's age band (two-year averages, 2010–11 and 2024–25). Tilt and the number of tiny
+ *   figures on each pan are proportional to those minutes.
  * - Mood only: the sky deepens from golden hour toward dusk as the years run.
  *
  * Public API (window.world, null when WebGL is unavailable):
@@ -33,6 +36,7 @@
   const WATER = 0.25;
   const R = 10;
   const CLOCK_XZ = [0, -24];
+  const SCALE_XZ = [-36, -40];
   const TILT = 0.22;   // the clock tips its face toward the viewer
   const WHO_BAND = { '000': ['000', 'all ages'], '103': ['020', '20–24'], '031': ['031', '25–34'], '038': ['038', '35–44'], '042': ['042', '45–54'], '049': ['049', '55–64'], '065': ['113', '65–74'] };
 
@@ -56,6 +60,7 @@
 
   let ready = false, age = '103', year = 2003;
   let renderer, scene, camera, sun, hemi, skyMat, clockGroup, mirrorClock, faceTex, faceCtx, grooves;
+  let scale = null, scaleShown = { A: 0, O: 0, tilt: 0, key: '' };
   let clockY = 4, deformables = [], walkers, walkerShadows, drips = [], ripples = [], pinkPool, clouds = [];
   const target = { arcs: null, lost: 0, share: 0.3, dusk: 0 };
   const cur = { arcs: null, lost: 0, share: 0.3, dusk: 0, melt: -1 };
@@ -109,7 +114,8 @@
   function groundH(x, z) {
     const dc = Math.hypot(x - CLOCK_XZ[0], z - CLOCK_XZ[1]);
     const dunes = (1.6 * Math.sin(x * 0.045 + 0.7) * Math.sin(z * 0.035 + 0.3) + 1.0 * Math.sin((x + z) * 0.06)
-      + 4.5 * smooth(-45, -140, z) * (0.5 + 0.5 * Math.sin(x * 0.028 + 1.1))) * smooth(10, 32, dc);
+      + 4.5 * smooth(-45, -140, z) * (0.5 + 0.5 * Math.sin(x * 0.028 + 1.1))) * smooth(10, 32, dc)
+      * smooth(6, 22, Math.hypot(x - SCALE_XZ[0], z - SCALE_XZ[1]));
     const mound = 4.2 * Math.exp(-((x * x) / (2 * 15 * 15) + ((z + 26) ** 2) / (2 * 12 * 12)));
     const lake = -9 * Math.exp(-((x * x) / (2 * 40 * 40) + ((z + 2) ** 2) / (2 * 12 * 12)));
     return 1.2 + dunes + mound + lake;
@@ -350,10 +356,13 @@
     const figGeo = new THREE.CapsuleGeometry(0.085, 0.34, 4, 8).translate(0, 0.26, 0);
     const headGeo = new THREE.SphereGeometry(0.085, 10, 8).translate(0, 0.58, 0);
     const merged = mergeGeos([figGeo, headGeo]);
+    _scaleFigGeo = merged;
     walkers = new THREE.InstancedMesh(merged, figMat, N);
     walkers.castShadow = true;
     walkers.userData.figs = d3.range(N).map(i => ({ i, rank: (i * 0.61803398875 + 0.137) % 1, r: 0, th: 0, phase: hash(i + 3) * 6.28 }));
     clockGroup.add(walkers);
+
+    buildScale(figGeoForScale());
 
     addEventListener('resize', resize);
     addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
@@ -374,6 +383,117 @@
     m.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
     if (idx.length) m.setIndex(idx);
     return m;
+  }
+
+  // ---------- the balance scale (Clue 2) ----------
+  let _scaleFigGeo;
+  function figGeoForScale() { return _scaleFigGeo; }
+  function labelSprite() {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 256;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false }));
+    sp.userData.ctx = c.getContext('2d'); sp.scale.set(6, 3, 1);
+    return sp;
+  }
+  function paintLabel(sp, title, value, sub) {
+    const g = sp.userData.ctx;
+    g.clearRect(0, 0, 512, 256);
+    g.fillStyle = 'rgba(21,22,31,0.78)';
+    g.beginPath(); if (g.roundRect) g.roundRect(56, 40, 400, 176, 26); else g.rect(56, 40, 400, 176); g.fill();
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = '#A19DB0'; g.font = '500 30px "IBM Plex Mono", ui-monospace, monospace'; g.fillText(title, 256, 86);
+    g.fillStyle = '#EEEBF5'; g.font = `600 64px ${displayFont}`; g.fillText(value, 256, 142);
+    if (sub) { g.fillStyle = '#D8C2A0'; g.font = '400 24px "IBM Plex Mono", ui-monospace, monospace'; g.fillText(sub, 256, 190); }
+    sp.material.map.needsUpdate = true;
+  }
+  function buildScale() {
+    const [sx, sz] = SCALE_XZ, gy = groundH(sx, sz);
+    const metal = new THREE.MeshLambertMaterial({ color: PAL.bezel });
+    const dark = new THREE.MeshLambertMaterial({ color: PAL.ink });
+    const root = new THREE.Group(); root.position.set(sx, gy, sz); root.rotation.y = 0.5;
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 0.5, 40), metal); base.position.y = 0.25;
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.36, 10.4, 20), metal); col.position.y = 5.4;
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 14), metal); knob.position.y = 10.8;
+    [base, col, knob].forEach(m => { m.castShadow = true; m.receiveShadow = true; });
+    const beam = new THREE.Group(); beam.position.y = 10.6;
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(17, 0.32, 0.32), metal); bar.castShadow = true;
+    beam.add(bar);
+    const pans = [-1, 1].map(side => {
+      const end = new THREE.Object3D(); end.position.x = side * 8.2; beam.add(end);
+      const pan = new THREE.Group();
+      const dish = new THREE.Mesh(new THREE.CylinderGeometry(3, 2.5, 0.35, 48), metal); dish.castShadow = dish.receiveShadow = true;
+      pan.add(dish);
+      const people = new THREE.InstancedMesh(_scaleFigGeo, dark, 40); people.castShadow = true; people.count = 0;
+      people.position.y = 0.17; pan.add(people);
+      const label = labelSprite(); label.position.y = 6.8; pan.add(label);
+      root.add(pan);
+      return { side, end, pan, people, label };
+    });
+    const strings = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: PAL.ink, transparent: true, opacity: 0.7 }));
+    strings.geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(2 * 3 * 3 * 2), 3));
+    root.add(base, col, knob, beam, strings);
+    const sign = labelSprite(); sign.position.set(0, 14.2, 0); sign.scale.set(7, 3.5, 1); root.add(sign);
+    scene.add(root);
+    scale = { root, beam, pans, strings, sign };
+  }
+  function scaleTargets() {
+    const [band, label] = WHO_BAND[age] || WHO_BAND['000'];
+    const al = story.data.who[`01|${band}|00`], ot = story.data.who[`02|${band}|00`];
+    const later = activeStep('alone') >= 1;
+    const yrs = later ? [2024, 2025] : [2010, 2011];
+    const avg2 = arr => story.avg(arr, yrs);
+    return { A: avg2(al), O: avg2(ot), label, period: later ? '2024–25' : '2010–11' };
+  }
+  function activeStep(id) {
+    const st = document.querySelector(`#${id} .step.is-active`);
+    return st ? +st.dataset.step : 0;
+  }
+  const hm = m => `${Math.floor(m / 60)}h ${String(Math.round(m % 60)).padStart(2, '0')}m`;
+  const _e = new THREE.Vector3();
+  function updateScale(dt) {
+    if (!scale) return;
+    const T = scaleTargets();
+    const k = lerpK(dt, 1.6);
+    scaleShown.A += (T.A - scaleShown.A) * k; scaleShown.O += (T.O - scaleShown.O) * k;
+    const A = scaleShown.A, O = scaleShown.O;
+    // heavier pan drops: "with others" on the left (side −1), "alone" on the right
+    const tilt = 0.5 * (O - A) / (O + A);
+    scale.beam.rotation.z = tilt;
+    const F = 26, nAlone = Math.round(F * A / (A + O)), nOthers = F - nAlone;
+    const pos = scale.strings.geometry.attributes.position;
+    scale.pans.forEach((p, idx) => {
+      scale.root.updateMatrixWorld();
+      p.end.getWorldPosition(_e); scale.root.worldToLocal(_e);
+      p.pan.position.set(_e.x, _e.y - 5.2, _e.z);
+      // three strings from the beam end to the rim of the pan
+      for (let s3 = 0; s3 < 3; s3++) {
+        const a = s3 * (Math.PI * 2 / 3) + 0.4, o = (idx * 3 + s3) * 6;
+        pos.array[o] = _e.x; pos.array[o + 1] = _e.y; pos.array[o + 2] = _e.z;
+        pos.array[o + 3] = _e.x + Math.cos(a) * 2.8; pos.array[o + 4] = _e.y - 5.1; pos.array[o + 5] = _e.z + Math.sin(a) * 2.8;
+      }
+      const alone = p.side === 1, n = alone ? nAlone : nOthers;
+      p.people.count = n;
+      for (let i = 0; i < n; i++) {
+        let x, z;
+        if (alone) {               // spread out, one per spot
+          const r = 0.5 + 1.9 * Math.sqrt((i + 0.5) / Math.max(n, 1)), a = i * 2.39996;
+          x = Math.cos(a) * r; z = Math.sin(a) * r;
+        } else {                   // huddled in small groups of three
+          const g3 = Math.floor(i / 3), m = i % 3, ga = g3 * 2.39996, gr = 0.4 + 1.55 * Math.sqrt((g3 + 0.5) / Math.ceil(n / 3));
+          x = Math.cos(ga) * gr + Math.cos(m * 2.1) * 0.24; z = Math.sin(ga) * gr + Math.sin(m * 2.1) * 0.24;
+        }
+        dummy.position.set(x, 0, z); dummy.rotation.y = hash(i + idx * 50) * 6.28; dummy.scale.setScalar(1.6); dummy.updateMatrix();
+        p.people.setMatrixAt(i, dummy.matrix);
+      }
+      p.people.instanceMatrix.needsUpdate = true;
+    });
+    pos.needsUpdate = true;
+    const key = `${Math.round(A)}|${Math.round(O)}|${T.period}|${T.label}`;
+    if (key !== scaleShown.key) {
+      scaleShown.key = key;
+      paintLabel(scale.pans[0].label, 'WITH OTHERS', hm(O), `${Math.round(100 * O / (A + O))}% of waking time`);
+      paintLabel(scale.pans[1].label, 'ALONE', hm(A), `${Math.round(100 * A / (A + O))}% of waking time`);
+      paintLabel(scale.sign, `AGES ${T.label}`, T.period, 'waking hours per day');
+    }
   }
 
   function resize() {
@@ -472,8 +592,10 @@
     const mid = innerHeight / 2;
     const hero = document.getElementById('hero').getBoundingClientRect();
     const clock = document.getElementById('clock').getBoundingClientRect();
+    const alone = document.getElementById('alone').getBoundingClientRect();
     if (hero.bottom > mid * 0.9) return 'hero';
     if (clock.top < mid) return 'verdict';
+    if (alone.top < mid && alone.bottom > mid) return 'scale';
     return 'evidence';
   }
   const narrow = () => innerWidth < 820;
@@ -481,10 +603,12 @@
     hero: { pos: [0, 12, 30], look: [-11, 4.5, -32], veil: 0 },
     evidence: { pos: [-26, 17, 30], look: [0, 3, -26], veil: 0.72 },
     verdict: { pos: [4, 17, 8], look: [-1.5, 3, -21], veil: 0.04 },
+    scale: { pos: [-2, 9.5, -5], look: [-43.5, 4.6, -36.5], veil: 0.04 },
   };
   const SHOTS_NARROW = {
     hero: { pos: [0, 15, 46], look: [0, 1.5, -32], veil: 0 },
     evidence: SHOTS.evidence,
+    scale: { pos: [-16.5, 15.5, 15], look: [-36, 0, -40], veil: 0.04 },
     verdict: { pos: [0, 31, 16], look: [0, -1, -22], veil: 0.04 },
   };
 
@@ -511,6 +635,7 @@
     updateFace(k);
     updateMelt(dt, k);
     updateWalkers(t, dt, k);
+    updateScale(dt);
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
