@@ -10,11 +10,13 @@
  *   3: Sleep (+39), Other leisure (+29) and Chores (+18) highlighted
  * Play animates the end period from 2004–05 to 2024–25; the slider picks one period.
  * Rows keep the order of the 2024–25 change so they don't jump around while playing.
+ * Always ages 15–24, to match the step text. TODO (WORKPLAN.md): check the story for other ages.
  */
 (function () {
   const START = [2003, 2004];
   const FIRST = 2005, LAST = 2025;
   const SOCIAL = '600024';
+  const AGE = '103';   // 15–24; ignores the "I'm…" menu for now
   // Rows lit up in each step. Earlier suspects stay half-lit once they're "cleared".
   const FOCUS = { 0: [], 1: ['600013'], 2: ['600025'], 3: ['600001', 'leis', '600003'] };
   const SHORT = {
@@ -29,7 +31,7 @@
   let root, plot, svg, grid, xAxis, zero, rows, summary, readout, playBtn, slider, sliderOut, timer = null;
 
   function change(code, end) {
-    const s = story.series(story.you, code);
+    const s = story.series(AGE, code);
     const a = story.avg(s, START), b = story.avg(s, [end - 1, end]);
     return a == null || b == null ? null : { a, b, d: b - a };
   }
@@ -99,8 +101,8 @@
 
     const social = data.find(d => d.code === SOCIAL);
     summary.textContent = state.shown
-      ? `Ages ${story.ageName(story.you)}, 2003–04 → ${period(state.end)}. Socializing ${fmt(social.d)} min/day.`
-      : `Change in minutes per day since 2003–04, ages ${story.ageName(story.you)}.`;
+      ? `Ages ${story.ageName(AGE)}, 2003–04 → ${period(state.end)}. Socializing ${fmt(social.d)} min/day.`
+      : `Change in minutes per day since 2003–04, ages ${story.ageName(AGE)}.`;
     slider.property('value', state.end);
     sliderOut.text(period(state.end));
     showReadout(data);
@@ -170,6 +172,5 @@
       state.end = LAST;   // the step text quotes 2024–25
       render(true);
     },
-    age() { stop(); render(true); },
   });
 })();

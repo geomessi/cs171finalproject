@@ -34,6 +34,8 @@ Done when the pipeline reruns cleanly, the diverging chart steps and plays, and 
 - The suspects chapter's steps are now: step 1 work cleared (−18), step 2 TV cleared (−34, "so young people got time back"), step 3 the trail (sleep +39, other leisure +29, chores +18). Chores is new, so show it in the chart.
 - Clue 2 is your line chart again in a normal evidence card: alone vs. with others, ages 20–24, 2010–2025. The balance scale now has its own chapter right after yours ("Weigh it"), so your chart sets up the trend and the scale makes it felt.
 
+**Future TODO (Chloe):** the suspects chart is locked to ages 15–24 for now, because the step text quotes 15–24 numbers. Check whether the story holds for the other age ranges (for 55–64, work and TV went *up*). Then either update the step text to follow the "I'm…" menu, or let the chart switch age groups only at the end, like the drop chart does.
+
 ## Package 3 · The world and the melting clock, novel view (Georgia)
 
 1. **The world** (`world.js`, done): a sunlit, painterly three.js scene behind the whole page. An ultramarine sky with pink clouds, soft dunes, a mirror lake, and a giant clock floating over a dune at the water's edge. The camera moves with the story: low and wide in the hero, pulled back and dimmed behind the evidence chapters, high over the clock for the verdict.
