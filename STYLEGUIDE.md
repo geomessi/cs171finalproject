@@ -12,7 +12,7 @@ What we took from the mood board:
 | --- | --- |
 | Surreal melting clocks | The novel view: a 24-hour clock that softens and drips as socializing drains away. Soft, rounded display type. Slow, viscous motion. |
 | Tiny people walking on a disc | Human scale. Small figure silhouettes can stand in for "people" next to the clock. Never cartoon characters. |
-| Pearl, opal and iridescent surfaces | The sheen marks what's precious. Only socializing and the clock's rim get it. |
+| Pearl, opal and iridescent surfaces | The sheen marks what's precious: a thin edge on socializing in the clock, and nowhere else. |
 | Glowing data art, grid tunnels, scan lines | Fine grids and hairlines in the charts. Monospace for every number and label. |
 | Sand, smoke, ceramic | A warm sand accent for the reader: "you", your guess, your age line. |
 
@@ -36,7 +36,7 @@ The mood board images are reference only. Don't put them on the site, and don't 
 | Variable | Hex | Use |
 | --- | --- | --- |
 | `--c-social` | `#FF8DB8` | Socializing, everywhere. The one luminous color. |
-| `--sheen` | pearl gradient | Socializing in the clock, and the clock's rim. Nowhere else. |
+| `--sheen` | pearl gradient | A thin highlight edge on the socializing wedge. Nowhere else. |
 | `--sand` (`--accent`) | `#D8C2A0` | The reader: the "I'm…" menu, your guess, your age group's line. |
 | `--c-more` | `#8FD8CB` | Time gained, in the diverging chart. |
 | `--c-less` | same as socializing | Time lost, in the diverging chart. |
@@ -103,10 +103,12 @@ In D3, use `d3.easeCubicInOut` for builds and `d3.easeQuadIn` for falling drops 
 
 ## The melting clock
 
-- Midnight at the top, time running clockwise, 1,440 minutes around the dial.
-- Wedge angles are exact. The melt (sag and drips) happens outside the wedges, so it never changes what people read.
-- The socializing wedge uses `--sheen`, and every other wedge uses its dusk activity color.
-- Drops are `--c-social`, falling with `easeQuadIn`. If they're drawn larger than the minutes they stand for, the caption says so.
+- Midnight at the top, 1,440 minutes around the dial, one tick per hour. Wedges show each activity's share of the day, not when it happens.
+- Wedge angles are exact. The melt (a soft sag in the rim, hanging drips, falling drops) happens outside the wedges, so it never changes what people read.
+- **Only socializing glows.** It's solid `--c-social` with a soft glow and a thin pearl-sheen edge, rotated to the bottom so it melts with gravity. Every other wedge is its activity color mixed about halfway into `--bg`, so the face stays at dusk.
+- The rim is a thin `--muted` hairline, not a thick ring.
+- Drips and drops are `--c-social`. Drops fall with `easeQuadIn`. Each drop is about 2 minutes lost, and the caption says so.
+- Controls around the clock stay neutral (`--ink` text, `--faint` borders). Pink is never a UI color, and sand is never a button.
 - The year sits in the center in Fraunces, large.
 
 ## Voice

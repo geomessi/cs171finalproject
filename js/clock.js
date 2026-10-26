@@ -7,9 +7,12 @@
  * What is data and what is metaphor:
  * - DATA: each wedge's angle is exact (minutes / 1,440 × 360°). The year, the minutes in the
  *   center and the tooltip numbers come straight from data/atus.json.
- * - METAPHOR: the rim sags and drips in proportion to socializing minutes lost since 2003–04
- *   (smoothed over three years so single noisy years don't jerk it around). One drop ≈ 2 minutes.
+ * - METAPHOR: under the socializing wedge the rim softens and pink drips hang off the clock,
+ *   longer as more minutes are lost since 2003–04 (smoothed over three years so single noisy
+ *   years don't jerk it around). Falling drops fill a pool; one drop ≈ 2 minutes.
  *   The melt stays outside the wedges so it never changes what people read.
+ * - LOOK (STYLEGUIDE.md): every wedge is dimmed toward the night background; socializing is the
+ *   only bright, glowing shape. Pink means socializing only; sand means "you" only.
  * - The wedges show how much of the day each activity takes, not when it happens.
  *   Socializing is rotated to the bottom so it melts with gravity.
  *
@@ -42,9 +45,15 @@
     const sheen = defs.append('linearGradient').attr('id', `${id}-sheen`).attr('x1', 0).attr('y1', 0).attr('x2', 1).attr('y2', 1);
     [['0%', '--pearl-a'], ['55%', '--pearl-b'], ['100%', '--pearl-c']].forEach(([o, v]) => sheen.append('stop').attr('offset', o).style('stop-color', `var(${v})`));
     const SHEEN = `url(#${id}-sheen)`;
+    const glow = defs.append('filter').attr('id', `${id}-glow`).attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+    glow.append('feGaussianBlur').attr('stdDeviation', 7).attr('result', 'b');
+    const merge = glow.append('feMerge'); merge.append('feMergeNode').attr('in', 'b'); merge.append('feMergeNode').attr('in', 'SourceGraphic');
+    const GLOW = `url(#${id}-glow)`;
+    const dusk = code => `color-mix(in srgb, ${story.color(code)} 52%, var(--bg))`;
 
     const gPool = svg.append('g');
-    const rim = svg.append('path').attr('class', 'clock-rim').attr('fill', 'none').attr('stroke', SHEEN).attr('stroke-width', 5);
+    const rim = svg.append('path').attr('class', 'clock-rim').attr('fill', 'none').attr('stroke', 'var(--muted)').attr('stroke-opacity', 0.55).attr('stroke-width', 1.2);
+    const gDrips = svg.append('g').attr('filter', GLOW);
     const gTicks = svg.append('g').attr('transform', `translate(${cx},${cy})`);
     const gWedges = svg.append('g').attr('transform', `translate(${cx},${cy})`);
     const gLabels = svg.append('g').attr('transform', `translate(${cx},${cy})`).attr('pointer-events', 'none');
@@ -61,7 +70,7 @@
     const socText = gCenter.append('text').attr('class', 'clock-soc').attr('y', 28);
     gCenter.append('text').attr('class', 'clock-soc-label').attr('y', 46).text('socializing a day');
 
-    const pool = gPool.append('ellipse').attr('cx', cx).attr('cy', POOL_Y).attr('rx', 0).attr('ry', 0).attr('fill', 'var(--c-social)').attr('opacity', 0.85);
+    const pool = gPool.append('ellipse').attr('cx', cx).attr('cy', POOL_Y).attr('rx', 0).attr('ry', 0).style('fill', 'var(--c-social)').attr('opacity', 0.75).attr('filter', `url(#${id}-glow)`);
     const poolText = gPool.append('text').attr('class', 'clock-pool-label').attr('x', cx).attr('y', POOL_Y + 30).attr('text-anchor', 'middle');
 
     const arc = d3.arc().innerRadius(R0).outerRadius(R);
@@ -97,6 +106,15 @@
       return d3.line().curve(d3.curveCatmullRomClosed)(pts);
     }
 
+    // Hanging drips: offset from the bottom center, width, and share of the full drip length
+    const DRIPS = [{ dx: -30, w: 5, len: 0.4 }, { dx: -14, w: 7, len: 0.78 }, { dx: 0, w: 10, len: 1 }, { dx: 15, w: 6, len: 0.6 }, { dx: 29, w: 4, len: 0.3 }];
+    function dripPath(x, y0, w, L) {   // a soft stem with a round bead at the end
+      const r = w / 2, b = w * 0.8, Ls = Math.max(0, L);
+      if (Ls < 1) return `M${x - r},${y0} L${x + r},${y0} Z`;
+      return `M${x - r},${y0} C${x - r},${y0 + Ls * 0.5} ${x - b},${y0 + Ls - b} ${x - b},${y0 + Ls} `
+        + `A${b},${b} 0 1 0 ${x + b},${y0 + Ls} C${x + b},${y0 + Ls - b} ${x + r},${y0 + Ls * 0.5} ${x + r},${y0} Z`;
+    }
+
     function setPool(n) {
       pool.transition().duration(dur(300)).attr('rx', n ? 8 + n * 3.2 : 0).attr('ry', n ? 3 + n * 0.35 : 0);
     }
@@ -111,7 +129,10 @@
           .attr('d', arc).attr('stroke', 'var(--bg)').attr('stroke-width', 1)
           .on('mousemove', (e, d) => showTip(e, d)).on('mouseleave', () => tip.attr('hidden', true)),
       )
-        .attr('fill', d => (d.data.code === SOCIAL ? SHEEN : story.color(d.data.code)))
+        .style('fill', d => (d.data.code === SOCIAL ? 'var(--c-social)' : dusk(d.data.code)))
+        .attr('filter', d => (d.data.code === SOCIAL ? GLOW : null))
+        .attr('stroke', d => (d.data.code === SOCIAL ? SHEEN : 'var(--bg)'))
+        .attr('stroke-width', d => (d.data.code === SOCIAL ? 1.5 : 1))
         .transition().duration(dur(t)).ease(d3.easeCubicInOut)
         .attrTween('d', function (d) { const i = d3.interpolate(this._a, d); this._a = i(1); return k => arc(i(k)); });
 
@@ -131,14 +152,19 @@
       socText.text(`${Math.round(soc)} min`);
 
       const lost = lostBy(age, y);
-      rim.transition().duration(dur(t)).ease(d3.easeCubicInOut).attr('d', rimPath(Math.min(90, lost * SAG_PER_MIN)));
+      const sag = Math.min(90, lost * SAG_PER_MIN);
+      rim.transition().duration(dur(t)).ease(d3.easeCubicInOut).attr('d', rimPath(sag * 0.28));
+      const rimY = cy + RIM + sag * 0.28;
+      gDrips.selectAll('path').data(DRIPS).join('path').style('fill', 'var(--c-social)')
+        .transition().duration(dur(t)).ease(d3.easeCubicInOut)
+        .attr('d', d => dripPath(cx + d.dx, rimY - 3 - Math.abs(d.dx) * 0.12, d.w, sag * d.len));
 
       const target = Math.round(lost / MIN_PER_DROP);
       if (drip && !reduceMotion && target > dropsShown) {
-        const tipY = cy + RIM + Math.min(90, lost * SAG_PER_MIN);
+        const tipY = cy + RIM + Math.min(90, lost * SAG_PER_MIN) * 1.28;
         d3.range(target - dropsShown).forEach(k => {
-          gDrops.append('circle').attr('cx', cx + (Math.random() - 0.5) * 6).attr('cy', tipY).attr('r', 5)
-            .attr('fill', 'var(--c-social)')
+          gDrops.append('circle').attr('cx', cx + (Math.random() - 0.5) * 4).attr('cy', tipY).attr('r', 4)
+            .style('fill', 'var(--c-social)')
             .transition().delay(k * 120).duration(650).ease(d3.easeQuadIn).attr('cy', POOL_Y)
             .on('end', function () { d3.select(this).remove(); });
         });
