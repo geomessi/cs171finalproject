@@ -1,1 +1,25 @@
-/* Package 3 · Hero + Chapter 6. Only this package edits this file. Use the color and font variables from base.css. */
+/* Georgia (Package 3) · Hero + Chapter 6. Only this package edits this file. Uses variables from base.css. */
+
+.clock-viz { display: flex; flex-direction: column; gap: 10px; }
+.clock-viz svg { flex: 1 1 auto; min-height: 0; }
+.hero .clock-viz svg { height: 100%; }
+
+.clock-year { font: 600 54px var(--display) !important; font-variation-settings: "SOFT" 100; fill: var(--ink) !important; }
+.clock-soc { font: 500 20px var(--mono) !important; fill: var(--c-social) !important; }
+.clock-soc-label { font: 12px var(--body) !important; fill: var(--muted) !important; }
+.clock-label .n { font: 12px var(--body) !important; fill: var(--ink) !important; text-anchor: middle; }
+.clock-label .v { font: 11px var(--mono) !important; fill: var(--muted) !important; text-anchor: middle; }
+.clock-pool-label { font: 500 13px var(--mono) !important; fill: var(--c-social) !important; }
+.clock-viz svg path { cursor: default; }
+
+.clock-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.clock-controls button { font: 500 13px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--sand); border-radius: 999px; padding: 5px 14px; cursor: pointer; transition: background var(--fast); }
+.clock-controls button:hover { background: var(--surface); }
+.clock-controls button:focus-visible, .clock-controls input:focus-visible { outline: 2px solid var(--sand); outline-offset: 2px; }
+.clock-controls input[type=range] { flex: 1; min-width: 140px; accent-color: var(--c-social); }
+.clock-out { font: 600 20px var(--display); font-variation-settings: "SOFT" 100; min-width: 4ch; }
+.clock-note { font-size: 12px; color: var(--muted); margin: 0; max-width: 70ch; }
+
+.clock-tip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 6px 9px; font-size: 12.5px; display: grid; gap: 2px; z-index: 5; max-width: 190px; }
+.clock-tip span { font: 12px var(--mono); color: var(--muted); }
+.clock-tip[hidden] { display: none; }
