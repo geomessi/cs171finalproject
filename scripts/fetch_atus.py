@@ -14,7 +14,7 @@ Output: data/atus.json, values in MINUTES per day, one value per year
   par[parent][day][activity] same, by presence of own child under 18
   who["who|age|day"]         waking time by companion (starts 2010)
 
-Codes: age 000 all, 103 15-24, 031 25-34, 038 35-44, 042 45-54, 049 55-64,
+Codes: age 000 all, 103 15-24, 020 20-24, 031 25-34, 038 35-44, 042 45-54, 049 55-64,
 065 65+. day 00 all days, 19 nonholiday weekdays, 16 weekends/holidays.
 parent 13 own child <18 at home, 01 none.
 """
@@ -23,12 +23,13 @@ from pathlib import Path
 
 BASE = "https://download.bls.gov/pub/time.series/tu/"
 YEARS = list(range(2003, 2026))
-AGES = ["000", "103", "031", "038", "042", "049", "065"]
+AGES = ["000", "103", "020", "031", "038", "042", "049", "065"]
 DAYS = ["00", "19", "16"]
 PARENTS = ["01", "13"]
 ACTS = ["600001", "600003", "600007", "600010", "600013", "600016", "600018",
         "600022", "600023", "600030", "600033", "600034",  # 12 groups that sum to 24h
-        "600024", "600025"]  # socializing, TV (both inside 600023 leisure)
+        "600024", "600025",  # socializing, TV (both inside 600023 leisure)
+        "600058"]  # playing games and computer use for leisure (inside 600023)
 AWAKE = "600085"
 
 
