@@ -98,7 +98,12 @@ h2 { font-size: clamp(26px, 3.4vw, 38px); }
 #veil { position: fixed; inset: 0; z-index: 0; background: var(--bg); opacity: 0; pointer-events: none; }
 .topbar { z-index: 10; }
 main, .site-foot { position: relative; z-index: 1; }
-html.no-world #world, html.no-world #veil { display: none; }
+html.no-world #world, html.no-world #veil, html.no-world #canvas-grain { display: none; }
+/* Painted, not rendered: a warm varnish on the scene, oil-paint grain, and a soft vignette */
+#world { filter: saturate(1.06) contrast(1.07) sepia(0.07); }
+#canvas-grain { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(30, 18, 8, 0.38) 100%), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.42  0 0 0 0 0.32  0 0 0 0.55 0'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply; opacity: 0.55; }
 
 /* With the world, the hero is a full-bleed scene and the text sits on the sky */
 html.has-world .hero { grid-template-columns: minmax(0, 1fr); min-height: calc(100vh - 50px); max-width: 1200px; }

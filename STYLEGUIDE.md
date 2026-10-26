@@ -103,28 +103,30 @@ In D3, use `d3.easeCubicInOut` for builds and `d3.easeQuadIn` for falling drops 
 
 ## The world
 
-The page is a place, sunlit and painterly rather than digital. A 3D scene (`js/world.js`) sits behind everything: a deep ultramarine sky with a warm golden band at the horizon and drifting pink clouds, soft sand dunes, a mirror-still lake that reflects the sky, the clouds and the clock, and a giant clock floating over a dune at the water's edge.
+The page is a place, and it should feel like a surrealist painting: hyperreal precision applied to something impossible. A 3D scene (`js/world.js`) sits behind everything.
 
-- **The world has its own palette** (in `world.js`): zenith `#22348F`, sky `#3A52B6`, horizon `#F3D3A2`, sand `#D8B489`, water `#24388C`, clouds `#F4A9C8`, clock face `#EFE6D5`, ink `#2A2320`. Activity regions on the face are painted in warm, earthy versions of the activity colors. Socializing stays the site pink `#FF8DB8` everywhere, so it ties the world to the charts.
-- **The clock must read as a clock.** A cream face with record-like grooves, a pearl bezel, hour marks with numerals every 3 hours, and two hands. The numerals count hours of the day (3h, 6h…), because the dial shows how long each activity takes, not when.
-- **Light is warm and low,** from the left, so the tiny walkers cast long shadows across the face.
-- **Charts are evidence cards.** In the evidence chapters a veil dims the world, and every chart and story step sits on frosted glass (`--surface` at 80%, 14px blur, `--line` border, 14px radius). Don't put charts directly on the world.
-- **The camera tells the story.** Low and wide in the hero, so the clock floats over its reflection. Pulled back and dimmed for the evidence. High above the face for the verdict.
-- **The background is only clocks.** The main clock is the reader's age group. Smaller clocks floating over the far dunes are the other age groups' days, each tagged with its socializing minutes.
-- **The balance scale has its own chapter** ("Weigh it"), drawn as a painted panel in the world palette: ultramarine sky, pink clouds, dunes, a pearl column and beam, shallow pans, tiny dark figures with long shadows. "With others" figures huddle in threes; "alone" figures stand apart. Tilt and figure counts are proportional to the minutes. Labels sit on small dark tags (mono title, Fraunces value, sand share).
-- **The sky is mood, the rest is data.** Golden hour drifting toward dusk across 2003–2025 is atmosphere. The face regions, hands, melt, drips and walkers all encode real numbers.
-- We take the feeling of surrealist soft clocks, not any painting itself: no copied compositions or objects.
+- **Sparse and exact.** A clean sky, deep ultramarine fading to a luminous pale gold at a perfectly flat horizon. No clouds. An empty ochre plain. A still lake that mirrors the sky. Few objects, and every one of them crisp. The emptiness is the point.
+- **Hard, low, raking light.** One sun near the horizon from the left, low fill, sharp shadows that stretch far across the plain.
+- **Painted, not rendered.** A warm varnish on the scene (slight sepia, contrast and saturation), a fine oil-paint grain, and a soft vignette (`#canvas-grain`).
+- **The background is only clocks.** The main clock is the reader's age group. Smaller clocks on their own plinths across the plain are the other age groups' days, each tagged with its socializing minutes and each gone soft by its own loss.
+- **The world palette** (in `world.js`): zenith `#16246E`, sky `#2C46A8`, horizon `#F7EAC0`, plain `#C99E68`, stone `#CDB89A`, water `#24388C`, clock face `#EFE6D5`, ink `#2A2320`. Socializing stays the site pink `#FF8DB8`.
+- **The clock must read as a clock:** a cream face with record-like grooves, a pearl bezel, hour numerals every 3 hours (counting hours of the day, not clock times), and two hands.
+- **Charts are evidence cards** on frosted glass while a veil dims the world.
+- **The balance scale has its own chapter** ("Weigh it"), a painted panel in the world palette with tiny figures on two pans; tilt and figure counts follow the minutes.
+- **The sky is mood, the rest is data.** The light drifting from day toward dusk across 2003–2025 is atmosphere; the clocks, folds, drips and walkers all encode real numbers.
+- We take Dalí's visual language (precision, raking light, empty space, hard objects gone soft), not any of his paintings. No copied compositions or objects.
 - Without WebGL, the page falls back to the flat 2D clock and a plain background.
 
 ## The melting clock
 
 - One average day for the reader's age group, 1,440 minutes around the dial. Each region's angle is exact, painted on the face.
+- **The clock rests on a stone plinth.** In 2003 it's rigid and perfect.
 - **Socializing is the pink region at the front, nearest the water.** The two hands bracket it, so they close in as it shrinks.
-- **The front of the clock slumps toward the water** in proportion to socializing minutes lost since 2003–04 (smoothed over three years). The melt bends the face; it doesn't change the shares painted on it.
-- **Pink drips** hang from the slumped edge and fall into the lake, sending out ripples into a pink pool.
-- **Walkers are data:** the share of figures walking alone equals the share of waking time spent alone for the reader's age band (from 2010; earlier years hold 2010).
-- The verdict card carries the exact numbers: year, socializing minutes, minutes lost, time alone. Controls stay neutral (`--ink` text, `--faint` borders).
-- Without WebGL, the 2D clock follows the same rules: dimmed regions, glowing pink socializing, hanging drips.
+- **As socializing minutes are lost** (since 2003–04, smoothed over three years), the front of the clock goes soft and folds over the plinth's edge like warm wax, hanging toward the water. The fold angle is the data: up to about 100° at the full loss. The fold bends the face; it doesn't change the shares painted on it.
+- **Pink drips** hang from the lowest edge and fall into the lake, with ripples and a pink pool.
+- **Walkers are data:** the share of figures walking alone equals the share of waking time spent alone (from 2010).
+- The verdict card carries the exact numbers. Controls stay neutral.
+- Without WebGL, the 2D clock follows the same rules.
 
 ## Voice
 

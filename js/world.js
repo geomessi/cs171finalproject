@@ -2,7 +2,7 @@
  * The world (NOVEL VIEW) · Owner: Georgia (Package 3). Only this package edits this file.
  *
  * A sunlit, painterly three.js scene behind the whole story: an ultramarine sky with a warm
- * horizon and pink clouds, soft dunes, a mirror-still lake, and a giant clock lying on a dune
+ * horizon, an empty ochre plain under low raking light, a mirror-still lake, and a giant clock on a stone plinth
  * at the water's edge, with tiny figures walking across its face.
  *
  * What is data:
@@ -36,13 +36,13 @@
   const R = 10;
   const CLOCK_XZ = [0, -24];
   
-  const TILT = 0.22;   // the clock tips its face toward the viewer
+  const TILT = 0.12;   // the clock tips its face slightly toward the viewer
   const WHO_BAND = { '000': ['000', 'all ages'], '103': ['020', '20–24'], '031': ['031', '25–34'], '038': ['038', '35–44'], '042': ['042', '45–54'], '049': ['049', '55–64'], '065': ['113', '65–74'] };
 
   // The world's own painterly palette (STYLEGUIDE.md, "The world"). Socializing keeps the site pink.
   const PAL = {
-    zenith: '#22348F', sky: '#3A52B6', horizon: '#F3D3A2', horizonDusk: '#F2A9A6', zenithDusk: '#141C5C',
-    sand: '#D8B489', sandShade: '#9C7556', water: '#24388C', cloud: '#F4A9C8',
+    zenith: '#16246E', sky: '#2C46A8', horizon: '#F7EAC0', horizonDusk: '#F2B98A', zenithDusk: '#0E1550',
+    sand: '#C99E68', sandShade: '#8E6A45', stone: '#CDB89A', water: '#24388C', cloud: '#F4A9C8',
     face: '#EFE6D5', ink: '#2A2320', bezel: '#E4E0D8', body: '#D9D2C4',
     social: '#FF8DB8',
     act: {
@@ -116,9 +116,9 @@
   function groundH(x, z) {
     const dc = Math.hypot(x - CLOCK_XZ[0], z - CLOCK_XZ[1]);
     const dunes = (1.6 * Math.sin(x * 0.045 + 0.7) * Math.sin(z * 0.035 + 0.3) + 1.0 * Math.sin((x + z) * 0.06)
-      + 4.5 * smooth(-45, -140, z) * (0.5 + 0.5 * Math.sin(x * 0.028 + 1.1))) * smooth(10, 32, dc)
+      + 3.0 * smooth(-60, -160, z) * (0.5 + 0.5 * Math.sin(x * 0.028 + 1.1))) * 0.55 * smooth(14, 40, dc)
       ;
-    const mound = 4.2 * Math.exp(-((x * x) / (2 * 15 * 15) + ((z + 26) ** 2) / (2 * 12 * 12)));
+    const mound = 2.0 * Math.exp(-((x * x) / (2 * 14 * 14) + ((z + 26) ** 2) / (2 * 14 * 14)));
     const lake = -9 * Math.exp(-((x * x) / (2 * 40 * 40) + ((z + 2) ** 2) / (2 * 12 * 12)));
     return 1.2 + dunes + mound + lake;
   }
@@ -188,18 +188,23 @@
     FAR_SPOTS.forEach(([x, z, sc]) => {
       const c = document.createElement('canvas'); c.width = c.height = SMALL;
       const tex = new THREE.CanvasTexture(c);
+      const geos = [];
+      const own = geo => { geo.userData.orig = Float32Array.from(geo.attributes.position.array); geos.push(geo); return geo; };
       const grp = new THREE.Group();
-      const face = new THREE.Mesh(new THREE.CircleGeometry(R, 96).rotateX(-Math.PI / 2).translate(0, 0.42, 0),
+      const face = new THREE.Mesh(own(new THREE.RingGeometry(0.001, R, 96, 24).rotateX(-Math.PI / 2).translate(0, 0.42, 0)),
         new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.42 }));
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.15, R + 0.05, 0.8, 96), new THREE.MeshLambertMaterial({ color: PAL.body }));
-      const bezel = new THREE.Mesh(new THREE.TorusGeometry(R + 0.12, 0.34, 12, 120).rotateX(Math.PI / 2).translate(0, 0.46, 0), new THREE.MeshLambertMaterial({ color: PAL.bezel }));
+      const body = new THREE.Mesh(own(new THREE.CylinderGeometry(R + 0.15, R + 0.05, 0.8, 96, 3)), new THREE.MeshLambertMaterial({ color: PAL.body, side: THREE.DoubleSide }));
+      const bezel = new THREE.Mesh(own(new THREE.TorusGeometry(R + 0.12, 0.34, 10, 120).rotateX(Math.PI / 2).translate(0, 0.46, 0)), new THREE.MeshLambertMaterial({ color: PAL.bezel }));
       grp.add(face, body, bezel);
+      const gy = groundH(x, z), ph = 6.2 * sc;
+      const plinth = new THREE.Mesh(new THREE.CylinderGeometry(RS * 0.9 * sc, RS * 1.1 * sc, ph + 1, 24), new THREE.MeshLambertMaterial({ color: PAL.stone }));
+      plinth.position.set(x, gy + (ph - 1) / 2, z);
       grp.scale.setScalar(sc);
-      grp.position.set(x, groundH(x, z) + 5 + 4 * sc, z);
-      grp.rotation.order = 'YXZ'; grp.rotation.set(0.95, Math.atan2(-x, 30 - z), 0);   // tipped up to face the viewer
-      const tag = labelSprite(); tag.position.set(x, grp.position.y + R * sc + 3, z); tag.scale.set(10, 5, 1);
-      scene.add(grp, tag);
-      distant.push({ ctx: c.getContext('2d'), tex, k, tag, age: null });
+      grp.position.set(x, gy + ph + 0.45 * sc, z);
+      grp.rotation.set(TILT, Math.atan2(-x, 30 - z) * 0.5, 0, 'YXZ');
+      const tag = labelSprite(); tag.position.set(x, gy + ph + 5.5, z); tag.scale.set(10, 5, 1);
+      scene.add(grp, plinth, tag);
+      distant.push({ ctx: c.getContext('2d'), tex, k, tag, geos, melt: -1, age: null });
     });
   }
   function paintDistant() {
@@ -210,39 +215,57 @@
       if (!valid(a, y)) { const ys = story.data.years.filter(v => valid(a, v)); y = ys.reduce((p, q) => (Math.abs(q - year) < Math.abs(p - year) ? q : p)); }
       const arcs = arcsFor(a, y);
       paintFace(d.ctx, arcs, d.k); d.tex.needsUpdate = true;
-      if (d.age !== a) { d.age = a; }
+      d.age = a;
+      // each distant clock goes soft by its own age group's loss
+      const m = Math.min(1, lostBy(a, y) / 24);
+      if (Math.abs(m - d.melt) > 0.01) {
+        d.melt = m;
+        d.geos.forEach(geo => {
+          const p = geo.attributes.position, o = geo.userData.orig;
+          for (let i = 0; i < o.length; i += 3) { const v = deformPoint(o[i], o[i + 1], o[i + 2], m); p.array[i] = v[0]; p.array[i + 1] = v[1]; p.array[i + 2] = v[2]; }
+          p.needsUpdate = true; geo.computeVertexNormals();
+        });
+      }
       paintLabel(d.tag, a === '000' ? 'ALL AGES' : `AGES ${story.ageName(a)}`, `${Math.round(arcs.find(v => v.code === SOCIAL).min)} min`);
     });
   }
 
-  // ---------- melt: bend the front of the clock down over the water ----------
-  const MELT_START = 0.42;   // fraction of R from the center where the slump begins
-  function deform(pos, orig, melt, dmax) {
-    for (let i = 0; i < orig.length; i += 3) {
-      const x = orig[i], y = orig[i + 1], z = orig[i + 2];
-      const t = Math.max(0, (z - R * MELT_START) / (R * (1 - MELT_START)));
-      const w = t ** 1.7 * (1 - 0.35 * (x / R) ** 2);
-      pos[i] = x * (1 - 0.04 * melt * t);
-      pos[i + 1] = y - melt * dmax * w;
-      pos[i + 2] = z + melt * 0.9 * w;
-    }
+  // ---------- melt: the clock goes soft and folds over the front of its plinth ----------
+  // m = 0 is a rigid, perfect clock resting on its plinth. As socializing minutes are lost, the
+  // part beyond the plinth's front edge (the socializing side, toward the water) bends over like
+  // warm wax and hangs down. The fold angle is the data: m × ~100°. Corners fold a little less,
+  // and the far side softens slightly, so it reads as limp rather than hinged.
+  const RS = 2.3;            // plinth radius
+  const BEND = 2.1;          // radius of the soft fold
+  const FOLD_MAX = 1.75;     // radians at full melt (just past vertical, like a drip)
+  function deformPoint(x, y, z, m) {
+    if (m <= 0) return [x, y, z];
+    const hinge = RS + 0.06 * x * x;                       // a curved fold line, not a straight hinge
+    const phi = m * FOLD_MAX * (1 - 0.28 * (x / R) ** 2);   // corners fold less
+    // the far side relaxes a little too, like a soft object settling
+    const settle = z < -RS ? 0.35 * m * smooth(RS, R, -z) ** 2 : 0;
+    if (z <= hinge) return [x, y - settle, z];
+    const L = z - hinge, Lb = BEND * phi;
+    let pz, py, a;
+    if (L <= Lb) { a = L / BEND; pz = hinge + BEND * Math.sin(a); py = -BEND * (1 - Math.cos(a)); }
+    else { a = phi; pz = hinge + BEND * Math.sin(phi) + (L - Lb) * Math.cos(phi); py = -BEND * (1 - Math.cos(phi)) - (L - Lb) * Math.sin(phi); }
+    // keep the slab's thickness: offset along the bent surface's normal
+    const wobble = 0.12 * m * Math.sin(x * 0.9 + L * 0.6);
+    return [x * (1 + 0.03 * m * L / R), py + y * Math.cos(a) + wobble, pz + y * Math.sin(a)];
   }
-  // the slumped edge stops above the water, so drips have room
-  const meltDepth = () => (clockY - (R + 0.9) * Math.sin(TILT) - WATER - 1.3) / Math.cos(TILT);
-  function applyMelt(melt) {
-    const dmax = meltDepth();
+  function applyMelt(m) {
     deformables.forEach(geo => {
-      const p = geo.attributes.position;
-      deform(p.array, geo.userData.orig, melt, dmax);
-      p.needsUpdate = true;
-      geo.computeVertexNormals();
+      const p = geo.attributes.position, o = geo.userData.orig, a = p.array;
+      for (let i = 0; i < o.length; i += 3) { const v = deformPoint(o[i], o[i + 1], o[i + 2], m); a[i] = v[0]; a[i + 1] = v[1]; a[i + 2] = v[2]; }
+      p.needsUpdate = true; geo.computeVertexNormals();
     });
   }
   const _v = new THREE.Vector3();
-  function frontEdge(melt, x) {   // world position of the front rim at offset x
-    const w = 1 - 0.35 * (x / R) ** 2;   // t = 1 at the rim
+  function frontEdge(m, x) {   // world position of the front rim at offset x
+    const z = Math.sqrt(Math.max(0, (R + 0.2) ** 2 - x * x));
+    const v = deformPoint(x, -0.4, z, m);
     clockGroup.updateMatrixWorld();
-    return clockGroup.localToWorld(_v.set(x * (1 - 0.04 * melt), 0.2 - melt * meltDepth() * w, R + 0.2 + 0.9 * melt * w)).clone();
+    return clockGroup.localToWorld(_v.set(v[0], v[1], v[2])).clone();
   }
 
   // ---------- build ----------
@@ -250,9 +273,9 @@
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;   // crisp, painted-looking shadows
     scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(new THREE.Color(PAL.horizon), 70, 330);
+    scene.fog = new THREE.Fog(new THREE.Color(PAL.horizon), 140, 560);   // Dalí's air is clear
     camera = new THREE.PerspectiveCamera(42, 1, 0.1, 3000);
 
     // Sky: deep ultramarine above, a warm band at the horizon, mirrored below so the lake reflects it
@@ -268,22 +291,23 @@
         void main(){
           float h = abs(vDir.y);
           vec3 zen = mix(uZen, uZenD, uDusk), hor = mix(uHor, uHorD, uDusk);
-          vec3 c = mix(uSky, zen, smoothstep(0.12, 0.7, h));
-          c = mix(hor, c, smoothstep(0.0, 0.16, h));
+          vec3 c = mix(uSky, zen, smoothstep(0.1, 0.65, h));
+          c = mix(hor, c, smoothstep(0.0, 0.2, h));
+          c += hor * 0.18 * exp(-h * 40.0);   // a luminous line right at the horizon
           gl_FragColor = vec4(c, 1.0);
         }`,
     });
     scene.add(new THREE.Mesh(new THREE.SphereGeometry(1400, 48, 24), skyMat));
 
     // Light: low warm sun from behind-left, so shadows fall toward the viewer
-    hemi = new THREE.HemisphereLight(0xa9b8ff, 0xe0bf95, 0.85);
+    hemi = new THREE.HemisphereLight(0x8da2e8, 0xa07850, 0.42);   // low fill, so shadows stay deep
     scene.add(hemi);
-    sun = new THREE.DirectionalLight(0xffe0b5, 0.95);
-    sun.position.set(-70, 30, -28);
-    sun.target.position.set(0, 2, -22);
+    sun = new THREE.DirectionalLight(0xffe6bf, 1.4);
+    sun.position.set(-126, 30, -13);   // low, from the left: long shadows across the plain
+    sun.target.position.set(0, 2, -24);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
-    Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 200 });
+    sun.shadow.mapSize.set(innerWidth < 820 ? 2048 : 4096, innerWidth < 820 ? 2048 : 4096);
+    Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 320 });
     sun.shadow.bias = -0.0008;
     scene.add(sun, sun.target);
 
@@ -310,24 +334,13 @@
     water.renderOrder = 2;
     scene.add(water);
 
-    // Pink clouds, with mirrored twins under the water
-    const puff = puffTexture(PAL.cloud);
-    for (let k = 0; k < 9; k++) {
-      const cx = (hash(k) - 0.5) * 420, cy = 38 + hash(k + 4) * 50, cz = -170 - hash(k + 8) * 160;
-      const grp = new THREE.Group();
-      for (let p = 0; p < 6; p++) {
-        const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, transparent: true, depthWrite: false, fog: false, opacity: 0.8 }));
-        sp.position.set((hash(k * 10 + p) - 0.5) * 50, (hash(k * 10 + p + 3) - 0.5) * 6, (hash(k * 10 + p + 6) - 0.5) * 10);
-        const s = 22 + hash(k * 10 + p + 1) * 26; sp.scale.set(s * 1.6, s * 0.7, 1);
-        grp.add(sp);
-      }
-      grp.position.set(cx, cy, cz);
-      const twin = grp.clone(); twin.position.set(cx, 2 * WATER - cy, cz);
-      clouds.push({ grp, twin, speed: 0.6 + hash(k + 2) }); scene.add(grp, twin);
-    }
-
     // The clock: built lying flat in its own frame, front (+z) toward the water
-    clockY = groundH(...CLOCK_XZ) + 4.2;   // floats above its dune, with room to slump
+    const baseY = groundH(...CLOCK_XZ), PLINTH = 7.6;
+    clockY = baseY + PLINTH + 0.45;
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(RS * 0.9, RS * 1.1, PLINTH + 1, 40), new THREE.MeshLambertMaterial({ color: PAL.stone }));
+    plinth.position.set(CLOCK_XZ[0], baseY + (PLINTH - 1) / 2, CLOCK_XZ[1]);
+    plinth.castShadow = true; plinth.receiveShadow = true;
+    scene.add(plinth);
     clockGroup = new THREE.Group();
     clockGroup.position.set(CLOCK_XZ[0], clockY, CLOCK_XZ[1]);
     clockGroup.rotation.x = TILT;
@@ -343,17 +356,21 @@
     const face = new THREE.Mesh(faceGeo, new THREE.MeshLambertMaterial({ map: faceTex, emissive: 0xffffff, emissiveMap: faceTex, emissiveIntensity: 0.42 }));
     face.receiveShadow = true;
     const bodyGeo = keep(new THREE.CylinderGeometry(R + 0.15, R + 0.05, 0.8, 160, 6, false));
+    // the body needs interior vertices to bend, so give its caps rings too
+    const capGeo = keep(new THREE.RingGeometry(0.001, R + 0.05, 160, 40).rotateX(Math.PI / 2).translate(0, -0.4, 0));
     const body = new THREE.Mesh(bodyGeo, new THREE.MeshLambertMaterial({ color: PAL.body }));
-    body.castShadow = true; body.receiveShadow = true;
+    body.castShadow = true; body.receiveShadow = true; body.material.side = THREE.DoubleSide;
     const bezelGeo = keep(new THREE.TorusGeometry(R + 0.12, 0.34, 18, 200).rotateX(Math.PI / 2).translate(0, 0.46, 0));
     const bezel = new THREE.Mesh(bezelGeo, new THREE.MeshLambertMaterial({ color: PAL.bezel }));
     bezel.castShadow = true;
-    clockGroup.add(face, body, bezel);
+    const under = new THREE.Mesh(capGeo, new THREE.MeshLambertMaterial({ color: PAL.body, side: THREE.DoubleSide }));
+    under.castShadow = true;
+    clockGroup.add(face, body, bezel, under);
 
     // Hands: they bracket socializing (rigid, short enough to stay clear of the melt)
     const handMat = new THREE.MeshLambertMaterial({ color: PAL.ink });
-    const handGeo = new THREE.BoxGeometry(0.16, 0.08, R * 0.4).translate(0, 0, R * 0.2);
-    const tipGeo = new THREE.ConeGeometry(0.2, 0.7, 4).rotateX(Math.PI / 2).translate(0, 0, R * 0.4 + 0.3);
+    const handGeo = new THREE.BoxGeometry(0.16, 0.08, R * 0.2).translate(0, 0, R * 0.1);
+    const tipGeo = new THREE.ConeGeometry(0.2, 0.6, 4).rotateX(Math.PI / 2).translate(0, 0, R * 0.2 + 0.25);
     ['handA', 'handB'].forEach(name => {
       const h = new THREE.Group(); h.name = name;
       const m1 = new THREE.Mesh(handGeo, handMat), m2 = new THREE.Mesh(tipGeo, handMat);
@@ -369,7 +386,7 @@
     mirrorClock.traverse(o => { o.castShadow = false; o.receiveShadow = false; });
     const mirrorRoot = new THREE.Group();          // reflect across the water plane: y -> 2·WATER − y
     mirrorRoot.position.y = 2 * WATER; mirrorRoot.scale.y = -1;
-    mirrorRoot.add(mirrorClock); scene.add(mirrorRoot); mirrorClock.userData.root = mirrorRoot;
+    mirrorRoot.add(mirrorClock); scene.add(mirrorRoot); mirrorClock.userData.root = mirrorRoot; mirrorRoot.visible = false;
 
     // Drips from the front edge, and ripples on the water
     const pinkMat = new THREE.MeshLambertMaterial({ color: PAL.social, emissive: PAL.social, emissiveIntensity: 0.25 });
@@ -510,7 +527,7 @@
     for (let p = 0, g = 0; p < rest.length; g++) { const n = SIZES[g % SIZES.length]; units.push(rest.slice(p, p + n).map(f => f.i)); p += n; }
     units.forEach(members => {
       const lead = members[0];
-      const ring = R * (0.28 + hash(lead + 9) * 0.52);
+      const ring = R * (0.26 + hash(lead + 9) * 0.46);
       const span = Math.PI * 2 - FRONT_GAP * 2;     // allowed arc, measured from just past the front gap
       const w = (0.05 + hash(lead + 21) * 0.06) * (hash(lead + 5) > 0.5 ? 1 : -1);
       const u = ((hash(lead) * span + (reduceMotion ? 0 : t * w * 2)) % (2 * span) + 2 * span) % (2 * span);
@@ -523,7 +540,8 @@
         f.r += (tr - f.r) * lerpK(dt, 2); f.th += (tth - f.th) * lerpK(dt, 2);
         if (Math.abs(tth - f.th) > 1) f.th = tth;
         const bob = reduceMotion ? 0 : Math.abs(Math.sin(t * 6 + f.phase)) * 0.03;
-        dummy.position.set(Math.sin(f.th) * f.r, 0.45 + bob, -Math.cos(f.th) * f.r);
+        const px = Math.sin(f.th) * f.r, pz = -Math.cos(f.th) * f.r, pv = deformPoint(px, 0.45, pz, Math.max(0, cur.melt));
+        dummy.position.set(pv[0], pv[1] + bob, pv[2]);
         dummy.rotation.y = -f.th; dummy.updateMatrix();
         walkers.setMatrixAt(i, dummy.matrix);
       });
@@ -548,7 +566,7 @@
   const SHOTS_NARROW = {
     hero: { pos: [0, 15, 46], look: [0, 1.5, -32], veil: 0 },
     evidence: SHOTS.evidence,
-    verdict: { pos: [0, 31, 16], look: [0, -1, -22], veil: 0.04 },
+    verdict: { pos: [0, 37, 28], look: [0, 0, -22], veil: 0.04 },
   };
 
   let last = performance.now();
@@ -557,7 +575,6 @@
     const t = now / 1000, k = lerpK(dt, 2.4);
     const where = sceneFor();
     const shot = (narrow() ? SHOTS_NARROW : SHOTS)[where];
-    mirrorClock.userData.root.visible = where !== 'verdict';
     const pos = new THREE.Vector3(...shot.pos).add(new THREE.Vector3(mouse.x * 1.4, -mouse.y * 0.7, 0));
     camPos.lerp(pos, lerpK(dt, 1.2)); camLook.lerp(new THREE.Vector3(...shot.look), lerpK(dt, 1.2));
     camera.position.copy(camPos); camera.lookAt(camLook);
@@ -566,10 +583,9 @@
 
     cur.dusk += (target.dusk - cur.dusk) * k;
     skyMat.uniforms.uDusk.value = cur.dusk;
-    sun.intensity = 0.95 - cur.dusk * 0.3;
-    sun.color.setHSL(0.08, 1, 0.85 - cur.dusk * 0.08);
+    sun.intensity = 1.4 - cur.dusk * 0.35;
+    sun.color.setHSL(0.09 - cur.dusk * 0.03, 1, 0.87 - cur.dusk * 0.1);
     scene.fog.color.set(PAL.horizon).lerp(new THREE.Color(PAL.horizonDusk), cur.dusk);
-    clouds.forEach(c => { if (!reduceMotion) { c.grp.position.x += c.speed * dt; if (c.grp.position.x > 260) c.grp.position.x = -260; c.twin.position.x = c.grp.position.x; } });
 
     updateFace(k);
     updateMelt(dt, k);
