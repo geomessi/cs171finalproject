@@ -1,7 +1,7 @@
 # Prototype 2 work plan (final project check)
 
 **Where this lives:** branch `prototype-2`, previewed at **https://prototype-2.cs171finalproject.pages.dev**.
-`main` (https://cs171finalproject.pages.dev) stays frozen as Prototype V1 until the TF has graded it. Don't merge into `main`. V1 is also tagged `prototype-v1`, and the old plan is in `WORKPLAN-v1.md`.
+`main` (https://cs171finalproject.pages.dev) stays frozen as Prototype V1 until the TF has graded it. Don't merge into `main`. The V1 plan is in `WORKPLAN-v1.md`.
 
 **How to work:**
 ```
