@@ -7,9 +7,17 @@
  *     init(el, data) { ... },   // once, after data loads. el = the chapter's .viz div
  *     step(n, dir)  { ... },    // a text step scrolled into view (n = data-step, dir = 'down'|'up')
  *     age(code)     { ... },    // the reader changed "I'm…" (code like '103')
+ *     year(y)       { ... },    // another chapter moved the shared year (see story.setYear)
  *   });
  *
- * All three hooks are optional. A chapter that never registers shows its placeholder box.
+ * All four hooks are optional. A chapter that never registers shows its placeholder box.
+ *
+ * Linked views: the chapters that have a year control (the lineup, the scale, the verdict) share one
+ * year. Whichever one the reader touches calls story.setYear(y, 'its-own-id'); every other chapter
+ * gets year(y) and follows. Pass your own id so you don't hear your own change back.
+ *
+ * A chapter that is locked to one age group should say so: put data-scope="103" on its
+ * <section> and this file adds the note under its text.
  *
  * Helpers on window.story:
  *   story.data            the parsed data/atus.json (see WORKPLAN.md for its shape)
@@ -44,9 +52,18 @@
   const story = {
     data: null,
     you: '103',
+    year: null,            // the shared year, once a chapter with a year control sets one
     AGES, ACTIVITIES, DAY_PARTS,
 
     chapter(id, hooks) { chapters[id] = hooks; },
+
+    // Move the shared year. `from` is the id of the chapter the reader touched; it is the one
+    // chapter that does not get told, because it already knows.
+    setYear(y, from) {
+      if (y == null || y === story.year) return;
+      story.year = y;
+      Object.entries(chapters).forEach(([id, h]) => { if (id !== from && h.year) h.year(y); });
+    },
 
     ageName(code) { return AGES[code] || code; },
 
@@ -83,6 +100,7 @@
       });
       // The hero shares the clock script.
       if (chapters.hero?.init) { const el = document.getElementById('hero-viz'); el.classList.add('live'); chapters.hero.init(el, story.data); }
+      scopeNotes();
       watchSteps();
       setAge(story.you);
     },
@@ -95,6 +113,21 @@
     Object.values(chapters).forEach(h => h.age && h.age(code));
   }
   document.getElementById('you-age').addEventListener('change', e => setAge(e.target.value));
+
+  // Some chapters only have data for one age group, so the "I'm…" menu can't move them. Say so
+  // under the text instead of letting the chart look broken.
+  function scopeNotes() {
+    document.querySelectorAll('[data-chapter][data-scope]').forEach(section => {
+      const name = AGES[section.dataset.scope] || section.dataset.scope;
+      // Inside the first step, not the steps column: the column is a grid with huge scroll gaps.
+      const first = section.querySelector('.step');
+      if (!first || first.querySelector('.scope-note')) return;
+      const p = document.createElement('p');
+      p.className = 'scope-note';
+      p.textContent = `These numbers are for ages ${name}, whichever group you pick above.`;
+      first.appendChild(p);
+    });
+  }
 
   // In each chapter, the active step is the last one whose top has passed the middle of the screen.
   // Position-based (not edge-based), so fast scrolling never skips a step: when you jump from

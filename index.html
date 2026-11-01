@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="css/moved.css">     <!-- Package 2 -->
 <link rel="stylesheet" href="css/clock.css">     <!-- Package 3 -->
 <link rel="stylesheet" href="css/balance.css">   <!-- Package 3 -->
+<link rel="stylesheet" href="css/lineup.css">    <!-- Package 3 -->
 </head>
 <body>
 
@@ -25,7 +26,8 @@
   <a class="brand" href="#top">The Case of the Shrinking Hour</a>
   <nav aria-label="Chapters">
     <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#moved">Suspects</a>
-    <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#balance">The scale</a><a href="#clock">Verdict</a>
+    <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#balance">The scale</a>
+    <a href="#lineup">Lineup</a><a href="#clock">Verdict</a>
   </nav>
   <label class="you">I'm
     <select id="you-age" aria-label="Your age group">
@@ -73,7 +75,7 @@
   </section>
 
   <!-- ===== The suspects · Where the time went · Package 2 · FUNCTIONAL D3 #2 ===== -->
-  <section class="chapter" id="moved" data-chapter="moved">
+  <section class="chapter" id="moved" data-chapter="moved" data-scope="103">
     <div class="steps">
       <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Who took it?</h2><p>A day always adds up to 24 hours, so if socializing shrank, something else grew. Start with the usual suspects: work and TV.</p></div>
       <div class="step" data-step="1"><p><strong>Work: cleared.</strong> 15–24-year-olds work 18 fewer minutes a day than in 2003–04.</p></div>
@@ -84,7 +86,7 @@
   </section>
 
   <!-- ===== Clue 1 · It's the weekdays · Package 1 ===== -->
-  <section class="chapter" id="weekdays" data-chapter="weekdays">
+  <section class="chapter" id="weekdays" data-chapter="weekdays" data-scope="103">
     <div class="steps">
       <div class="step" data-step="0"><p class="kicker">Clue 1</p><h2>The weekdays emptied out</h2><p>For 15–24-year-olds, weekday socializing nearly halved, from 50 to 28 minutes. Weekends held up better, from 80 to 54. Time together is becoming something we save for days off.</p></div>
     </div>
@@ -92,7 +94,7 @@
   </section>
 
   <!-- ===== Clue 2 · Alone or together · Package 2 · DRAFT ===== -->
-  <section class="chapter" id="alone" data-chapter="alone">
+  <section class="chapter" id="alone" data-chapter="alone" data-scope="20–24">
     <div class="steps">
       <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>More of the day, alone</h2><p>Since 2010–11, 20–24-year-olds went from 4h13m a day alone to 5h37m.</p></div>
       <div class="step" data-step="1"><p>Time with other people fell by nearly two hours. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
@@ -110,12 +112,22 @@
     <div class="viz" id="balance-viz" data-owner="Package 3 · balance.js" data-placeholder="The balance scale"></div>
   </section>
 
+  <!-- ===== The lineup · Six melting clocks (novel view, linked) · Package 3 ===== -->
+  <section class="chapter" id="lineup" data-chapter="lineup">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">The lineup</p><h2>Everyone's clock is melting</h2><p>Six age groups, one clock each, same year on all of them. The pink wedge is socializing; the rim sags under it as the minutes go.</p></div>
+      <div class="step" data-step="1"><p>Young adults melt fastest — 23 minutes gone. 25–34 and people 65 and older lost 12. The middle of life lost 6. Nobody's clock holds its shape.</p></div>
+      <div class="step" data-step="2"><p>Drag the slider. It's the same year as the scale above and the verdict below, so all three move together. Your own group is marked in sand.</p></div>
+    </div>
+    <div class="viz" id="lineup-viz" data-owner="Package 3 · lineup.js" data-placeholder="Six melting clocks on one year"></div>
+  </section>
+
   <!-- ===== The verdict · The melting clock (novel view) · Package 3 ===== -->
   <section class="chapter wide" id="clock" data-chapter="clock">
     <div class="steps">
       <div class="step" data-step="0"><p class="kicker">The verdict</p><h2>Nobody stole it</h2><p>Here's one average day for <span data-you-label>15–24-year-olds</span> in 2003, as a clock. The pink wedge, by the water, is time spent socializing. The hands hold it in place.</p></div>
       <div class="step" data-step="1"><p>Run it to 2025. The hands close in, and the front of the clock melts into the lake. The hour wasn't stolen. Bit by bit, more of the day was spent alone.</p></div>
-      <div class="step" data-step="2"><p>If AI gives us back more of our hours, will we spend them on each other? Or will they melt the same way?</p></div>
+      <div class="step" data-step="2"><p>Case closed. But a verdict isn't an explanation — so here's what the file actually says.</p></div>
     </div>
     <div class="viz" id="clock-viz" data-owner="Package 3 · clock.js" data-placeholder="The melting clock: novel view"></div>
   </section>
@@ -140,6 +152,7 @@
 <script src="js/world.js"></script>        <!-- Package 3 -->
 <script src="js/clock.js"></script>        <!-- Package 3 -->
 <script src="js/balance.js"></script>      <!-- Package 3 -->
+<script src="js/lineup.js"></script>       <!-- Package 3 -->
 <script>story.start();</script>
 </body>
 </html>

@@ -31,6 +31,23 @@
   document.documentElement.classList.add('has-world');
 
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // The world renders behind the whole page the entire time you scroll, so it has to be cheap on a
+  // weak laptop or a phone. Pick a quality tier up front, then step down if frames come in slowly.
+  const TIER = (() => {
+    const cores = navigator.hardwareConcurrency || 4;
+    const mem = navigator.deviceMemory || 4;          // GiB, Chrome only; assume a middling machine
+    const small = Math.min(screen.width, screen.height) < 820 || innerWidth < 760;
+    if (small || cores <= 4 || mem <= 4) return 'low';
+    if (cores >= 8 && innerWidth >= 1200 && mem >= 8) return 'high';
+    return 'mid';
+  })();
+  const QUALITY = {
+    low:  { aa: false, dpr: 1,    shadow: 1024, walkers: 14 },
+    mid:  { aa: true,  dpr: 1.3,  shadow: 2048, walkers: 24 },
+    high: { aa: true,  dpr: 1.75, shadow: 4096, walkers: 30 },
+  }[TIER];
+
   const SOCIAL = '600024';
   const WATER = 0.25;
   const R = 10;
@@ -270,8 +287,8 @@
 
   // ---------- build ----------
   function build() {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: QUALITY.aa });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, QUALITY.dpr));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;   // crisp, painted-looking shadows
     scene = new THREE.Scene();
@@ -306,7 +323,7 @@
     sun.position.set(-126, 30, -13);   // low, from the left: long shadows across the plain
     sun.target.position.set(0, 2, -24);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(innerWidth < 820 ? 2048 : 4096, innerWidth < 820 ? 2048 : 4096);
+    sun.shadow.mapSize.set(QUALITY.shadow, QUALITY.shadow);
     Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 320 });
     sun.shadow.bias = -0.0008;
     scene.add(sun, sun.target);
@@ -404,8 +421,9 @@
       ripples.push(rg); scene.add(rg);
     }
 
-    // Walkers: tiny dark figures on the face, with long shadows
-    const N = 30;
+    // Walkers: tiny dark figures on the face, with long shadows. The count is a quality setting,
+    // not data: the share of them walking alone is what carries the number.
+    const N = QUALITY.walkers;
     const figMat = new THREE.MeshLambertMaterial({ color: PAL.ink });
     const figGeo = new THREE.CapsuleGeometry(0.085, 0.34, 4, 8).translate(0, 0.26, 0);
     const headGeo = new THREE.SphereGeometry(0.085, 10, 8).translate(0, 0.58, 0);
@@ -572,6 +590,7 @@
   let last = performance.now();
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (document.hidden) { requestAnimationFrame(frame); return; }   // nothing to draw in a background tab
     const t = now / 1000, k = lerpK(dt, 2.4);
     const where = sceneFor();
     const shot = (narrow() ? SHOTS_NARROW : SHOTS)[where];
@@ -590,8 +609,34 @@
     updateFace(k);
     updateMelt(dt, k);
     updateWalkers(t, dt, k);
+    watchdog(dt);
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
+  }
+
+  // Frame watchdog. If frames are coming in slowly, give up quality rather than let the whole page
+  // stutter: first the pixel ratio and the shadow map, then shadows altogether. Never steps back up.
+  let fpsFrames = 0, fpsTime = 0, downgrades = 0;
+  function watchdog(dt) {
+    fpsFrames += 1; fpsTime += dt;
+    if (fpsFrames < 90) return;
+    const fps = fpsFrames / fpsTime;
+    fpsFrames = 0; fpsTime = 0;
+    if (fps > 38 || downgrades >= 2) return;
+    downgrades += 1;
+    if (downgrades === 1) {
+      renderer.setPixelRatio(1);
+      if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
+      sun.shadow.mapSize.set(1024, 1024);
+    } else {
+      renderer.shadowMap.enabled = false;
+      sun.castShadow = false;
+      scene.traverse(o => {
+        if (!o.material) return;
+        (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => { m.needsUpdate = true; });
+      });
+    }
+    console.info(`world: ${fps.toFixed(0)} fps, stepping quality down (${downgrades}/2)`);
   }
 
   function retarget() {
