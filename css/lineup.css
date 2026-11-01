@@ -1,0 +1,46 @@
+/* Georgia (Package 3) · The lineup, chapter 12. Only this package edits this file. Tokens from base.css. */
+
+.lineup-viz { display: flex; flex-direction: column; gap: 10px; }
+.lineup-viz svg { flex: 1 1 auto; min-height: 0; }
+
+.lu-year { font: 600 42px var(--display) !important; font-variation-settings: "SOFT" 100; fill: var(--ink) !important; }
+.lu-head { font: 10px var(--mono) !important; letter-spacing: .09em; fill: var(--muted) !important; }
+
+/* The day: one dim ring. Socializing is the only lit thing on the face. */
+.lu-day { fill: none; stroke: color-mix(in srgb, var(--c-personal) 70%, var(--bg)); }
+.lu-ticks line { stroke: var(--faint); }
+.lu-rim { fill: none; stroke: var(--muted); stroke-opacity: .5; stroke-width: 1.1; }
+.lu-social { fill: var(--c-social); stroke: var(--pearl-c); stroke-width: .8; }
+.lu-drip { fill: var(--c-social); }
+.lu-pool { fill: var(--c-social); opacity: .7; }
+
+.lu-value { font: 500 17px var(--mono) !important; fill: var(--c-social) !important; font-variant-numeric: tabular-nums; }
+.lu-name { font: 500 13px var(--body) !important; fill: var(--ink) !important; }
+.lu-change { font: 11px var(--mono) !important; fill: var(--muted) !important; }
+
+/* The reader's own group, in the site's "you" color */
+.lu-halo { fill: none; stroke: none; }
+.lu-cell.is-you .lu-halo { fill: color-mix(in srgb, var(--sand) 9%, transparent); stroke: color-mix(in srgb, var(--sand) 45%, transparent); stroke-width: 1; }
+.lu-cell.is-you .lu-name { fill: var(--sand) !important; font-weight: 600 !important; }
+.lu-cell.is-you .lu-ticks line { stroke: color-mix(in srgb, var(--sand) 70%, var(--faint)); }
+.lu-cell.is-you .lu-rim { stroke: var(--sand); stroke-opacity: .85; stroke-width: 1.4; }
+
+.lineup-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.lineup-controls button { font: 500 13px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--faint); border-radius: 999px; padding: 5px 14px; cursor: pointer; transition: background var(--fast); }
+.lineup-controls button:hover { background: var(--surface); }
+.lineup-controls button:focus-visible, .lineup-controls input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.lineup-controls input[type=range] { flex: 1; min-width: 140px; accent-color: var(--muted); }
+.lineup-out { font: 600 20px var(--display); font-variation-settings: "SOFT" 100; min-width: 4ch; }
+.lineup-note { font-size: 12px; color: var(--muted); margin: 0; max-width: 72ch; }
+
+/* Phone: two clocks across and three rows, so the card needs to be taller than the usual chart
+   box, and the type has to grow in viewBox units to survive being scaled down. */
+@media (max-width: 820px) {
+  #lineup-viz { height: 68vh; }
+  .lu-year { font-size: 56px !important; }
+  .lu-head { font-size: 14px !important; letter-spacing: .05em; }
+  .lu-value { font-size: 26px !important; }
+  .lu-name { font-size: 20px !important; }
+  .lu-change { font-size: 16px !important; }
+  .lineup-note { font-size: 11px; }
+}

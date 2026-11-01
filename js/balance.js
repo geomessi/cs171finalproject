@@ -166,6 +166,7 @@
         let y = +this.value;
         if (y === 2020) y = mode.kind === 'year' && mode.year < 2020 ? 2021 : 2019;
         mode = { kind: 'year', year: y }; refresh();
+        story.setYear(y, 'balance');   // the lineup and the verdict follow
       });
     out = c.append('output').attr('for', 'balance-year').attr('class', 'balance-out');
     d3.select(el).append('p').attr('class', 'balance-note')
@@ -182,5 +183,13 @@
       if (n <= 1) refresh();
     },
     age(code) { age = code; syncText(); if (svg) refresh(); },
+    // Another chapter moved the shared year. The "who with" data starts in 2010, so earlier years
+    // hold at 2010 rather than emptying the pans.
+    year(y) {
+      if (!svg) return;
+      const shown = Math.max(2010, y === 2020 ? 2019 : y);
+      mode = { kind: 'year', year: shown };
+      refresh();
+    },
   });
 })();

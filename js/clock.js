@@ -266,7 +266,13 @@
       timer = setInterval(() => { i += 1; if (i >= ys.length) { stop(); return; } show(ys[i]); }, 420);
     }
     q('#clock-play').addEventListener('click', () => (timer ? stop() : play()));
-    q('#clock-year').addEventListener('input', e => { stop(); let y = +e.target.value; if (y === 2020) y = world.year < 2020 ? 2021 : 2019; show(y); });
+    q('#clock-year').addEventListener('input', e => {
+      stop();
+      let y = +e.target.value;
+      if (y === 2020) y = world.year < 2020 ? 2021 : 2019;
+      show(y);
+      story.setYear(y, 'clock');   // the lineup and the scale follow
+    });
     show(2003);
     return { show, play, stop };
   }
@@ -303,5 +309,11 @@
       if (n === 2 && main.year < 2025) { main.stop(); main.render(2025, { t: 600, drip: true }); }
     },
     age(code) { if (!useWorld()) main?.setAge(code); },
+    // Another chapter moved the shared year (the lineup or the scale).
+    year(y) {
+      if (!main) return;
+      if (useWorld()) { main.stop(); main.show(y); }
+      else { main.stop(); main.render(y, { t: 300 }); }
+    },
   });
 })();
