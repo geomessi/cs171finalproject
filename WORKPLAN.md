@@ -16,8 +16,6 @@ Open the pull request **into `prototype-2`** (not `main`). Cloudflare comments a
 
 **Goal for the check:** answer the TF's first-check feedback. That means narrowed questions (incl. parents vs. no kids and weekdays vs. weekends), a story that ends in a **final explorable view**, AI as a **short closing thought**, and a prototype we can demo live in 5 minutes.
 
-**Shared deadline:** everything merged into `prototype-2` **two days before our slot** (date: _TBD_), so we rehearse the demo together at least once.
-
 | Owner | Chunk | Files you own |
 | --- | --- | --- |
 | Chloe | "Explore your day" final chapter, Clue 2 spike note, suspects age label | new `js/ch-explore.js`, `css/explore.css`; `js/ch-moved.js`, `js/ch-alone.js`, `css/moved.css`, `scripts/`, `data/` |
