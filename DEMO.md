@@ -61,5 +61,6 @@ Be ready to answer these without opening the code.
 
 ## Still to do before the meeting
 
+- [ ] Test the world on a real laptop and a real phone (the only check that can't be done in a headless browser)
 - [ ] Record the backup walkthrough (screen recording, scroll the whole story once, 3 minutes, no audio needed).
 - [ ] One full rehearsal with all three of us on the preview link.

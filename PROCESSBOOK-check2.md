@@ -37,6 +37,22 @@ Closing thought, not a question we can answer yet: in July 2026 the Bureau of La
 
 **Honesty, on the page.** We mark the missing 2020 estimates instead of letting lines jump the gap, label chapters that only have data for one age group, name the 2021 peak in time alone, and say where the data stops short — BLS doesn't publish age crossed with parent status, and the who-with series starts in 2010.
 
+## Figures
+
+Screenshots of the prototype as it stands, in `docs/shots/`. Nine chapters are built; the rest are in progress.
+
+| File | Caption to use |
+| --- | --- |
+| `01-hero.jpg` | The opening: one average day in 2003 as a clock, in a world the reader scrolls through. |
+| `02-guess.jpg` | Before any chart, the reader guesses how many minutes a day young adults spend socializing now. |
+| `03-the-case.jpg` | Socializing by age, 2003–2025. 15–24-year-olds fell from 59 minutes a day to 36. |
+| `04-suspects.jpg` | What moved instead: work down 18 minutes, TV down 34, sleep up 39, other leisure up 29, chores up 18. |
+| `05-clue1-weekdays.jpg` | Weekday socializing nearly halved, 50 minutes to 28; weekends held up better, 80 to 54. |
+| `06-clue2-alone.jpg` | Waking hours alone against hours with other people, ages 20–24, 2010–2025. |
+| `07-the-scale.jpg` | The day on a balance: hours with other people against hours alone, each figure about 1/24 of waking time. |
+| `08-the-lineup.jpg` | Six age groups, one clock each, on a single shared year. The sag and the drips are the minutes each group has lost. |
+| `09-the-verdict.jpg` | The verdict: the clock melts into the lake as the years run to 2025. |
+
 ## Design decisions worth recording
 
 **Why a melting clock.** The mood board was Dalí. A clock is the obvious shape for a day, and a clock losing its shape is the obvious shape for a day losing something. We use his visual language — hard objects gone soft, raking light, empty space — rather than copying any painting.
