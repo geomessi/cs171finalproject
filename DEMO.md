@@ -10,21 +10,37 @@ Five minutes of demo, then questions. Owner: Georgia. Everyone reads this before
 
 ## Five minutes
 
-| Time | Beat | Who | What to say |
+**Do not scroll the whole story.** Sixteen scroll-driven chapters take far longer than five minutes
+to get through, and rushing them makes the site look broken. Jump between these eight beats with the
+nav links at the top, and scroll only *inside* a beat. Say once, early: "I'm skipping ahead — the
+full read is about fifteen minutes."
+
+| Time | Beat | Who | How you get there |
 | --- | --- | --- | --- |
-| 0:00–0:30 | **The hero** | Georgia | "In 2003, young Americans spent about an hour a day just being with other people. This is that hour, as a clock. Watch what happens to it." Scroll once, slowly. |
-| 0:30–1:15 | **The guess** | Mariah | Let them guess. Actually wait for an answer. Then reveal 36 minutes, down 39%. The guess is the hook — don't rush it. |
-| 1:15–2:15 | **Clearing the suspects** | Chloe | Work cleared, TV cleared, then the kids: parents lost 6 minutes, people with no kids lost 13. "The people with the least free time kept the most of their social lives." |
-| 2:15–3:00 | **The empty chair** | Mariah | Friends halved, 65 minutes to 32 — and already down to 43 by 2019. "The pandemic didn't start this." |
-| 3:00–4:00 | **The lineup and the verdict** | Georgia | Drag the lineup slider. Point out that the scale above and the verdict below move with it — one year, three views. Then let the verdict clock melt. |
-| 4:00–4:40 | **Your case file** | Chloe | Pick a group, pick a day type, show the three panels move together. "This is where the reader takes over." |
-| 4:40–5:00 | **What's left** | Georgia | Name the gaps before they do (below). |
+| 0:00–0:20 | **The premise** | Georgia | Top of the page. "In 2003, young Americans spent about an hour a day just being with other people. This is that hour, as a clock." |
+| 0:20–0:40 | **The guess** | Mariah | Nav → Guess. Ask, wait, reveal 36 minutes, down 39%. They'll answer in about three seconds. |
+| 0:40–1:05 | **The case** | Mariah | Nav → The case. One scroll. 59 to 36, every group lost some, young people most. |
+| 1:05–1:50 | **The suspects** | Chloe | Nav → Suspects. Work cleared, TV cleared, then the kids: parents lost 6, people with no kids lost 13. "The people with the least free time kept the most of their social lives." |
+| 1:50–2:20 | **The empty chair** | Mariah | Nav → Clue 3. Friends 65 to 32, and already 43 by 2019. "The pandemic didn't start this." |
+| 2:20–3:00 | **The lineup** | Georgia | Nav → Lineup. Drag the slider, then say the scale above and the verdict below are on that same year. That's the linked-views beat — it's worth the time. |
+| 3:00–3:30 | **The verdict** | Georgia | Nav → Verdict. Hit Play and talk over it; the melt runs about nine seconds on its own. |
+| 3:30–4:20 | **Your case file** | Chloe | Nav → the last chapter. Pick a group, pick a day type, brush a range. "This is where the reader takes over." |
+| 4:20–4:40 | **What's missing** | Georgia | No clicking. Name the gaps before they do (below). |
+
+That leaves about twenty seconds of slack, which is the right amount. If you're behind, cut the
+case (0:40) — the guess already delivers the number.
+
+**Timings worth knowing**
+- The verdict's Play runs the clock 2003 → 2025 in roughly nine seconds. Start it, then talk.
+- The lineup's Play takes about seven. Prefer dragging the slider: it's faster and it shows the link.
 
 **Rules for the demo**
 - One person drives the laptop the whole time. The others talk.
-- Scroll slowly. The chapters are built around scroll position, and fast scrolling makes the story unreadable even though it doesn't break.
+- Inside a beat, scroll slowly. Chapters respond to scroll position, and racing through makes the
+  story unreadable even though it doesn't break.
 - Don't narrate the interface ("now I'll click here"). Say what the data says.
-- If something breaks, say "that's a bug, here's what it does when it works" and move on. Do not debug live.
+- If something breaks, say "that's a bug, here's what it does when it works" and move on. Never
+  debug live.
 
 ## What we say is still missing
 
