@@ -107,6 +107,9 @@ main, .site-foot { position: relative; z-index: 1; }
 html.no-world #world, html.no-world #veil, html.no-world #canvas-grain { display: none; }
 /* Painted, not rendered: a warm varnish on the scene, oil-paint grain, and a soft vignette */
 #world { filter: saturate(1.06) contrast(1.07) sepia(0.07); }
+/* The painted backdrop behind the 3D scene. world.js sets --dusk (0 → 1 as the years run) to deepen it. */
+#world { --dusk: 0; background: linear-gradient(rgba(18, 14, 52, calc(var(--dusk) * .45)), rgba(18, 14, 52, calc(var(--dusk) * .45))),
+  url("../assets/desert.jpg") center 62% / cover no-repeat, #2E2A55; }
 #canvas-grain { position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-image: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(30, 18, 8, 0.38) 100%), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.42  0 0 0 0 0.32  0 0 0 0.55 0'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
   mix-blend-mode: multiply; opacity: 0.55; }

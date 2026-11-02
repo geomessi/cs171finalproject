@@ -11,19 +11,37 @@
 .opening-button:hover { background:var(--surface); color:var(--ink); }
 .opening-button:disabled { opacity:.5; cursor:default; }
 .opening-panel :focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
-.opening-guess { justify-content:center; }
-.guess-controls label { display:flex; align-items:baseline; justify-content:space-between; color:var(--muted); font-size:13px; gap:12px; }
-.guess-controls output { color:var(--accent); font:500 clamp(22px,3vw,32px)/1.2 var(--mono); }
-.guess-controls input { width:100%; min-height:32px; accent-color:var(--accent); cursor:pointer; margin:5px 0 0; }
-.guess-range-labels { display:flex; justify-content:space-between; color:var(--muted); font:11px var(--mono); }
-.guess-feedback { min-height:3em; color:var(--ink); font-size:14px; line-height:1.5; }
-.guess-comparison { flex:0 1 auto; }
-.guess-comparison svg { width:100%; height:auto; }
-.guess-mark line { stroke:var(--accent); stroke-width:2; }
-.guess-mark circle { fill:var(--accent); }
-.guess-mark text { fill:var(--accent); }
-.guess-mark[data-kind="actual"] line,.guess-mark[data-kind="actual"] circle { stroke:var(--c-social); fill:var(--c-social); }
-.guess-mark[data-kind="actual"] text { fill:var(--c-social); }
+.opening-guess { justify-content:flex-start; }
+/* Heading and readout share a row, button and feedback share a row, so the clock gets the rest of the card */
+.guess-top { display:flex; align-items:baseline; justify-content:space-between; gap:6px 16px; flex-wrap:wrap; }
+.guess-top .opening-heading { flex:1 1 22ch; }
+.guess-readout { display:flex; align-items:baseline; gap:8px; color:var(--muted); font-size:13px; white-space:nowrap; }
+.guess-readout output { color:var(--accent); font:500 clamp(20px,2.4vw,26px)/1.1 var(--mono); }
+.opening-guess[data-zoomed="false"] .guess-readout { visibility:hidden; }
+.guess-actions { display:flex; align-items:center; gap:8px 16px; flex-wrap:wrap; }
+.guess-feedback { flex:1 1 20ch; min-height:2.6em; display:flex; align-items:center; color:var(--ink); font-size:14px; line-height:1.35; }
+@media (min-width:821px) { #guess .viz { top:9vh; height:84vh; } }
+/* The clock: the hero's day zooms into one hour; the reader drags the minute hand */
+.guess-clock { flex:1 1 auto; min-height:240px; }
+.guess-clock svg { width:100%; height:100%; overflow:visible; }
+.guess-rim { fill:none; stroke:var(--muted); stroke-opacity:.55; stroke-width:1.2; }
+.guess-ticks { stroke:var(--faint); }
+.guess-dial text { font:600 13px var(--display); font-variation-settings:"SOFT" 100; }
+.opening-panel .guess-tick-label { fill:var(--muted); font-size:16px; }
+.guess-wedge { fill:var(--sand); fill-opacity:.85; stroke:var(--bg); stroke-width:1; }
+.guess-hand { stroke:var(--ink); stroke-width:3; stroke-linecap:round; }
+.guess-pivot { fill:var(--ink); }
+.guess-band { fill:var(--c-social); }
+.guess-face { fill:transparent; cursor:grab; touch-action:none; }
+.guess-knob { fill:var(--sand); stroke:var(--bg); stroke-width:2; cursor:grab; touch-action:none; }
+.guess-face:active,.guess-knob:active { cursor:grabbing; }
+.opening-panel .guess-knob:focus-visible { outline:none; stroke:var(--ink); stroke-width:3; }
+.guess-legend { display:flex; flex-wrap:wrap; gap:6px 16px; min-height:1.5em; color:var(--muted); font:12px var(--mono); }
+.opening-guess[data-zoomed="false"] .guess-legend { visibility:hidden; }
+.guess-legend span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+.guess-legend .key-then::before { background:var(--c-social); opacity:.3; }
+.guess-legend .key-guess::before { background:var(--sand); }
+.guess-legend .key-now::before { background:var(--c-social); }
 .drop-line { fill:none; stroke-linejoin:round; stroke-linecap:round; }
 .drop-endpoint circle { stroke:var(--bg); stroke-width:2; }
 .opening-panel .drop-end-value { fill:currentColor; font-weight:500; font-size:13px; }
@@ -47,7 +65,6 @@
   .opening-caption { font-size:11px; }
   .opening-summary { font-size:12px; }
   .opening-inspection { font-size:11px; }
-  .guess-controls output { font-size:23px; }
   .guess-feedback { font-size:13px; min-height:3em; }
   .opening-button { min-height:40px; padding:8px 12px; }
 }
