@@ -14,6 +14,8 @@
 <link rel="stylesheet" href="css/friends.css">   <!-- Package 1 · new pictogram -->
 <link rel="stylesheet" href="css/notes.css">     <!-- Package 1 · close and methods -->
 <link rel="stylesheet" href="css/moved.css">     <!-- Package 2 -->
+<link rel="stylesheet" href="css/parents.css">   <!-- Package 2 · suspect: the kids -->
+<link rel="stylesheet" href="css/file.css">      <!-- Package 2 · your case file -->
 <link rel="stylesheet" href="css/clock.css">     <!-- Package 3 -->
 <link rel="stylesheet" href="css/balance.css">   <!-- Package 3 -->
 <link rel="stylesheet" href="css/lineup.css">    <!-- Package 3 -->
@@ -30,7 +32,7 @@
   <nav aria-label="Chapters">
     <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#day">The day</a><a href="#moved">Suspects</a>
     <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#friends">Clue 3</a><a href="#balance">The scale</a>
-    <a href="#lineup">Lineup</a><a href="#clock">Verdict</a><a href="#close">The close</a><a href="#methods">Methods</a>
+    <a href="#lineup">Lineup</a><a href="#clock">Verdict</a><a href="#close">The close</a><a href="#file">Your file</a><a href="#methods">Methods</a>
   </nav>
   <label class="you">I'm
     <select id="you-age" aria-label="Your age group">
@@ -61,9 +63,9 @@
   <section class="chapter" id="guess" data-chapter="guess">
     <div class="steps">
       <div class="step" data-step="0"><p class="kicker">Before we start</p><h2>Make a guess</h2><p>How much of that hour do you think is left? Guess how many minutes a day <span data-you-label>15–24-year-olds</span> spend socializing now.</p></div>
-      <div class="step" data-step="1"><p>Drag the slider, then reveal the real number.</p></div>
+      <div class="step" data-step="1"><p>Zoom in on that hour. Drag the clock hand to your guess, then reveal the real number.</p></div>
     </div>
-    <div class="viz" id="guess-viz" data-owner="Package 1 · ch-guess.js" data-placeholder="Slider guess → reveal the real minutes (functional)"></div>
+    <div class="viz" id="guess-viz" data-owner="Package 1 · ch-guess.js" data-placeholder="Clock-hand guess → reveal the real minutes (functional)"></div>
   </section>
 
   <!-- ===== The case · The drop · Package 1 · FUNCTIONAL D3 #1 ===== -->
@@ -90,12 +92,31 @@
   <!-- ===== The suspects · Where the time went · Package 2 · FUNCTIONAL D3 #2 ===== -->
   <section class="chapter" id="moved" data-chapter="moved" data-scope="103">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Who took it?</h2><p>A day always adds up to 24 hours, so if socializing shrank, something else grew. Start with the usual suspects: work and TV.</p></div>
+      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Round up the usual</h2><p>If young people stopped seeing each other, the easy story is that they got busier. Two suspects: the job, and the screen.</p></div>
       <div class="step" data-step="1"><p><strong>Work: cleared.</strong> 15–24-year-olds work 18 fewer minutes a day than in 2003–04.</p></div>
-      <div class="step" data-step="2"><p><strong>TV: cleared.</strong> TV time fell 34 minutes. So young people got time back, and still spent less of it together.</p></div>
-      <div class="step" data-step="3"><p>The time went somewhere quieter: sleep and personal care (+39 minutes), other leisure like games, computers and reading (+29), and chores (+18). These moved together; the data can't prove one caused another.</p></div>
+      <div class="step" data-step="2"><p><strong>TV: cleared.</strong> TV fell 34 minutes. Both suspects <em>gave</em> young people time back — and they still spent less of it together.</p></div>
     </div>
     <div class="viz" id="moved-viz" data-owner="Package 2 · ch-moved.js" data-placeholder="Diverging change chart, animated 2003→2025 (functional D3)"></div>
+  </section>
+
+  <!-- ===== Suspect: the kids · Chloe ===== -->
+  <section class="chapter" id="kids" data-chapter="kids">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Then it has to be the kids</h2><p>A small child eats a day whole. If anyone lost a social life in twenty years, it should be parents.</p><p class="scope-note">These numbers cover everyone 15 and older, whichever group you pick above. BLS doesn't publish parent status by age.</p></div>
+      <div class="step" data-step="1"><p><strong>Cleared, and then some.</strong> Parents of a child under 18 lost 6 minutes a day. People with no kids at home lost 13.</p></div>
+      <div class="step" data-step="2"><p>Weekends make it starker. Parents kept almost all of their weekend socializing — down 4 minutes. People with no kids lost 17.</p></div>
+      <div class="step" data-step="3"><p>Whatever took the hour, it took most of it from the people with the fewest obligations.</p></div>
+    </div>
+    <div class="viz" id="kids-viz" data-owner="Chloe · ch-parents.js" data-placeholder="Parents vs. no kids at home, by day type"></div>
+  </section>
+
+  <!-- ===== The one that didn't walk · Chloe ===== -->
+  <section class="chapter" id="games" data-chapter="games" data-scope="20–24">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>One suspect didn't walk</h2><p>Of the fourteen blocks in the day, one more than doubled: playing games and using a computer for fun. For 20–24-year-olds, 29 minutes a day in 2003–04. Sixty now.</p></div>
+      <div class="step" data-step="1"><p>Here's where we stop. The survey records what you were doing, not what you would have done instead. Two lines moved in opposite directions over twenty years. That is the whole claim.</p></div>
+    </div>
+    <div class="viz" id="games-viz" data-owner="Chloe · ch-games.js" data-placeholder="Games and computer use vs. socializing, 2003–2025"></div>
   </section>
 
   <!-- ===== Clue 1 · It's the weekdays · Package 1 ===== -->
@@ -109,10 +130,10 @@
   <!-- ===== Clue 2 · Alone or together · Package 2 · DRAFT ===== -->
   <section class="chapter" id="alone" data-chapter="alone" data-scope="20–24">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>More of the day, alone</h2><p>Since 2010–11, 20–24-year-olds went from 4h13m a day alone to 5h37m.</p></div>
-      <div class="step" data-step="1"><p>Time with other people fell by nearly two hours. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
+      <div class="step" data-step="0"><p class="kicker">Clue 2</p><h2>The day went quiet</h2><p>Since 2010–11, 20–24-year-olds went from 4h13m a day alone to 5h37m. Time with other people fell by nearly two hours.</p></div>
+      <div class="step" data-step="1"><p>The pandemic shows up exactly where you'd expect: alone time peaked in 2021, at 6h44m. Then it came down — and stopped well above where it started.</p></div>
     </div>
-    <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025 (draft)"></div>
+    <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025"></div>
   </section>
 
   <!-- ===== Clue 3 · Mariah's pictogram; Chloe owns the separate who-with slope ===== -->
@@ -124,6 +145,14 @@
       <div class="step" data-step="3"><p>In 2024–25, the average was 32 minutes. Each figure stands for about one minute of an average day, not one person followed through the years.</p></div>
     </div>
     <div class="viz" id="friends-viz" data-owner="Mariah · ch-friends.js" data-placeholder="Minutes with friends, as a table emptying"></div>
+  </section>
+
+  <!-- ===== Clue 3, continued · who-with slope · Chloe ===== -->
+  <section class="chapter" id="who" data-chapter="who">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Clue 3</p><p>Not everyone left. Time with a spouse or partner didn't move — 158 minutes, then 157. Family held. Coworkers fell by 40 minutes. The people we lose are the ones we have to choose.</p><p class="scope-note">These numbers cover all ages 15 and older, whichever group you pick above.</p></div>
+    </div>
+    <div class="viz" id="who-viz" data-owner="Chloe · ch-who.js" data-placeholder="Who we spend time with, 2010–2025"></div>
   </section>
 
   <!-- ===== Weigh it · The balance scale · Package 3 ===== -->
@@ -168,6 +197,12 @@
       <p class="closing-source">Source: <a href="https://www.govinfo.gov/content/pkg/FR-2026-07-10/pdf/2026-13928.pdf" target="_blank" rel="noopener">BLS proposal, Federal Register, July 10, 2026</a>. The data shown here do not measure AI's effect on time use.</p>
       <p><a href="#methods">Read the sources and limits of the case ↓</a></p>
     </div>
+  </section>
+
+  <!-- ===== Your case file · explorable ending, linked views · Chloe ===== -->
+  <section class="case-file" id="file" data-chapter="file" aria-labelledby="file-title">
+    <div class="case-file-head"><p class="kicker">Your turn</p><h2 id="file-title">Open the file yourself</h2><p>Pick a group and a kind of day. The three panels move together: the hour then and now, what grew and what shrank, and how much of the day was spent alone.</p></div>
+    <div class="viz" id="file-viz" data-owner="Chloe · ch-file.js" data-placeholder="Your case file: three linked panels"></div>
   </section>
 
   <!-- ===== Methods and notes · Mariah ===== -->
@@ -220,6 +255,10 @@
 <script src="js/ch-friends.js"></script>   <!-- Package 1 -->
 <script src="js/ch-moved.js"></script>     <!-- Package 2 -->
 <script src="js/ch-alone.js"></script>     <!-- Package 2 -->
+<script src="js/ch-parents.js"></script>   <!-- Package 2 -->
+<script src="js/ch-games.js"></script>     <!-- Package 2 -->
+<script src="js/ch-who.js"></script>       <!-- Package 2 -->
+<script src="js/ch-file.js"></script>      <!-- Package 2 -->
 <script src="js/world.js"></script>        <!-- Package 3 -->
 <script src="js/clock.js"></script>        <!-- Package 3 -->
 <script src="js/balance.js"></script>      <!-- Package 3 -->
