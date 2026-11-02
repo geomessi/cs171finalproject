@@ -10,6 +10,9 @@
 <link rel="stylesheet" href="css/base.css">
 <!-- One stylesheet per owner -->
 <link rel="stylesheet" href="css/opening.css">   <!-- Package 1 -->
+<link rel="stylesheet" href="css/day.css">       <!-- Package 1 · new day view -->
+<link rel="stylesheet" href="css/friends.css">   <!-- Package 1 · new pictogram -->
+<link rel="stylesheet" href="css/notes.css">     <!-- Package 1 · close and methods -->
 <link rel="stylesheet" href="css/moved.css">     <!-- Package 2 -->
 <link rel="stylesheet" href="css/clock.css">     <!-- Package 3 -->
 <link rel="stylesheet" href="css/balance.css">   <!-- Package 3 -->
@@ -25,9 +28,9 @@
 <header class="topbar">
   <a class="brand" href="#top">The Case of the Shrinking Hour</a>
   <nav aria-label="Chapters">
-    <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#moved">Suspects</a>
-    <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#balance">The scale</a>
-    <a href="#lineup">Lineup</a><a href="#clock">Verdict</a>
+    <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#day">The day</a><a href="#moved">Suspects</a>
+    <a href="#weekdays">Clue 1</a><a href="#alone">Clue 2</a><a href="#friends">Clue 3</a><a href="#balance">The scale</a>
+    <a href="#lineup">Lineup</a><a href="#clock">Verdict</a><a href="#close">The close</a><a href="#methods">Methods</a>
   </nav>
   <label class="you">I'm
     <select id="you-age" aria-label="Your age group">
@@ -74,6 +77,16 @@
     <div class="viz" id="drop-viz" data-owner="Package 1 · ch-drop.js" data-placeholder="Socializing by age, 2003–2025, stepped with scroll (functional D3)"></div>
   </section>
 
+  <!-- ===== The constraint · Mariah · novel view ===== -->
+  <section class="chapter" id="day" data-chapter="day" data-scope="103" aria-labelledby="day-title">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">The constraint</p><h2 id="day-title">A day can't grow</h2><p>Twenty-four hours. Fourteen hundred and forty minutes, every one of them written down. If socializing lost 23 minutes, those 23 minutes are sitting somewhere else in this column.</p></div>
+      <div class="step" data-step="1"><p>Watch 2003 become 2025. Four blocks do almost all the moving: sleep and personal care up 39 minutes, other leisure up 29, chores up 18, TV down 34.</p></div>
+      <div class="step" data-step="2"><p>So the question was never <em>where did the hour go</em>. It's <em>who was holding it</em>.</p></div>
+    </div>
+    <div class="viz" id="day-viz" data-owner="Mariah · ch-day.js" data-placeholder="One 24-hour day, changing shape"></div>
+  </section>
+
   <!-- ===== The suspects · Where the time went · Package 2 · FUNCTIONAL D3 #2 ===== -->
   <section class="chapter" id="moved" data-chapter="moved" data-scope="103">
     <div class="steps">
@@ -100,6 +113,17 @@
       <div class="step" data-step="1"><p>Time with other people fell by nearly two hours. Across all ages, time with friends halved, from about an hour a day to 32 minutes.</p></div>
     </div>
     <div class="viz" id="alone-viz" data-owner="Package 2 · ch-alone.js" data-placeholder="Waking hours alone vs. with others, 2010–2025 (draft)"></div>
+  </section>
+
+  <!-- ===== Clue 3 · Mariah's pictogram; Chloe owns the separate who-with slope ===== -->
+  <section class="chapter" id="friends" data-chapter="friends" aria-labelledby="friends-title">
+    <div class="steps">
+      <div class="step" data-step="0"><p class="kicker">Clue 3</p><h2 id="friends-title">The empty chair</h2><p>Across all ages, time with friends fell from 65 minutes a day in 2010 to 32 in 2024–25.</p><p class="scope-note">These numbers cover all ages 15 and older, whichever group you pick above. Time with friends includes activities beyond socializing.</p></div>
+      <div class="step" data-step="1"><p>And it was going before anything closed. By 2019 it was already down to 43 minutes. The decline was underway before the pandemic.</p></div>
+      <div class="step" data-step="2"><p>There is no annual estimate for 2020. By 2021, time with friends was 34 minutes a day. The missing year is a gap in the survey, not a day with nobody there.</p></div>
+      <div class="step" data-step="3"><p>In 2024–25, the average was 32 minutes. Each figure stands for about one minute of an average day, not one person followed through the years.</p></div>
+    </div>
+    <div class="viz" id="friends-viz" data-owner="Mariah · ch-friends.js" data-placeholder="Minutes with friends, as a table emptying"></div>
   </section>
 
   <!-- ===== Weigh it · The balance scale · Package 3 ===== -->
@@ -132,6 +156,51 @@
     <div class="viz" id="clock-viz" data-owner="Package 3 · clock.js" data-placeholder="The melting clock: novel view"></div>
   </section>
 
+  <!-- ===== The closing · Mariah · static, readable without JavaScript ===== -->
+  <section class="case-notes" id="close" aria-labelledby="close-title">
+    <div class="case-notes-card">
+      <p class="kicker">The closing</p>
+      <h2 id="close-title">What the file says</h2>
+      <p class="closing-copy">No suspect took the hour. Work gave time back. TV gave time back. Parents, who have the least room in a day, kept the most of their social lives. The hour wasn't stolen by one thief — it dissolved into a day that is easier and easier to spend alone.</p>
+      <p>These are changes in averages, not evidence that any one activity caused the decline.</p>
+      <p>In July 2026, the Bureau of Labor Statistics proposed adding questions about AI use to this survey, with collection proposed for January 2027. That notice sought approval; it did not announce a final decision. If approved, the questions could help researchers examine AI use alongside daily time use.</p>
+      <p class="closing-question">If AI hands back hours, do we spend them on each other?</p>
+      <p class="closing-source">Source: <a href="https://www.govinfo.gov/content/pkg/FR-2026-07-10/pdf/2026-13928.pdf" target="_blank" rel="noopener">BLS proposal, Federal Register, July 10, 2026</a>. The data shown here do not measure AI's effect on time use.</p>
+      <p><a href="#methods">Read the sources and limits of the case ↓</a></p>
+    </div>
+  </section>
+
+  <!-- ===== Methods and notes · Mariah ===== -->
+  <section class="case-notes" id="methods" aria-labelledby="methods-title">
+    <div class="case-notes-card">
+      <p class="kicker">Methods and notes</p>
+      <h2 id="methods-title">What is in the file</h2>
+      <p class="methods-intro">The figures are survey averages. They describe how groups' days changed, not what happened to the same people over twenty years.</p>
+      <dl class="methods-list">
+        <dt>Source and population</dt>
+        <dd>The <a href="https://www.bls.gov/tus/" target="_blank" rel="noopener">BLS American Time Use Survey</a> describes the U.S. civilian noninstitutional population ages 15 and older. This site uses published annual time series for 2003–2025, converted from hours to minutes in <a href="scripts/fetch_atus.py">our extraction script</a> and stored in <a href="data/atus.json">the shared data file</a>. See the <a href="https://www.bls.gov/tus/atususersguide.pdf" target="_blank" rel="noopener">ATUS User's Guide</a>.</dd>
+        <dt>What counts as socializing?</dt>
+        <dd>The socializing series is BLS “socializing and communicating,” activity code <code>600024</code>: face-to-face social communication and social functions. Phone calls, texting, and email are classified separately. It is different from “time with friends,” which can include other activities done in a friend's company. See <a href="https://www.bls.gov/opub/hom/atus/concepts.htm" target="_blank" rel="noopener">BLS concepts and definitions</a>.</dd>
+        <dt>Annual values and two-year averages</dt>
+        <dd>Labels such as 2003–04 and 2024–25 are arithmetic means of the two annual estimates in our file. They are not a new calculation from pooled microdata. The friends pictogram begins with 2010 alone (64.8 min/day) and ends with the 2024–25 mean (31.5). Choosing 2025 alone shows 33. Labels round for readability; inspection text keeps one decimal.</dd>
+        <dt>A fixed day, with a small rounding adjustment</dt>
+        <dd>The day column contains fourteen mutually exclusive display categories. Other leisure and sports is total leisure minus socializing and TV, so these are not counted twice. Published rounding makes both endpoint totals 1,440.3 minutes. Block heights are scaled by 1,440 divided by the reported total; the minute labels are unchanged. Positions between the endpoints are illustrative blends, not observed years or a timetable of activities.</dd>
+        <dt>Why 2020 is missing</dt>
+        <dd>BLS suspended collection for part of spring 2020 and did not publish a comparable annual estimate. We leave that year missing; it is neither zero nor an interpolated observation. See <a href="https://www.bls.gov/tus/notices/2021/covid19.htm" target="_blank" rel="noopener">BLS's explanation of the 2020 gap</a>.</dd>
+        <dt>Who-with measures and age bands</dt>
+        <dd>The companion series in this extract starts in 2010. It covers activities for which ATUS records companions, not another complete 24-hour budget. Companion categories can overlap and must not be added together. Friends uses all ages; several alone/together views use 20–24 rather than 15–24 because the published age bands differ. Each view states its group.</dd>
+        <dt>Day types and parent groups</dt>
+        <dd>Weekdays are nonholiday weekdays; weekends include holidays. Parent groups mean people with or without an own child under 18 at home. Our published-series extract does not cross age with parent status, so it cannot isolate young parents or provide an age-by-parent filter.</dd>
+        <dt>What the evidence can—and cannot—say</dt>
+        <dd>Activities moved together; the survey does not identify which activity displaced another or establish that screens, the pandemic, or AI caused a change. Subgroup estimates have sampling uncertainty; small year-to-year differences should not be treated as precise individual changes.</dd>
+        <dt>Figures are units, not tracked people</dt>
+        <dd>Each filled figure in the friends view represents approximately one minute per day, rounded to the nearest minute. Empty chairs compare that reading with the 2010 baseline. The same respondents were not followed across years, and the illustration does not show the number of friends a person has.</dd>
+      </dl>
+      <p class="methods-credits">Georgia Messinger · Chloe Nelson-Arzuaga · Mariah Crawford<br>CS171, Fall 2026. Charts use D3; the background world uses Three.js. AI tools assisted implementation; the team is responsible for reviewing the data and final interpretations.</p>
+      <p><a href="#top">Back to the beginning ↑</a></p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-foot">
@@ -147,6 +216,8 @@
 <script src="js/ch-guess.js"></script>     <!-- Package 1 -->
 <script src="js/ch-drop.js"></script>      <!-- Package 1 -->
 <script src="js/ch-weekdays.js"></script>  <!-- Package 1 -->
+<script src="js/ch-day.js"></script>       <!-- Package 1 -->
+<script src="js/ch-friends.js"></script>   <!-- Package 1 -->
 <script src="js/ch-moved.js"></script>     <!-- Package 2 -->
 <script src="js/ch-alone.js"></script>     <!-- Package 2 -->
 <script src="js/world.js"></script>        <!-- Package 3 -->
@@ -156,3 +227,4 @@
 <script>story.start();</script>
 </body>
 </html>
+
