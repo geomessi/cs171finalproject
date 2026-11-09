@@ -69,10 +69,12 @@
     backdropHaze: '#E7B48E', shadow: '#2A1E3A',   // matched to the painted backdrop's horizon and shade
     face: '#EFE6D5', ink: '#2A2320', bezel: '#D4BE9C', body: '#E6DCCF',
     social: '#FF8DB8',
+    // Socializing is the only luminous color; everything else stays at dusk. These match the
+    // --c-* tokens in css/base.css, so the 3D face and the 2D charts name a day the same way.
     act: {
-      '600001': '#2F5D73', '600013': '#C08A3E', '600016': '#D7B26A', '600003': '#A8735A', '600007': '#B89478',
-      '600010': '#B89478', '600018': '#9C8B7A', '600022': '#8FA67E', '600025': '#6E6A9E', 'leis': '#5FA3A1',
-      '600030': '#CFC4B4', '600033': '#CFC4B4', '600034': '#CFC4B4',
+      '600001': '#34466A', '600013': '#7C6B45', '600016': '#66603F', '600003': '#594F47', '600007': '#4F463F',
+      '600010': '#4F463F', '600018': '#4A453F', '600022': '#40604A', '600025': '#4F4588', 'leis': '#6F63B8',
+      '600030': '#343741', '600033': '#343741', '600034': '#343741',
     },
   };
   const SHORT = {

@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 .wrangler/
 node_modules/
+
+# Stray uploads
+*.pdf
