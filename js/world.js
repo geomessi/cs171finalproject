@@ -1,7 +1,9 @@
 /*
  * The world (NOVEL VIEW) · Owner: Georgia (Package 3). Only this package edits this file.
  *
- * A sunlit, painterly three.js scene behind the whole story: an ultramarine sky with a warm
+ * A sunlit, painterly three.js scene behind the whole story. The sky and dunes are a painted backdrop
+ * (assets/desert.jpg, set on the canvas in base.css); the 3D ground is invisible and only catches shadows.
+ * Originally: an ultramarine sky with a warm
  * horizon, an empty ochre plain under low raking light, a mirror-still lake, and a giant clock on a stone plinth
  * at the water's edge, with tiny figures walking across its face.
  *
@@ -21,6 +23,8 @@
  *
  * Public API (window.world, null when WebGL is unavailable):
  *   world.init(), world.setYear(y), world.setAge(code), world.readout(), world.year
+ *   For the guess chapter, where the whole clock flies off its plinth into the guess card:
+ *   world.palette, world.flyClock(f, target), world.holdHero(on), world.onFrame(fn)
  */
 (function () {
   const canvas = document.getElementById('world');
@@ -54,13 +58,16 @@
   const CLOCK_XZ = [0, -24];
   
   const TILT = 0.12;   // the clock tips its face slightly toward the viewer
+  const HERO_TILT = 0.45;   // in the hero and the verdict it tips further, so an eye-level camera still sees the face
+  const FAR_BASE = -6;      // the distant plinths reach down to here, so they stand in the painted dunes instead of floating
   const WHO_BAND = { '000': ['000', 'all ages'], '103': ['020', '20–24'], '031': ['031', '25–34'], '038': ['038', '35–44'], '042': ['042', '45–54'], '049': ['049', '55–64'], '065': ['113', '65–74'] };
 
   // The world's own painterly palette (STYLEGUIDE.md, "The world"). Socializing keeps the site pink.
   const PAL = {
     zenith: '#16246E', sky: '#2C46A8', horizon: '#F7EAC0', horizonDusk: '#F2B98A', zenithDusk: '#0E1550',
-    sand: '#C99E68', sandShade: '#8E6A45', stone: '#CDB89A', water: '#24388C', cloud: '#F4A9C8',
-    face: '#EFE6D5', ink: '#2A2320', bezel: '#E4E0D8', body: '#D9D2C4',
+    sand: '#C99E68', sandShade: '#8E6A45', stone: '#CDB89A', water: '#5A5E9E', cloud: '#F4A9C8',
+    backdropHaze: '#E7B48E', shadow: '#2A1E3A',   // matched to the painted backdrop's horizon and shade
+    face: '#EFE6D5', ink: '#2A2320', bezel: '#D4BE9C', body: '#E6DCCF',
     social: '#FF8DB8',
     act: {
       '600001': '#2F5D73', '600013': '#C08A3E', '600016': '#D7B26A', '600003': '#A8735A', '600007': '#B89478',
@@ -74,6 +81,36 @@
     'leis': 'Other leisure', '600030': 'Civic', '600033': 'Calls', '600034': 'Other',
   };
 
+  // Surfaces (look only): a gold rim and a pearly body that reflect the painted sky, on a concrete plinth.
+  // Shared by the main clock, its lake reflection and the distant clocks. Metal stays off until the
+  // sky reflection has loaded, since metal with nothing to reflect renders black.
+  const MAT = {
+    bezel: new THREE.MeshStandardMaterial({ color: PAL.bezel, metalness: 0, roughness: 0.34 }),
+    body: TIER === 'low'
+      ? new THREE.MeshStandardMaterial({ color: PAL.body, metalness: 0, roughness: 0.2, side: THREE.DoubleSide })
+      : new THREE.MeshPhysicalMaterial({ color: PAL.body, metalness: 0, roughness: 0.2, side: THREE.DoubleSide,
+        iridescence: 0.9, iridescenceIOR: 1.35, iridescenceThicknessRange: [180, 520], clearcoat: 0.6 }),
+    stone: new THREE.MeshStandardMaterial({ color: '#E9D3B2', roughness: 1 }),
+  };
+  function loadSurfaces() {
+    const loader = new THREE.TextureLoader();
+    loader.load('assets/desert.jpg', t => {
+      t.mapping = THREE.EquirectangularReflectionMapping;
+      const pm = new THREE.PMREMGenerator(renderer);
+      const env = pm.fromEquirectangular(t).texture;
+      pm.dispose(); t.dispose();
+      Object.assign(MAT.bezel, { envMap: env, metalness: 1, envMapIntensity: 1.05 });
+      Object.assign(MAT.body, { envMap: env, metalness: 0.35, envMapIntensity: 1.1 });
+      MAT.stone.envMap = env; MAT.stone.envMapIntensity = 0.35;
+      Object.values(MAT).forEach(m => { m.needsUpdate = true; });
+    });
+    const tile = t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 1.3); t.anisotropy = 4; return t; };
+    MAT.stone.map = tile(loader.load('assets/textures/concrete_diff.jpg'));
+    MAT.stone.normalMap = tile(loader.load('assets/textures/concrete_normal.jpg'));
+    MAT.stone.roughnessMap = tile(loader.load('assets/textures/concrete_rough.jpg'));
+    MAT.stone.needsUpdate = true;
+  }
+
   let ready = false, starting = null, age = '103', year = 2003;
   let renderer, scene, camera, sun, hemi, skyMat, clockGroup, mirrorClock, faceTex, faceCtx, grooves;
   let distant = [];
@@ -83,6 +120,9 @@
   const mouse = { x: 0, y: 0 };
   const camPos = new THREE.Vector3(0, 3.5, 24), camLook = new THREE.Vector3(-9, 7, -40);
   let veilNow = 0, faceDirty = true, displayFont = 'Georgia, serif';
+  let hold = false, tiltNow = HERO_TILT;   // the guess chapter wants the hero shot kept while the clock flies
+  const flight = { f: 0, to: null, hidden: false, home: null };   // f: 0 = on the plinth, 1 = landed in the card
+  const frameHooks = [];
 
   // ---------- data ----------
   function arcsFor(a, y) {
@@ -210,12 +250,12 @@
       const grp = new THREE.Group();
       const face = new THREE.Mesh(own(new THREE.RingGeometry(0.001, R, 96, 24).rotateX(-Math.PI / 2).translate(0, 0.42, 0)),
         new THREE.MeshLambertMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.42 }));
-      const body = new THREE.Mesh(own(new THREE.CylinderGeometry(R + 0.15, R + 0.05, 0.8, 96, 3)), new THREE.MeshLambertMaterial({ color: PAL.body, side: THREE.DoubleSide }));
-      const bezel = new THREE.Mesh(own(new THREE.TorusGeometry(R + 0.12, 0.34, 10, 120).rotateX(Math.PI / 2).translate(0, 0.46, 0)), new THREE.MeshLambertMaterial({ color: PAL.bezel }));
+      const body = new THREE.Mesh(own(new THREE.CylinderGeometry(R + 0.15, R + 0.05, 0.8, 96, 3)), MAT.body);
+      const bezel = new THREE.Mesh(own(new THREE.TorusGeometry(R + 0.2, 0.55, 12, 120).rotateX(Math.PI / 2).translate(0, 0.46, 0)), MAT.bezel);
       grp.add(face, body, bezel);
       const gy = groundH(x, z), ph = 6.2 * sc;
-      const plinth = new THREE.Mesh(new THREE.CylinderGeometry(RS * 0.9 * sc, RS * 1.1 * sc, ph + 1, 24), new THREE.MeshLambertMaterial({ color: PAL.stone }));
-      plinth.position.set(x, gy + (ph - 1) / 2, z);
+      const plinth = new THREE.Mesh(new THREE.CylinderGeometry(RS * 0.9 * sc, RS * 1.1 * sc, gy + ph - FAR_BASE, 24), MAT.stone);
+      plinth.position.set(x, (gy + ph + FAR_BASE) / 2, z);
       grp.scale.setScalar(sc);
       grp.position.set(x, gy + ph + 0.45 * sc, z);
       grp.rotation.set(TILT, Math.atan2(-x, 30 - z) * 0.5, 0, 'YXZ');
@@ -287,12 +327,14 @@
 
   // ---------- build ----------
   function build() {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: QUALITY.aa });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: QUALITY.aa, alpha: true });   // see-through, so the painted backdrop shows
+    renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(devicePixelRatio, QUALITY.dpr));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;   // crisp, painted-looking shadows
+    loadSurfaces();
     scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(new THREE.Color(PAL.horizon), 140, 560);   // Dalí's air is clear
+    scene.fog = new THREE.Fog(new THREE.Color(PAL.backdropHaze), 140, 560);   // Dalí's air is clear
     camera = new THREE.PerspectiveCamera(42, 1, 0.1, 3000);
 
     // Sky: deep ultramarine above, a warm band at the horizon, mirrored below so the lake reflects it
@@ -314,7 +356,8 @@
           gl_FragColor = vec4(c, 1.0);
         }`,
     });
-    scene.add(new THREE.Mesh(new THREE.SphereGeometry(1400, 48, 24), skyMat));
+    // The painted backdrop is the sky now; the shader sky stays built but out of the scene.
+    new THREE.Mesh(new THREE.SphereGeometry(1400, 48, 24), skyMat);
 
     // Light: low warm sun from behind-left, so shadows fall toward the viewer
     hemi = new THREE.HemisphereLight(0x8da2e8, 0xa07850, 0.42);   // low fill, so shadows stay deep
@@ -334,7 +377,7 @@
     const gp = gg.attributes.position;
     for (let i = 0; i < gp.count; i++) gp.setY(i, groundH(gp.getX(i), gp.getZ(i)));
     gg.computeVertexNormals();
-    const groundMat = new THREE.MeshLambertMaterial({ color: PAL.sand });
+    const groundMat = new THREE.ShadowMaterial({ color: PAL.shadow, opacity: 0.45 });   // invisible: only shadows land on the backdrop
     groundMat.onBeforeCompile = sh => {
       sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vWY;')
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWY = (modelMatrix * vec4(position, 1.0)).y;');
@@ -349,18 +392,19 @@
     const water = new THREE.Mesh(new THREE.PlaneGeometry(240, 100), new THREE.MeshBasicMaterial({ color: PAL.water, transparent: true, opacity: 0.5, depthWrite: false }));
     water.rotation.x = -Math.PI / 2; water.position.set(0, WATER, -2);
     water.renderOrder = 2;
+    water.visible = false;   // the painted backdrop has no lake
     scene.add(water);
 
     // The clock: built lying flat in its own frame, front (+z) toward the water
     const baseY = groundH(...CLOCK_XZ), PLINTH = 7.6;
     clockY = baseY + PLINTH + 0.45;
-    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(RS * 0.9, RS * 1.1, PLINTH + 1, 40), new THREE.MeshLambertMaterial({ color: PAL.stone }));
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(RS * 0.9, RS * 1.1, PLINTH + 1, 40), MAT.stone);
     plinth.position.set(CLOCK_XZ[0], baseY + (PLINTH - 1) / 2, CLOCK_XZ[1]);
     plinth.castShadow = true; plinth.receiveShadow = true;
     scene.add(plinth);
     clockGroup = new THREE.Group();
     clockGroup.position.set(CLOCK_XZ[0], clockY, CLOCK_XZ[1]);
-    clockGroup.rotation.x = TILT;
+    clockGroup.rotation.x = tiltNow;
     scene.add(clockGroup);
 
     faceCtx = (() => { const c = document.createElement('canvas'); c.width = c.height = TEX; return c.getContext('2d'); })();
@@ -375,12 +419,12 @@
     const bodyGeo = keep(new THREE.CylinderGeometry(R + 0.15, R + 0.05, 0.8, 160, 6, false));
     // the body needs interior vertices to bend, so give its caps rings too
     const capGeo = keep(new THREE.RingGeometry(0.001, R + 0.05, 160, 40).rotateX(Math.PI / 2).translate(0, -0.4, 0));
-    const body = new THREE.Mesh(bodyGeo, new THREE.MeshLambertMaterial({ color: PAL.body }));
-    body.castShadow = true; body.receiveShadow = true; body.material.side = THREE.DoubleSide;
-    const bezelGeo = keep(new THREE.TorusGeometry(R + 0.12, 0.34, 18, 200).rotateX(Math.PI / 2).translate(0, 0.46, 0));
-    const bezel = new THREE.Mesh(bezelGeo, new THREE.MeshLambertMaterial({ color: PAL.bezel }));
+    const body = new THREE.Mesh(bodyGeo, MAT.body);
+    body.castShadow = true; body.receiveShadow = true;
+    const bezelGeo = keep(new THREE.TorusGeometry(R + 0.2, 0.55, 24, 200).rotateX(Math.PI / 2).translate(0, 0.46, 0));
+    const bezel = new THREE.Mesh(bezelGeo, MAT.bezel);
     bezel.castShadow = true;
-    const under = new THREE.Mesh(capGeo, new THREE.MeshLambertMaterial({ color: PAL.body, side: THREE.DoubleSide }));
+    const under = new THREE.Mesh(capGeo, MAT.body);
     under.castShadow = true;
     clockGroup.add(face, body, bezel, under);
 
@@ -395,7 +439,7 @@
       h.add(m1, m2); h.position.y = 0.55;
       clockGroup.add(h);
     });
-    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.22, 24), new THREE.MeshLambertMaterial({ color: PAL.bezel }));
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.22, 24), MAT.bezel);
     cap.position.y = 0.62; cap.castShadow = true; clockGroup.add(cap);
 
     // The clock's reflection in the lake (shares geometry, so the melt reflects too)
@@ -571,15 +615,15 @@
     const mid = innerHeight / 2;
     const hero = document.getElementById('hero').getBoundingClientRect();
     const clock = document.getElementById('clock').getBoundingClientRect();
-    if (hero.bottom > mid * 0.9) return 'hero';
+    if (hold || hero.bottom > mid * 0.9) return 'hero';
     if (clock.top < mid) return 'verdict';
     return 'evidence';
   }
   const narrow = () => innerWidth < 820;
   const SHOTS = {
-    hero: { pos: [0, 12, 30], look: [-11, 4.5, -32], veil: 0 },
-    evidence: { pos: [-26, 17, 30], look: [0, 3, -26], veil: 0.72 },
-    verdict: { pos: [4, 17, 8], look: [-1.5, 3, -21], veil: 0.04 },
+    hero: { pos: [0, 5.2, 10], look: [-8.8, 6.5, -22.8], veil: 0 },   // eye level, so the 3D horizon meets the painted one; the clock fills the right
+    evidence: { pos: [-20, 5.2, 24], look: [2, 7, -26], veil: 0.72 },
+    verdict: { pos: [0, 5.5, 16], look: [-1, 6.9, -24], veil: 0.04 },   // eye level too, so nothing floats above the painted horizon
   };
   const SHOTS_NARROW = {
     hero: { pos: [0, 15, 46], look: [0, 1.5, -32], veil: 0 },
@@ -587,7 +631,36 @@
     verdict: { pos: [0, 37, 28], look: [0, 0, -22], veil: 0.04 },
   };
 
-  let last = performance.now();
+  // ---------- the guess chapter's flight ----------
+  // Lands the clock face-on to the camera and upright (24h at the top), its face exactly covering flight.to
+  // (a screen circle in CSS px), where the chart takes over. A full-size clock that small
+  // would sit far out under the ground, so it lands close to the camera and scaled down instead.
+  function placeClock() {
+    if (!flight.home) flight.home = { pos: clockGroup.position.clone(), quat: new THREE.Quaternion() };
+    const { home, f, to } = flight;
+    home.quat.setFromAxisAngle(new THREE.Vector3(1, 0, 0), tiltNow);
+    clockGroup.visible = !flight.hidden;
+    if (f <= 0 || !to) {
+      clockGroup.position.copy(home.pos); clockGroup.quaternion.copy(home.quat); clockGroup.scale.setScalar(1);
+      return;
+    }
+    camera.updateMatrixWorld();
+    const fit = R * innerHeight / (2 * to.r * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    const depth = Math.min(fit, 14), sc = depth / fit;
+    const dir = new THREE.Vector3(to.x / innerWidth * 2 - 1, 1 - to.y / innerHeight * 2, 0.5).unproject(camera).sub(camera.position).normalize();
+    const fwd = camera.getWorldDirection(new THREE.Vector3());
+    const landPos = camera.position.clone().addScaledVector(dir, depth / dir.dot(fwd));
+    const camX = new THREE.Vector3(), camY = new THREE.Vector3(), camZ = new THREE.Vector3();
+    camera.matrixWorld.extractBasis(camX, camY, camZ);
+    const landQuat = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(camX, camZ, camY.negate()));
+    landPos.addScaledVector(camZ, -0.42 * sc);   // the face sits 0.42 above the clock's center
+    clockGroup.position.lerpVectors(home.pos, landPos, f);
+    clockGroup.position.y += Math.sin(f * Math.PI) * 5;   // an arc up off the plinth
+    clockGroup.quaternion.slerpQuaternions(home.quat, landQuat, f);
+    clockGroup.scale.setScalar(1 + (sc - 1) * f);
+  }
+
+  let last = performance.now(), duskShown = -1;
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     if (document.hidden) { requestAnimationFrame(frame); return; }   // nothing to draw in a background tab
@@ -598,19 +671,23 @@
     camPos.lerp(pos, lerpK(dt, 1.2)); camLook.lerp(new THREE.Vector3(...shot.look), lerpK(dt, 1.2));
     camera.position.copy(camPos); camera.lookAt(camLook);
     veilNow += (shot.veil - veilNow) * lerpK(dt, 2);
+    tiltNow += ((where !== 'evidence' && !narrow() ? HERO_TILT : TILT) - tiltNow) * lerpK(dt, 1.2);
     document.getElementById('veil').style.opacity = veilNow.toFixed(3);
 
     cur.dusk += (target.dusk - cur.dusk) * k;
     skyMat.uniforms.uDusk.value = cur.dusk;
     sun.intensity = 1.4 - cur.dusk * 0.35;
     sun.color.setHSL(0.09 - cur.dusk * 0.03, 1, 0.87 - cur.dusk * 0.1);
-    scene.fog.color.set(PAL.horizon).lerp(new THREE.Color(PAL.horizonDusk), cur.dusk);
+    scene.fog.color.set(PAL.backdropHaze).lerp(new THREE.Color(PAL.horizonDusk), cur.dusk);
+    if (Math.abs(cur.dusk - duskShown) > 0.003) { duskShown = cur.dusk; canvas.style.setProperty('--dusk', cur.dusk.toFixed(3)); }   // dims the backdrop
 
     updateFace(k);
     updateMelt(dt, k);
     updateWalkers(t, dt, k);
+    placeClock();
     watchdog(dt);
     renderer.render(scene, camera);
+    frameHooks.forEach(f => f());
     requestAnimationFrame(frame);
   }
 
@@ -672,5 +749,10 @@
       return { year, soc, lost, aloneShare: al?.share, aloneMin: al?.min, aloneBand: al?.band, aloneYear: al?.year };
     },
     get year() { return year; },
+    palette: PAL,
+    // f: 0 = on the plinth, 1 = landed on `target` ({x, y, r}: the face's screen circle, CSS px). hidden: once the chart has taken over.
+    flyClock(f, target, hidden = false) { flight.f = f; flight.to = target; flight.hidden = hidden; },
+    holdHero(on) { hold = on; },
+    onFrame(fn) { frameHooks.push(fn); },   // runs right after each render, so overlays line up with the frame
   };
 })();

@@ -4,8 +4,9 @@
  *
  * Waking time alone vs. with others, ages 20–24, 2010–2025 (BLS "who with" data starts in 2010).
  * Steps:
- *   0: the "alone" line draws in, endpoints 2010–11 → 2024–25
- *   1: the "with others" line joins, with its drop labeled
+ *   0: both lines draw in, endpoints 2010–11 → 2024–25
+ *   1: the 2021 peak in alone time is labeled
+ * 2020 has no survey: the lines break there and a shaded band says so.
  * Hover, tap or arrow keys inspect one year. Always ages 20–24: the age bands differ
  * from the activity data, so it ignores the "I'm…" menu.
  */
@@ -20,11 +21,11 @@
   const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const state = { step: -1, year: null };   // -1 until the chapter first scrolls into view
-  let root, plot, svg, grid, xAxis, yAxis, clip, paths, ends, cursor, input, summary, inspection, x, y, bottom;
+  let root, plot, svg, grid, gap, peak, xAxis, yAxis, clip, paths, ends, cursor, input, summary, inspection, x, y, bottom;
 
   const value = (line, year) => story.data.who[line.key][story.data.years.indexOf(year)];
   const avg = (line, years) => story.avg(story.data.who[line.key], years);
-  const visible = () => LINES.slice(0, state.step + 1);
+  const visible = () => (state.step < 0 ? [] : LINES);
 
   function render(animate = false) {
     if (!root) return;
@@ -46,7 +47,9 @@
       .call(d3.axisLeft(y).tickValues(hours).tickFormat(d => `${d / 60}h`).tickSize(0).tickPadding(8))
       .call(g => g.select('.domain').remove());
     svg.select('.alone-unit').attr('x', left).attr('y', top - 14).text('waking hours/day');
-    svg.select('.alone-gap').attr('x', x(2020)).attr('y', bottom - 8).attr('text-anchor', 'middle').text('no 2020 data');
+    // 2020: no survey. A band where the year would be, so the break in the lines reads as a gap, not a jump.
+    gap.select('rect').attr('x', x(2019.5)).attr('width', x(2020.5) - x(2019.5)).attr('y', top).attr('height', bottom - top);
+    gap.select('text').attr('x', x(2020)).attr('y', bottom - 8).attr('text-anchor', 'middle').text('2020: no survey');
 
     const duration = animate && !still() ? 1100 : 0;
     const line = d3.line().defined(d => d[1] != null).x(d => x(d[0])).y(d => y(d[1]));
@@ -83,6 +86,15 @@
     point.select('text').attr('text-anchor', d => (d.first ? 'start' : 'end'))
       .attr('x', d => (d.first ? 8 : -8)).attr('y', -10).text(d => hm(d.v));
 
+    // The pandemic peak: the highest year of alone time
+    const [aloneLine] = LINES;
+    const top3 = YEARS.filter(yr => value(aloneLine, yr) != null).reduce((m, yr) => (value(aloneLine, yr) > value(aloneLine, m) ? yr : m));
+    const pv = value(aloneLine, top3);
+    peak.attr('transform', `translate(${x(top3)},${y(pv)})`)
+      .transition().duration(duration ? 450 : 0).style('opacity', state.step >= 1 ? 1 : 0);
+    peak.select('circle').attr('r', 6);
+    peak.select('text').attr('x', -10).attr('y', -12).attr('text-anchor', 'end').text(`${top3} peak · ${hm(pv)} alone`);
+
     // Direct labels at the right edge instead of a legend.
     const i = story.data.years.indexOf(2025);
     svg.select('.alone-labels').selectAll('text').data(visible(), d => d.id).join('text')
@@ -92,8 +104,8 @@
     const [alone, others] = LINES;
     const a0 = avg(alone, START), a1 = avg(alone, END), o0 = avg(others, START), o1 = avg(others, END);
     summary.textContent = state.step < 1
-      ? `Ages 20–24, alone: ${hm(a0)} → ${hm(a1)} a day (+${hm(a1 - a0)}).`
-      : `Ages 20–24, with others: ${hm(o0)} → ${hm(o1)} a day (−${hm(o0 - o1)}). All ages, with friends: ${hm(story.avg(story.data.who['43|000|00'], START))} → ${hm(story.avg(story.data.who['43|000|00'], END))}.`;
+      ? `Ages 20–24, alone ${hm(a0)} → ${hm(a1)} a day; with others ${hm(o0)} → ${hm(o1)}.`
+      : `Alone time peaked in ${top3} at ${hm(pv)}, then settled at ${hm(a1)}.`;
     input.attr('x', left).attr('y', top).attr('width', x(2025) - left).attr('height', bottom - top);
     drawInspection();
   }
@@ -121,7 +133,7 @@
     init(el) {
       root = document.createElement('div');
       root.className = 'alone-panel';
-      root.innerHTML = `<p class="alone-heading">Waking time alone vs. with others</p><p class="alone-summary"></p>
+      root.innerHTML = `<p class="alone-heading">Waking time alone vs. with others <span class="chart-tag">Ages 20–24</span></p><p class="alone-summary"></p>
         <div class="alone-plot"></div><p class="alone-inspection"></p>
         <p class="alone-caption">American Time Use Survey, BLS. Waking hours by who you're with; "who with" data starts in 2010 and categories can overlap. Endpoint dots average two survey years. No estimates exist for 2020.</p>`;
       el.append(root);
@@ -133,11 +145,14 @@
       xAxis = svg.append('g').attr('class', 'axis').attr('aria-hidden', 'true');
       yAxis = svg.append('g').attr('class', 'axis').attr('aria-hidden', 'true');
       svg.append('text').attr('class', 'alone-unit').attr('aria-hidden', 'true');
-      svg.append('text').attr('class', 'alone-gap').attr('aria-hidden', 'true');
+      gap = svg.append('g').attr('class', 'alone-gap').attr('aria-hidden', 'true');
+      gap.append('rect'); gap.append('text');
       clip = svg.append('defs').append('clipPath').attr('id', 'alone-clip').append('rect');
       paths = svg.append('g').attr('clip-path', 'url(#alone-clip)').attr('aria-hidden', 'true');
       svg.append('g').attr('class', 'alone-labels').attr('aria-hidden', 'true');
       ends = svg.append('g').attr('aria-hidden', 'true');
+      peak = svg.append('g').attr('class', 'alone-peak').attr('aria-hidden', 'true').style('opacity', 0);
+      peak.append('circle'); peak.append('text');
       cursor = svg.append('g').attr('class', 'alone-cursor').attr('aria-hidden', 'true');
       cursor.append('line');
       input = svg.append('rect').attr('class', 'alone-input').attr('fill', 'transparent').attr('tabindex', 0)

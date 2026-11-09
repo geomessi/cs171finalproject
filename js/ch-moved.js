@@ -7,7 +7,8 @@
  *   0: all bars at zero
  *   1: bars grow, Working highlighted (−18)
  *   2: Watching TV highlighted (−34); Working stays as "cleared"
- *   3: Sleep (+39), Other leisure (+29) and Chores (+18) highlighted
+ *   3: Sleep (+39), Other leisure (+29) and Chores (+18) highlighted (only if the page has a fourth step)
+ * Work and TV get a CLEARED stamp once their step has fired.
  * Play animates the end period from 2004–05 to 2024–25; the slider picks one period.
  * Rows keep the order of the 2024–25 change so they don't jump around while playing.
  * Always ages 15–24, to match the step text. TODO (WORKPLAN.md): check the story for other ages.
@@ -19,6 +20,7 @@
   const AGE = '103';   // 15–24; ignores the "I'm…" menu for now
   // Rows lit up in each step. Earlier suspects stay half-lit once they're "cleared".
   const FOCUS = { 0: [], 1: ['600013'], 2: ['600025'], 3: ['600001', 'leis', '600003'] };
+  const CLEARED = { '600013': 1, '600025': 2 };   // suspect → the step that clears it
   const SHORT = {
     '600001': 'Sleep & care', '600007': 'Care: household', '600010': 'Care: others', '600018': 'Shopping',
     'leis': 'Other leisure', '600030': 'Civic & religious', '600033': 'Calls & mail',
@@ -78,6 +80,8 @@
       g.append('rect').attr('class', 'moved-bar');
       g.append('text').attr('class', 'moved-name').attr('text-anchor', 'end');
       g.append('text').attr('class', 'moved-value');
+      const stamp = g.append('g').attr('class', 'stamp');
+      stamp.append('rect'); stamp.append('text').text('CLEARED');
       return g;
     });
     row.attr('data-em', d => emphasis(d.code)).attr('aria-label', d => `${d.name}: ${fmt(d.d)} min/day`)
@@ -98,6 +102,12 @@
       .attr('x', d => x(grow(d)) + (d.d < 0 ? -6 : 6))
       .style('opacity', state.shown ? null : 0)
       .text(d => fmt(d.d));
+
+    // Cleared suspects lost time, so their bars point left; the stamp sits on the empty right side.
+    row.select('.stamp').attr('transform', `translate(${x(0) + 14},${y.bandwidth() / 2}) rotate(-4)`)
+      .style('opacity', d => (state.shown && CLEARED[d.code] && state.step >= CLEARED[d.code] ? 1 : 0));
+    row.select('.stamp rect').attr('x', -4).attr('y', -10).attr('width', 70).attr('height', 19).attr('rx', 3);
+    row.select('.stamp text').attr('x', 31).attr('y', 4).attr('text-anchor', 'middle');
 
     const social = data.find(d => d.code === SOCIAL);
     summary.textContent = state.shown
@@ -139,7 +149,7 @@
     init(el) {
       root = document.createElement('div');
       root.className = 'moved-panel';
-      root.innerHTML = `<p class="moved-heading">What moved since 2003–04</p><p class="moved-summary"></p>
+      root.innerHTML = `<p class="moved-heading">What moved since 2003–04 <span class="chart-tag">Ages 15–24</span></p><p class="moved-summary"></p>
         <div class="moved-plot"></div>
         <div class="moved-controls">
           <button type="button" class="moved-play"></button>
