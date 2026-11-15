@@ -1,0 +1,50 @@
+/* Mariah · The answer: the ladder of choice. Tokens from base.css. */
+
+.ladder-viz { display: flex; flex-direction: column; gap: 10px; }
+.ladder-viz svg { flex: 1 1 auto; min-height: 0; }
+
+.ld-year { font: 600 30px var(--display) !important; font-variation-settings: "SOFT" 100; fill: var(--ink) !important; font-variant-numeric: tabular-nums; }
+.ld-head-left { font: 10px var(--mono) !important; letter-spacing: .09em; fill: var(--muted) !important; }
+.ld-axis { stroke: var(--line); stroke-width: 1.5; }
+.ld-axis-head { fill: var(--line); }
+
+.ld-rowbg { fill: transparent; transition: fill var(--fast); }
+.ld-row.is-focus .ld-rowbg { fill: color-mix(in srgb, var(--sand) 10%, transparent); }
+.ld-row.is-dim { opacity: .42; }
+.ld-row { transition: opacity var(--fast); }
+
+.ld-name { font: 600 16px var(--body) !important; fill: var(--ink) !important; }
+.ld-why { font: 12px var(--body) !important; fill: var(--muted) !important; }
+.ld-mins { font: 500 13px var(--mono) !important; fill: var(--ink) !important; font-variant-numeric: tabular-nums; }
+.ld-pct { font: 600 15px var(--mono) !important; fill: var(--c-social) !important; font-variant-numeric: tabular-nums; }
+.ld-pct.is-flat { fill: var(--muted) !important; }
+
+/* A figure that is still there, and one that has gone: the empty-chair motif, kept in place
+   so the gap is as readable as the presence. */
+.ld-fig .ld-head { fill: var(--ink); }
+.ld-fig .ld-body { stroke: var(--ink); stroke-width: 1.9; fill: none; stroke-linecap: round; }
+.ld-fig { transition: opacity var(--fast); }
+.ld-fig.is-gone .ld-head { fill: none; stroke: var(--line); stroke-width: 1.1; }
+.ld-fig.is-gone .ld-body { stroke: var(--line); stroke-width: 1.1; stroke-dasharray: 2 2.6; }
+
+/* The bottom rung is the one that pays off, so its departures carry the story color */
+.ld-row:last-of-type .ld-fig.is-gone .ld-head,
+.ld-row:last-of-type .ld-fig.is-gone .ld-body { stroke: color-mix(in srgb, var(--c-social) 55%, var(--line)); }
+
+.ladder-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.ladder-controls button { font: 500 13px var(--body); color: var(--ink); background: transparent;
+  border: 1px solid var(--faint); border-radius: 999px; padding: 5px 14px; cursor: pointer; transition: background var(--fast); }
+.ladder-controls button:hover { background: var(--surface); }
+.ladder-controls button:focus-visible, .ladder-controls input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ladder-controls input[type=range] { flex: 1; min-width: 150px; accent-color: var(--c-social); }
+.ladder-out { font: 600 20px var(--display); font-variation-settings: "SOFT" 100; min-width: 4ch; }
+.ladder-note { font-size: 12px; color: var(--muted); margin: 0; max-width: 76ch; }
+
+@media (max-width: 820px) {
+  .ld-name { font-size: 20px !important; }
+  .ld-why { font-size: 15px !important; }
+  .ld-mins { font-size: 16px !important; }
+  .ld-pct { font-size: 19px !important; }
+  .ld-head-left { font-size: 13px !important; letter-spacing: .04em; }
+  .ladder-note { font-size: 11px; }
+}

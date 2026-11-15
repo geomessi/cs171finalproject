@@ -86,6 +86,40 @@ h2 { font-size: clamp(26px, 3.4vw, 38px); }
 /* For screen readers only: chart summaries in words. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
+/* ---- shared chart patterns (see story.gapMark / gapBridge / howto in js/main.js) ----
+   From the Nov 2026 testing: readers didn't know what they could do, and the missing
+   2020 year made every line chart misread. Both fixes are defined once, here. */
+
+/* The missing year */
+.gap-mark rect { fill: var(--surface); opacity: .55; }
+.gap-mark text { font: 10px var(--mono) !important; fill: var(--muted) !important; letter-spacing: .04em; }
+.gap-bridge { stroke-width: 1.4; stroke-dasharray: 3 4; opacity: .5; }
+
+/* The instruction that is on screen whenever its chart is */
+.chart-howto { font: 500 13px var(--body); color: var(--ink); margin: 0; padding: 7px 12px;
+  background: color-mix(in srgb, var(--sand) 12%, transparent);
+  border-left: 2px solid var(--sand); border-radius: 0 6px 6px 0; max-width: 62ch; }
+.chart-howto::before { content: "→ "; color: var(--sand); }
+
+/* One big, always-visible year. Testing: ours was often too small to find. */
+.year-big { font: 600 34px var(--display); font-variation-settings: "SOFT" 100; color: var(--ink);
+  font-variant-numeric: tabular-nums; line-height: 1; }
+
+/* The age picker, repeated inside the story because nobody found it in the top bar */
+.inline-age { margin: 14px 0 0; font: 500 15px var(--body); color: var(--ink); }
+.inline-age select { font: 500 15px var(--body); color: var(--ink); background: color-mix(in srgb, var(--sand) 16%, transparent);
+  border: 1px solid var(--sand); border-radius: 999px; padding: 5px 12px; margin-left: 6px; cursor: pointer; }
+.inline-age select:focus-visible, .topbar .you select:focus-visible { outline: 2px solid var(--sand); outline-offset: 2px; }
+.topbar .you select { border-color: var(--sand); background: color-mix(in srgb, var(--sand) 14%, transparent); }
+
+/* A definition the reader needs before the first number */
+.step .defn { font: 13px var(--body) !important; color: var(--muted); margin: 10px 0 0; padding-left: 10px; border-left: 1px solid var(--line); max-width: 42ch; }
+
+/* The one sentence the whole story is for */
+.verdict-line { font: 600 21px var(--display) !important; font-variation-settings: "SOFT" 60; color: var(--ink) !important; line-height: 1.3; }
+
+@media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
 /* Placeholder box, shown until a chapter registers with story.chapter() */
 .viz:not(.live) { display: grid; place-items: center; text-align: center; border: 1.5px dashed var(--faint); border-radius: 12px; color: var(--muted); padding: 20px; }
 .viz:not(.live)::before { content: attr(data-placeholder); font-size: 15px; max-width: 32ch; }

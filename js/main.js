@@ -83,6 +83,48 @@
 
     color(activity) { return `var(${ACTIVITIES[activity]?.color || '--c-other'})`; },
 
+    /* ---- shared chart patterns -------------------------------------------------
+     * Testing (Nov 2026) turned up two problems that hit every chart, so the fixes
+     * live here rather than being reinvented per chapter:
+     *   1. BLS published no 2020 estimates. One chart marked the gap; the rest let
+     *      their lines jump it, and both testers misread the result.
+     *   2. Neither tester knew what they were allowed to do with any chart.
+     */
+
+    // The missing year, drawn where it would have been.
+    gapMark(g, x, top, bottom, label = '2020: no survey') {
+      const w = Math.max(3, x(2020.5) - x(2019.5));
+      const sel = g.selectAll('.gap-mark').data([null]).join('g').attr('class', 'gap-mark');
+      sel.selectAll('rect').data([null]).join('rect')
+        .attr('x', x(2019.5)).attr('width', w).attr('y', top).attr('height', Math.max(0, bottom - top));
+      sel.selectAll('text').data([null]).join('text')
+        .attr('x', x(2020)).attr('y', bottom - 6).attr('text-anchor', 'middle').text(label);
+      return sel;
+    },
+
+    // A dashed bridge over the gap, one per line, so the eye keeps hold of which line is which.
+    // rows: [{ y2019, y2021, color }] in pixel space.
+    gapBridge(g, x, rows) {
+      g.selectAll('.gap-bridge')
+        .data(rows.filter(r => r.y2019 != null && r.y2021 != null))
+        .join('line').attr('class', 'gap-bridge')
+        .attr('x1', x(2019)).attr('x2', x(2021))
+        .attr('y1', r => r.y2019).attr('y2', r => r.y2021)
+        .attr('stroke', r => r.color || 'currentColor');
+    },
+
+    // One instruction, visible whenever its chart is. Never in a step you scrolled past.
+    howto(el, text) {
+      const root = el.node ? el.node() : el;
+      let p = root.querySelector(':scope > .chart-howto');
+      if (!p) { p = document.createElement('p'); p.className = 'chart-howto'; root.appendChild(p); }
+      p.textContent = text;
+      return p;
+    },
+
+    PLAY_MS: 520,          // autoplay step: slower than it was, because the years ran away
+    reduceMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+
     async start() {
       try {
         story.data = await (await fetch('data/atus.json')).json();
@@ -106,13 +148,20 @@
     },
   };
 
+  // Neither tester in the Nov 2026 sessions noticed the age menu in the top bar
+  // ("probably not very clear that you can do that"), so there is now a second one inside
+  // the story, at the first chapter where it changes anything. Any number of
+  // [data-age-picker] selects stay in sync; they all drive the same value.
   function setAge(code) {
     story.you = code;
     const name = AGES[code];
     document.querySelectorAll('[data-you-label]').forEach(n => { n.textContent = `${name}-year-olds`.replace('65+-year-olds', 'people 65 and older'); });
+    document.querySelectorAll('[data-age-picker]').forEach(s => { if (s.value !== code) s.value = code; });
     Object.values(chapters).forEach(h => h.age && h.age(code));
   }
-  document.getElementById('you-age').addEventListener('change', e => setAge(e.target.value));
+  document.querySelectorAll('[data-age-picker]').forEach(s => {
+    s.addEventListener('change', e => setAge(e.target.value));
+  });
 
   // Some chapters only have data for one age group, so the "I'm…" menu can't move them. Say so
   // under the text instead of letting the chart look broken.
