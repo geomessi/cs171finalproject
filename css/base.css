@@ -115,6 +115,12 @@ h2 { font-size: clamp(26px, 3.4vw, 38px); }
 /* A definition the reader needs before the first number */
 .step .defn { font: 13px var(--body) !important; color: var(--muted); margin: 10px 0 0; padding-left: 10px; border-left: 1px solid var(--line); max-width: 42ch; }
 
+/* What a number is worth in human time — the stakes, not the statistic */
+.step .stake { font: 17px var(--body) !important; color: var(--ink); margin: 12px 0 0; padding: 10px 14px;
+  background: color-mix(in srgb, var(--c-social) 9%, transparent);
+  border-left: 2px solid var(--c-social); border-radius: 0 6px 6px 0; max-width: 44ch; line-height: 1.45; }
+.step .stake strong { color: var(--c-social); }
+
 /* The one sentence the whole story is for */
 .verdict-line { font: 600 21px var(--display) !important; font-variation-settings: "SOFT" 60; color: var(--ink) !important; line-height: 1.3; }
 
