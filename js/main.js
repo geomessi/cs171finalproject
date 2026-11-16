@@ -138,10 +138,21 @@
         const hooks = chapters[id];
         if (id === 'hero') return;
         const el = section.querySelector('.viz');
-        if (hooks?.init) { el.classList.add('live'); hooks.init(el, story.data); }
+        // One chapter throwing used to abort this loop and leave every later chapter as an
+        // empty placeholder — three people are pushing to one page, so a single bad line
+        // should cost us one chart, not nine.
+        if (hooks?.init) {
+          el.classList.add('live');
+          try { hooks.init(el, story.data); }
+          catch (err) { el.classList.remove('live'); console.error(`chapter "${id}" failed to start:`, err); }
+        }
       });
       // The hero shares the clock script.
-      if (chapters.hero?.init) { const el = document.getElementById('hero-viz'); el.classList.add('live'); chapters.hero.init(el, story.data); }
+      if (chapters.hero?.init) {
+        const el = document.getElementById('hero-viz'); el.classList.add('live');
+        try { chapters.hero.init(el, story.data); }
+        catch (err) { el.classList.remove('live'); console.error('chapter "hero" failed to start:', err); }
+      }
       scopeNotes();
       watchSteps();
       setAge(story.you);
@@ -200,7 +211,13 @@
         steps.forEach(s => s.classList.toggle('is-active', s === active));
         const id = section.dataset.chapter;
         const n = +active.dataset.step;
-        if (n !== current[id]) { current[id] = n; chapters[id]?.step?.(n, dir); }
+        if (n !== current[id]) {
+          current[id] = n;
+          // Same reason as init: a throw here runs on every scroll frame and would take the
+          // whole page's scrolling with it.
+          try { chapters[id]?.step?.(n, dir); }
+          catch (err) { console.error(`chapter "${id}" step ${n} failed:`, err); }
+        }
       });
     };
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
