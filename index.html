@@ -30,7 +30,7 @@
 <header class="topbar">
   <a class="brand" href="#top">The Case of the Shrinking Hour</a>
   <nav aria-label="Chapters">
-    <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#day">The day</a><a href="#moved">Suspects</a>
+    <a href="#guess">Guess</a><a href="#drop">The case</a><a href="#moved">The day</a>
     <a href="#kids">The kids</a><a href="#balance">The scale</a><a href="#ladder">The answer</a>
     <a href="#lineup">Lineup</a><a href="#clock">Verdict</a><a href="#file">Your file</a><a href="#methods">Methods</a>
   </nav>
@@ -86,25 +86,18 @@
     <div class="viz" id="drop-viz" data-owner="Mariah · ch-drop.js" data-placeholder="One clock, the wedge retreating, a tide mark per year"></div>
   </section>
 
-  <!-- ===== 4 · The constraint · Mariah ===== -->
-  <section class="chapter" id="day" data-chapter="day" data-scope="103" aria-labelledby="day-title">
-    <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">The constraint</p><h2 id="day-title">A day can't grow</h2><p>Twenty-four hours. Fourteen hundred and forty minutes, every one of them written down.</p></div>
-      <div class="step" data-step="1"><p>Here's the part nobody expects. Work shrank by 18 minutes. TV shrank by 34. <strong>Fifty-two minutes a day, handed back.</strong> Young people are less busy than they were in 2003.</p></div>
-      <div class="step" data-step="2"><p>So we spent it on fun, surely. No. <strong>Total leisure fell too</strong> — 333 minutes to 305. The returned time went to sleep and personal care, up 39, and chores, up 18.</p></div>
-      <div class="step" data-step="3"><p><strong>We got the better part of an hour back and spent it sleeping and tidying up.</strong> The day didn't get busier. It got quieter.</p></div>
-    </div>
-    <div class="viz" id="day-viz" data-owner="Mariah · ch-day.js" data-placeholder="One 24-hour day, changing shape"></div>
-  </section>
+  <!-- "A day can't grow" now opens the suspects chapter below (Chloe, Nov 2026). Mariah's ch-day.js is kept; restore its <section> from git history to bring the 24-hour column back. -->
 
   <!-- ===== 5 · The suspects · police lineup, absorbs the phones chapter · Chloe ===== -->
-  <section class="chapter" id="moved" data-chapter="moved" data-scope="103">
+  <section class="chapter" id="moved" data-chapter="moved" data-scope="103" aria-labelledby="day-title">
     <div class="steps">
-      <div class="step" data-step="0"><p class="kicker">The suspects</p><h2>Round up the usual</h2><p>If young people stopped seeing each other, the easy story is that they got busier. Line up the blocks of the day and check their alibis.</p></div>
-      <div class="step" data-step="1"><p><strong>Work: cleared.</strong> Eighteen fewer minutes a day than in 2003–04.</p></div>
-      <div class="step" data-step="2"><p><strong>TV: cleared.</strong> Thirty-four fewer. Both suspects <em>gave</em> young people time back — and they still spent less of it together.</p></div>
-      <div class="step" data-step="3"><p><strong>One didn't walk.</strong> Games and computer use for fun more than doubled: 29 minutes a day to 60 for 20–24-year-olds. It's the only block that grew like that.</p></div>
-      <div class="step" data-step="4"><p><strong>And the obvious suspect isn't in this lineup at all.</strong> The survey has no category for your phone. Phone time is scattered through every figure standing here, which is exactly why we can't convict it.</p><p>By now you may be wondering whether there's a culprit to find. Hold that thought — it's the right one.</p></div>
+      <div class="sx-hold-day"><div class="step" data-step="0"><p class="kicker">The constraint</p><h2 id="day-title">A day can't grow</h2><p>Twenty-four hours. Fourteen hundred and forty minutes, every one of them written down. When one part of the day grows, another has to shrink.</p></div></div>
+      <div class="sx-hold-lineup"><div class="step" data-step="1"><p class="kicker">The suspects</p><h2>Round up the usual</h2><p>If young people stopped seeing each other, the easy story is that they got busier. Line up the blocks of the day and check their alibis.</p></div></div>
+      <div class="step" data-step="2"><p><strong>Work: cleared.</strong> Eighteen fewer minutes a day than in 2003–04.</p></div>
+      <div class="step" data-step="3"><p><strong>TV: cleared.</strong> Thirty-four fewer. With work, that's <strong>fifty-two minutes a day, handed back.</strong> Young people are less busy than they were in 2003, and they still spent less of that time together.</p></div>
+      <div class="step" data-step="4"><p><strong>Sleep and chores: both grew.</strong> Sleep and personal care went up 39 minutes, chores up 18. <strong>We got the better part of an hour back and spent it sleeping and tidying up.</strong> The day didn't get busier. It got quieter.</p></div>
+      <div class="step" data-step="5"><p><strong>One didn't walk.</strong> So we spent it on fun? Not overall. Total leisure fell, 333 to 305 minutes, because TV and socializing dropped. What's left of it grew, and games grew most: 29 minutes a day to 60 for 20–24-year-olds, more than double.</p></div>
+      <div class="step" data-step="6"><p><strong>And the obvious suspect isn't in this lineup at all.</strong> The survey has no category for your phone. Phone time is scattered through every figure standing here, which is exactly why we can't convict it.</p><p>By now you may be wondering whether there's a culprit to find. Hold that thought — it's the right one.</p></div>
     </div>
     <div class="viz" id="moved-viz" data-owner="Chloe · ch-moved.js" data-placeholder="The day's blocks in a lineup, each with its alibi"></div>
   </section>
