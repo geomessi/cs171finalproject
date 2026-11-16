@@ -241,6 +241,7 @@
           <button type="button" id="clock-play">Play 2003 → 2025</button>
           <input type="range" id="clock-year" min="2003" max="2025" step="1" value="2003" aria-label="Year">
         </div>
+        <p class="chart-howto">Press play, or drag the slider. The scale and the lineup above are on the same year.</p>
         <p class="clock-note">The clock is one average day: each wedge's angle is exact, and the glowing one is socializing. Drips grow with the minutes lost. Figures walking alone match the share of waking time spent alone (BLS "who with" data, from 2010). No 2020 estimates.</p>
       </div>`;
     const q = s => el.querySelector(s);

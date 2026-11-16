@@ -40,6 +40,36 @@ Everything below exists to deliver that sentence.
 
 ---
 
+## 1b. The story, in the order it's told
+
+The ladder is the evidence. This is the story it belongs to — write every chapter toward it.
+
+**In one line:** we got the hour back and didn't notice, because the time returned to us went into the parts of the day that run themselves — and so did the only company we kept.
+
+1. In 2003 young Americans spent about an hour a day with other people. Now it's 36 minutes.
+2. The obvious explanation is that they got busier. **They didn't.** Work fell 18 minutes a day, TV fell 34 — **52 minutes handed back** — and socializing fell anyway.
+3. So we spent it on fun? **No.** Total leisure fell too, 333 to 305. The returned time went to sleep and personal care (+39) and chores (+18). *We got the better part of an hour back and spent it sleeping and tidying up.*
+4. Then the ladder: the company that survived is the company that takes no arranging.
+5. **The ending.** It isn't that we stopped liking each other. Seeing people used to take no arranging — somebody was around, you were bored, you walked past a door. Now every hour with a friend has to be proposed, agreed and scheduled, and the things that must be arranged are the first to go. That's what *we should get dinner sometime* means.
+6. **The verdict: nobody stole the hour. It just stopped happening by itself.** Nothing had to take it. Nobody has to steal time that nobody is defending.
+7. **The AI close**, now earned: AI is about to hand back a lot of hours, and the last twenty years are a clean record of where returned time goes — wherever no decision is required. *The next hour you get back won't go to anyone unless you decide it does.*
+
+### Two rules that came out of this
+
+**Give every number its human size.** "23 minutes a day" is nothing; "six full days a year" is something. Use these, they're verified:
+
+| Finding | In human time |
+| --- | --- |
+| 15–24 socializing, −23 min/day | **six full days a year** |
+| 20–24 with other people, −117 min/day | **a month a year** |
+| Friends, all ages, −32 min/day | **eight days a year**, leaving under one evening a week |
+
+**Don't promise a culprit.** The honest answer is that there isn't one, so the hero and the suspects chapter now say so early. An ending that reveals "nobody did it" only works if we stopped selling a reveal.
+
+**One caveat we keep on the page:** ordering company by "how much arranging it takes" is our framing, not a BLS category — and physical closeness would order it the same way. That's why step 3 above matters: the activity half of the finding (sleep and chores grew, leisure fell) is independent evidence that proximity can't explain.
+
+---
+
 ## 2. One visual system, three motifs
 
 Michael's sharpest note: *"This is the same thing as this, but you represent this in a completely different way… shouldn't you represent them in analogous ways?"* And: the novelty is in "the color scheme and background," the charts themselves "aren't all that novel."

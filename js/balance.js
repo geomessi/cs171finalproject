@@ -169,6 +169,8 @@
         story.setYear(y, 'balance');   // the lineup and the verdict follow
       });
     out = c.append('output').attr('for', 'balance-year').attr('class', 'balance-out');
+    // Testing: "So what am I doing here? What am I doing here?" — say it, where the chart is.
+    story.howto(el, 'Drag the slider to move through the years. The lineup and the verdict below are on the same year, so they move with it.');
     d3.select(el).append('p').attr('class', 'balance-note')
       .text('Each figure is about 1/24 of waking time. Tilt and figures are proportional to the hours. BLS American Time Use Survey, "who with" data; no 2020 estimates.');
 
@@ -179,8 +181,11 @@
     init(el) { age = story.you; build(el); syncText(); refresh(false); },
     step(n) {
       if (n === 0) mode = { kind: 'period', years: [2010, 2011] };
-      if (n === 1) mode = { kind: 'period', years: [2024, 2025] };
-      if (n <= 1) refresh();
+      if (n === 1 || n === 2) mode = { kind: 'period', years: [2024, 2025] };
+      if (n <= 2) refresh();
+      // The last step hands the chart over to the reader, so point at the control.
+      const root = slider?.node()?.closest('.viz');
+      if (root) root.classList.toggle('invite', n >= 3);
     },
     age(code) { age = code; syncText(); if (svg) refresh(); },
     // Another chapter moved the shared year. The "who with" data starts in 2010, so earlier years

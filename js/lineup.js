@@ -117,6 +117,8 @@
         story.setYear(y, 'lineup');
       });
     out = c.append('output').attr('for', 'lineup-year').attr('class', 'lineup-out');
+    // Testing: a reader didn't know what he was looking at here. Say it plainly, on the chart.
+    story.howto(el, 'Six age groups, same year. Drag the slider: the wider the pink wedge, the more time that group spends with other people. The rim sags by the minutes they have lost.');
     d3.select(el).append('p').attr('class', 'lineup-note')
       .text('Each wedge is exact: minutes of socializing out of 1,440 in a day. The sag and the drips are proportional to the minutes that group has lost since 2003–04. This slider is shared with the scale above and the verdict below. BLS American Time Use Survey; no 2020 estimates.');
     built = true;
@@ -134,12 +136,15 @@
 
       c.g.classed('is-you', mine);
       c.name.text(mine ? `${story.ageName(c.age)} · you` : story.ageName(c.age));
-      c.wedge.transition().duration(dur(t)).ease(d3.easeCubicInOut)
-        .attrTween('d', () => k => {
-          const h = (c._half == null ? half : c._half + (half - c._half) * k);
-          return c.arc({ startAngle: Math.PI - h, endAngle: Math.PI + h });
-        })
-        .on('end', () => { c._half = half; });
+      // The tween writes the angle it is actually showing back to c._half on every frame.
+      // It used to only write it on 'end', so dragging the slider fast interrupted the
+      // transition, left _half stale, and the wedge jumped on the next render — the
+      // "it's a little glitchy" a tester saw. Interrupting now just stops it where it is.
+      c.wedge.interrupt().transition().duration(dur(t)).ease(d3.easeCubicInOut)
+        .attrTween('d', () => {
+          const i = d3.interpolate(c._half == null ? half : c._half, half);
+          return k => { c._half = i(k); return c.arc({ startAngle: Math.PI - c._half, endAngle: Math.PI + c._half }); };
+        });
       c.rim.transition().duration(dur(t)).ease(d3.easeCubicInOut).attr('d', rimPath(sag * 0.32));
       const rimY = RIM + sag * 0.32;
       c.drips.selectAll('path').data(DRIPS).join('path').attr('class', 'lu-drip')
@@ -185,6 +190,8 @@
       if (n === 0) { stop(); render(2003); }   // scroll states stay local; only the slider links the chapters
       if (n === 1 && dir === 'down') play();
       if (n === 1 && dir === 'up' && !timer) render(year);
+      const root = slider?.node()?.closest('.viz');
+      if (root) root.classList.toggle('invite', n >= 2);
     },
     age() { render(year, { t: 200 }); },     // re-marks the reader's own clock
     year(y) { if (!timer && valid(y)) render(y); },

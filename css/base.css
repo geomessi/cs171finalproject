@@ -124,6 +124,10 @@ h2 { font-size: clamp(26px, 3.4vw, 38px); }
 /* The one sentence the whole story is for */
 .verdict-line { font: 600 21px var(--display) !important; font-variation-settings: "SOFT" 60; color: var(--ink) !important; line-height: 1.3; }
 
+/* When a chapter hands the chart over to the reader, point at the control once. */
+@keyframes invite-pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sand) 0%, transparent); } 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--sand) 26%, transparent); } }
+.viz.invite input[type=range] { animation: invite-pulse 1.9s ease-in-out 3; border-radius: 999px; }
+
 @media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 
 /* Placeholder box, shown until a chapter registers with story.chapter() */
